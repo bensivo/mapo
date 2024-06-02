@@ -21,16 +21,14 @@ export class CanvasComponent implements OnInit {
     const canvas = this.canvasService.initializeCanvas('fabric-canvas');
 
 
-    for (let i=0; i<10; i++) {
-      canvas.add(new fabric.Rect({
-        top: 50 * i,
-        left: 50 * i,
-        width: 50,
-        height: 50,
-        fill: 'red',
-      }));
-    }
-
-    canvas.renderAll();
+    // for (let i=0; i<10; i++) {
+    //   canvas.add(new fabric.Rect({
+    //     top: 50 * i,
+    //     left: 50 * i,
+    //     width: 50,
+    //     height: 50,
+    //     fill: 'red',
+    //   }));
+    // }
   }
 }
