@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { TextNodeService } from '../text-node/text-node.service';
 import {fabric} from 'fabric';
 import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
+import { EdgeService } from '../edge/edge.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class CanvasService {
   constructor(
     private panCanvasService: PanCanvasService,
     private textNodeService: TextNodeService,
+    private edgeService: EdgeService,
   ) { }
 
   initializeCanvas(id: string) {
@@ -33,6 +35,7 @@ export class CanvasService {
 
     this.panCanvasService.register(canvas);
     this.textNodeService.register(canvas);
+    this.edgeService.register(canvas);
 
     return canvas;
 

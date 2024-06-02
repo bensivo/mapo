@@ -6,7 +6,7 @@ import { fabric } from 'fabric';
 })
 export class TextNodeService {
   canvas!: fabric.Canvas;
-  debug: boolean = true;
+  debug: boolean = false;
 
   register(canvas: fabric.Canvas) {
     this.canvas = canvas;
@@ -97,16 +97,18 @@ export class TextNodeService {
       left: topLeft.x,
       width: bottomRight.x - topLeft.x,
       height: bottomRight.y - topLeft.y,
-      fill: 'transparent',
+      fill: 'white',
       rx: 5,
       ry: 5,
       stroke: 'black',
       hasControls: false,
     });
+    this.canvas.sendToBack(rect);
+    this.canvas.bringToFront(itext);
 
 
     // Create a group from the itext and the rectangle
-    const group = new fabric.Group([itext, rect], {
+    const group = new fabric.Group([rect, itext], {
       hasControls: false,
       data: {
         type: 'text-node',
@@ -114,7 +116,6 @@ export class TextNodeService {
     });
 
     this.canvas.add(group);
-    this.canvas.sendToBack(rect);
   }
 
   /**
@@ -128,8 +129,8 @@ export class TextNodeService {
   private editTextNode(group: fabric.Group) {
     this.debugLog('enterEditTextNode', group);
     const objects = group.getObjects();
-    const itext = objects[0] as fabric.IText;
-    const rect = objects[1] as fabric.Rect;
+    const itext = objects[1] as fabric.IText;
+    const rect = objects[0] as fabric.Rect;
 
     group.ungroupOnCanvas();
 
