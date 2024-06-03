@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { TextNodeService } from '../text-node/text-node.service';
-import {fabric} from 'fabric';
-import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
+import { fabric } from 'fabric';
+import { DrawEdgeService } from '../edge/draw-edge.service';
 import { EdgeService } from '../edge/edge.service';
+import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
+import { TextNodeService } from '../text-node/text-node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class CanvasService {
     private panCanvasService: PanCanvasService,
     private textNodeService: TextNodeService,
     private edgeService: EdgeService,
+    private drawEdgeService: DrawEdgeService,
   ) { }
 
   initializeCanvas(id: string) {
@@ -36,23 +38,9 @@ export class CanvasService {
     this.panCanvasService.register(canvas);
     this.textNodeService.register(canvas);
     this.edgeService.register(canvas);
+    this.drawEdgeService.register(canvas);
 
     return canvas;
-
-
-    // Override the onKeyDown method to have custom behavior for the enter key
-    //
-    // https://stackoverflow.com/a/51781086
-    // fabric.IText.prototype.onKeyDown = ((onKeyDown) => {
-    //   return function(this: fabric.IText, e: any)  {
-    //     if (e.keyCode == 13) { // Enter
-    //       canvas.discardActiveObject()
-    //       canvas.renderAll();
-    //       return;
-    //     }
-    //     onKeyDown.call(this, e);
-    //   }
-    // })(fabric.IText.prototype.onKeyDown)
   };
 
 }
