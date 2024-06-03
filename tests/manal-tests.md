@@ -38,3 +38,23 @@ Edit text node:
     W: I double-click it
     T: I enter edit-mode on that text node
 
+## Edges
+Start drawing edge:
+    G: There is a node
+    W: I press "e" and click on that node
+    T: A line is drawn between that node and my mouse. It should follow my mouse
+
+Cancel Edge:
+    G: I am drawing an edge (above)
+    W: I press "e" or "Escape"
+    T: The line I'm drawing should be cancelled
+
+Finish drawing edge:
+    G: I am drawing an edge (above)
+    W: I left-click on any other node
+    T: An edge should be drawn between the start and end nodes. The line should no longer follow my mouse
+
+Move edges with nodes:
+    G: I have drawn an edge between 2 nodes
+    W: I move one of the nodes
+    T: The edge should move too
