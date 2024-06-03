@@ -1,6 +1,19 @@
 import { fabric } from 'fabric';
 import { Injectable } from "@angular/core";
 
+export interface PendingEdge {
+    line: fabric.Line;
+    start: fabric.Object;
+    endX: number;
+    endY: number;
+}
+
+export interface Edge {
+    line: fabric.Line;
+    start: fabric.Object;
+    end: fabric.Object;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -9,10 +22,9 @@ export class EdgeService {
 
     isDrawingEnabled: boolean = false;
     isDrawingEdge: boolean = false;
-    line: fabric.Line | null = null;
-    startY: number = 0;
-    startX: number = 0;
 
+    pendingEdge: PendingEdge | null = null;
+    edges: Edge[] = [];
 
     register(canvas: fabric.Canvas) {
         this.canvas = canvas;
@@ -26,9 +38,9 @@ export class EdgeService {
             if (e.key === 'Escape') {
                 this.isDrawingEnabled = false;
                 this.isDrawingEdge = false;
-                if (this.line !== null ){
-                    this.canvas.remove(this.line);
-                    this.line = null;
+                if (this.pendingEdge !== null ){
+                    this.canvas.remove(this.pendingEdge.line)
+                    this.pendingEdge = null;
                 }
             }
         });
@@ -69,16 +81,20 @@ export class EdgeService {
 
             this.updateLine(e.absolutePointer.y, e.absolutePointer.x);
         });
+
+        canvas.on('object:moving', (e) => {
+            this.updateEdges();
+        });
     }
 
 
     startLine(object: fabric.Object) {
         console.log('Starting line at: ', object)
 
+        this.isDrawingEdge = true;
+
         const { x, y } = object.getCenterPoint();
-        this.startX = x;
-        this.startY = y;
-        this.line = new fabric.Line(undefined, {
+        const line = new fabric.Line(undefined, {
             x1: x,
             x2: x,
             y1: y,
@@ -86,33 +102,69 @@ export class EdgeService {
             stroke: 'black',
             selectable: false,
         });
-        this.canvas.add(this.line);
-        this.canvas.sendToBack(this.line);
+
+        this.pendingEdge = {
+            line: line,
+            start: object,
+            endX: x,
+            endY: y,
+        };
+
+        this.canvas.add(line);
+        this.canvas.sendToBack(line);
+
         this.canvas.renderAll();
-        this.isDrawingEdge = true;
     }
 
     updateLine(y: number, x: number) {
-        if (!this.line) {
+        if (!this.pendingEdge) {
             console.warn('No line being drawn');
             return;
         }
 
-        this.line.set({ x1: this.startX, y1: this.startY, x2: x, y2: y });
+        const { x: startX, y: startY } = this.pendingEdge.start.getCenterPoint();
+        this.pendingEdge.line.set({ 
+            x1: startX, 
+            y1: startY, 
+            x2: x, 
+            y2: y 
+        });
         this.canvas.renderAll();
     }
 
     endLine(object: fabric.Object) {
-        if (!this.line) {
+        if (!this.pendingEdge) {
             console.warn('No line being drawn');
             return;
         }
 
-        const { x, y } = object.getCenterPoint();
-        this.line.set({ x1: this.startX, y1: this.startY, x2: x, y2: y });
+        const { x: endX, y: endY } = object.getCenterPoint();
+        const { x: startX, y: startY } = this.pendingEdge.start.getCenterPoint();
+        this.pendingEdge.line.set({
+            x1: startX,
+            y1: startY,
+            x2: endX,
+            y2: endY,
+        });
 
-        this.line = null;
+        this.edges.push({
+            line: this.pendingEdge.line,
+            start: this.pendingEdge.start,
+            end: object,
+        });
+
         this.isDrawingEdge = false;
         this.isDrawingEnabled = false;
+        this.pendingEdge = null;
+    }
+
+    updateEdges() {
+        this.edges.forEach(edge => {
+            const { x: startX, y: startY } = edge.start.getCenterPoint();
+            const { x: endX, y: endY } = edge.end.getCenterPoint();
+            edge.line.set({ x1: startX, y1: startY, x2: endX, y2: endY });
+        });
+
+        this.canvas.renderAll();
     }
 }
