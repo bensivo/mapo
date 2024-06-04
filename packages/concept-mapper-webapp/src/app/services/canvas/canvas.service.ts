@@ -30,6 +30,7 @@ export class CanvasService {
       height: htmlCanvas.offsetHeight,
       fireRightClick: true,
       stopContextMenu: true,
+      targetFindTolerance: 10, // Makes it easier to select objects with "per-pixel-target-find" enabled, adding a padding
     });
 
     window.addEventListener('resize', () => {

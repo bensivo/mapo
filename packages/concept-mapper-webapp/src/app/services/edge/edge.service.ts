@@ -57,10 +57,15 @@ export class EdgeService {
                 startX,
                 startY,
                 endX,
-                endY
+                endY,
             ], {
                 stroke: 'black',
-                selectable: false,
+                selectable: true,
+                lockScalingX: true,
+                lockScalingY: true,
+                hasControls: false,
+                perPixelTargetFind: true,
+                padding: 10, // Needed for 'per-pixel-target-find' to work when the line is perfectly horizontal or vertical
             });
 
             this.canvas.add(line);
