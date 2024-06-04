@@ -38,6 +38,11 @@ Edit text node:
     W: I double-click it
     T: I enter edit-mode on that text node
 
+Remove empty nodes:
+    G: I started editing a new node
+    W: I end editing, with no text left in the node
+    T: the node is not added, it is removed
+
 ## Edges
 Start drawing edge:
     G: There is a node

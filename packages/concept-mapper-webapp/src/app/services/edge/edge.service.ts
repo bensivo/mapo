@@ -1,10 +1,9 @@
-import { fabric } from 'fabric';
 import { Injectable } from "@angular/core";
+import { fabric } from 'fabric';
+import { EdgeStore } from '../../store/edge.store';
+import { Edge } from "../../models/edge.interface";
+import { TextNodeStore } from "../../store/text-node.store";
 
-export interface Edge {
-    start: fabric.Object;
-    end: fabric.Object;
-}
 
 @Injectable({
     providedIn: 'root'
@@ -12,31 +11,48 @@ export interface Edge {
 export class EdgeService {
     canvas!: fabric.Canvas;
 
-    edges: Edge[] = [];
+    constructor(
+        private edgeStore: EdgeStore,
+        private textNodeStore: TextNodeStore,
+    ) { }
 
     register(canvas: fabric.Canvas) {
         this.canvas = canvas;
         canvas.on('object:moving', (e) => {
-            this.render();
+            this.render(this.edgeStore.edges.value);
+        });
+
+        this.edgeStore.edges$.subscribe((edges) => {
+            this.render(edges);
+        });
+        this.textNodeStore.textNodes$.subscribe(() => {
+            this.render(this.edgeStore.edges.value);
         });
     }
 
-    addEdge(start: fabric.Object, end: fabric.Object) {
-        this.edges.push({ start, end });
-        this.render();
-    }
+    render(edges: Edge[]) {
+        const objects: Record<string, fabric.Object> = {};
 
-    render() {
         // NOTE: Eventually, we should optimize this code to not completely remove and re-add all lines on each render.
         for (const object of this.canvas.getObjects()) {
             if (object instanceof fabric.Line) {
                 this.canvas.remove(object);
+                continue;
+            }
+
+            if (object.data?.id !== undefined) {
+                objects[object.data.id] = object;
             }
         }
 
-        for (const edge of this.edges) {
-            const { x: startX, y: startY } = edge.start.getCenterPoint();
-            const { x: endX, y: endY } = edge.end.getCenterPoint();
+        for (const edge of edges) {
+            const startObject = objects[edge.startNodeId];
+            const endObject = objects[edge.endNodeId];
+            
+            // TODO: what do we do if the start or end object is not found?
+
+            const { x: startX, y: startY } = startObject.getCenterPoint();
+            const { x: endX, y: endY } = endObject.getCenterPoint();
             const line = new fabric.Line([
                 startX,
                 startY,
@@ -50,7 +66,5 @@ export class EdgeService {
             this.canvas.add(line);
             this.canvas.sendToBack(line);
         }
-
-        this.canvas.renderAll();
     }
 }

@@ -24,6 +24,7 @@ export class PanCanvasService {
 
         const vpt = canvas.viewportTransform;
         if (!vpt) {
+          console.log('No viewport transform')
           return;
         }
 
@@ -36,10 +37,11 @@ export class PanCanvasService {
       }
     });
 
-    canvas.on('mouse:up', (opt) =>  {
+    canvas.on('mouse:up', (opt) => {
       // on mouse up we want to recalculate new interaction for all objects, so we call setViewportTransform
       const vpt = canvas.viewportTransform;
       if (!vpt) {
+        console.log('No viewport transform')
         return;
       }
 

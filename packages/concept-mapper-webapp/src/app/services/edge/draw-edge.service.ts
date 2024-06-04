@@ -1,6 +1,8 @@
+import * as uuid from 'uuid';
 import { fabric } from 'fabric';
 import { Injectable } from "@angular/core";
 import { EdgeService } from './edge.service';
+import { EdgeStore } from '../../store/edge.store';
 
 /**
  * Manages events and state for drawing edges between nodes
@@ -15,8 +17,8 @@ export class DrawEdgeService {
     start: fabric.Object | null = null;
 
     constructor(
-        private edgeService: EdgeService,
-    ) {}
+        private edgeStore: EdgeStore,
+    ) { }
 
     register(canvas: fabric.Canvas) {
         this.canvas = canvas;
@@ -31,7 +33,7 @@ export class DrawEdgeService {
             }
 
             if (this.enabled == false) {
-                this.cancelEdge();
+                this.removePendingEdge();
             }
 
             console.log('DrawEdge enabled', this.enabled);
@@ -81,10 +83,10 @@ export class DrawEdgeService {
     startEdge(object: fabric.Object) {
         this.start = object;
         this.line = new fabric.Line([
-            object.getCenterPoint().x, 
-            object.getCenterPoint().y, 
-            object.getCenterPoint().x, 
-            object.getCenterPoint().y, 
+            object.getCenterPoint().x,
+            object.getCenterPoint().y,
+            object.getCenterPoint().x,
+            object.getCenterPoint().y,
         ], {
             stroke: 'black',
             selectable: false,
@@ -108,15 +110,23 @@ export class DrawEdgeService {
             return;
         }
 
-        this.edgeService.addEdge(this.start, object);
+        const startNodeId = this.start.data.id;
+        const endNodeId = object.data.id;
 
-        this.canvas.remove(this.line);
-        this.start = null;
-        this.line = null;
-        this.enabled = false;
+        if (!startNodeId || !endNodeId) {
+            console.warn('Could not add edge. Cannot find node IDs for objects', this.start, object);
+        } else {
+            this.edgeStore.insert({
+                id: uuid.v4(),
+                startNodeId,
+                endNodeId,
+            });
+        }
+
+        this.removePendingEdge();
     }
 
-    cancelEdge() {
+    removePendingEdge() {
         if (this.line === null || this.start === null) {
             return;
         }

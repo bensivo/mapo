@@ -1,5 +1,8 @@
+import * as uuid from 'uuid';
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
+import { TextNodeStore } from '../../store/text-node.store';
+import { TextNode } from '../../models/textnode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +10,10 @@ import { fabric } from 'fabric';
 export class TextNodeService {
   canvas!: fabric.Canvas;
   debug: boolean = false;
+
+  constructor(
+    private textNodeStore: TextNodeStore,
+  ) { }
 
   register(canvas: fabric.Canvas) {
     this.canvas = canvas;
@@ -28,16 +35,103 @@ export class TextNodeService {
 
     canvas.on('mouse:down', (e) => {
       if (!e.target) {
-
         // Exit edit mode for any active IText objects
         const objects = canvas.getObjects();
-        for(const obj of objects) {
+        for (const obj of objects) {
           if (obj instanceof fabric.IText && obj.isEditing) {
             obj.exitEditing();
           }
         }
       }
     });
+
+    this.canvas.on('object:modified', (e) => {
+      if (e.target?.data?.type === 'text-node') {
+        const id: string = e.target.data.id;
+
+        if (!e.target.aCoords) {
+          console.warn('Cannot update textnode in store. No aCoords on object:modified event', e.target);
+          return;
+        }
+
+        const x = e.target.aCoords.tl.x + 5; // Add 5 to account for the padding between the group and the itext itself
+        const y = e.target.aCoords.tl.y + 5; // Add 5 to account for the padding between the group and the itext itself
+        this.textNodeStore.update(id, {
+          x,
+          y,
+        })
+      }
+    });
+
+    this.textNodeStore.textNodes$.subscribe((textNodes) => {
+      // Remove all existing text nodes
+      for (const obj of this.canvas.getObjects()) {
+        if (obj.data?.type === 'text-node') {
+          this.canvas.remove(obj);
+          for (const child of (obj as fabric.Group).getObjects()) {
+            this.canvas.remove(child);
+          }
+        }
+      }
+
+      // Render all the text nodes
+      for (const textNode of textNodes) {
+        this.renderTextNode(textNode);
+      }
+    });
+  }
+
+  private renderTextNode(textNode: TextNode) {
+    // Create itext object, containing text
+    const itext = new fabric.IText(textNode.text, {
+      top: textNode.y,
+      left: textNode.x,
+      fontSize: 16,
+      fontFamily: 'Roboto; sans-serif',
+    });
+    itext.on('editing:exited', (e) => {
+      if (itext.text === '') {
+        this.textNodeStore.remove(textNode.id);
+        return;
+      }
+
+      this.textNodeStore.update(textNode.id, {
+        text: itext.text,
+      });
+    });
+
+    // Create a bounding rect around the itext
+    const boundingRect = itext.getBoundingRect(true);
+    const padding = 5;
+    const top = boundingRect.top - padding;
+    const left = boundingRect.left - padding;
+    const width = boundingRect.width + padding * 2;
+    const height = boundingRect.height + padding * 2;
+    const rect = new fabric.Rect({
+      top,
+      left,
+      width,
+      height,
+      fill: 'white',
+      rx: 5,
+      ry: 5,
+      stroke: 'black',
+      hasControls: false,
+    });
+
+    // Order the new objects
+    this.canvas.sendToBack(rect);
+    this.canvas.bringToFront(itext);
+
+    // Create a group and add it to the canvas
+    const group = new fabric.Group([rect, itext], {
+      hasControls: false,
+      data: {
+        type: 'text-node',
+        id: textNode.id,
+      },
+    });
+    this.canvas.add(group);
   }
 
   /**
@@ -70,52 +164,24 @@ export class TextNodeService {
 
 
   private finalizeTextNode(itext: fabric.IText) {
-    const boundingRect = itext.getBoundingRect(); // NOTE: This is relative to the current viewport, not the canvas's absolute coordinates
+    const x = itext.aCoords?.tl?.x;
+    const y = itext.aCoords?.tl?.y;
+    const text = itext.text;
 
-    // Apply the inverse viewport transform to the bounding rect, to get the absolute coordinates
-    const vpt = this.canvas.viewportTransform;
-    if (!vpt) {
-      console.error('vpt is not defined', vpt)
+    if (x == undefined || y == undefined || !text) {
+      console.warn('Cannot create text node. Invalid data for itext: ', itext);
       return;
     }
-    const inverseVpt = fabric.util.invertTransform(vpt);
 
-    const padding = 5;
-    const topLeft = fabric.util.transformPoint(
-      new fabric.Point(boundingRect.left - padding, boundingRect.top - padding),
-      inverseVpt
-    );
-    const bottomRight = fabric.util.transformPoint(
-      new fabric.Point(boundingRect.left + boundingRect.width + padding, boundingRect.top + boundingRect.height + padding),
-      inverseVpt,
-    )
-
-    // Draw a rectangle around the text object.
-    this.debugLog('Adding rect at', topLeft.y, bottomRight.x)
-    const rect = new fabric.Rect({
-      top: topLeft.y,
-      left: topLeft.x,
-      width: bottomRight.x - topLeft.x,
-      height: bottomRight.y - topLeft.y,
-      fill: 'white',
-      rx: 5,
-      ry: 5,
-      stroke: 'black',
-      hasControls: false,
-    });
-    this.canvas.sendToBack(rect);
-    this.canvas.bringToFront(itext);
-
-
-    // Create a group from the itext and the rectangle
-    const group = new fabric.Group([rect, itext], {
-      hasControls: false,
-      data: {
-        type: 'text-node',
-      },
+    this.textNodeStore.insert({
+      id: uuid.v4(),
+      text: text,
+      x: x,
+      y: y,
     });
 
-    this.canvas.add(group);
+    // Remove the pending itext object. THe render loop will create a new one from the TextNode data
+    this.canvas.remove(itext);
   }
 
   /**
@@ -136,10 +202,15 @@ export class TextNodeService {
 
     // Remove the rect, because it will not group or shrink as the user is editing the text.
     // When the editing is done, a new rect will be drawn around the itext
-    this.canvas.remove(rect); 
+    this.canvas.remove(rect);
 
     this.canvas.setActiveObject(itext);
+
     itext.enterEditing();
+
+    const len = itext.text?.length || 0;
+    itext.setSelectionStart(len);
+    itext.setSelectionEnd(len);
   }
 
 
