@@ -4,6 +4,7 @@ import { DrawEdgeService } from '../edge/draw-edge.service';
 import { EdgeService } from '../edge/edge.service';
 import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
 import { TextNodeService } from '../text-node/text-node.service';
+import { ToolbarService } from '../toolbar/toolbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class CanvasService {
     private textNodeService: TextNodeService,
     private edgeService: EdgeService,
     private drawEdgeService: DrawEdgeService,
+    private toolbarService: ToolbarService,
   ) { }
 
   initializeCanvas(id: string) {
@@ -39,6 +41,7 @@ export class CanvasService {
     this.textNodeService.register(canvas);
     this.edgeService.register(canvas);
     this.drawEdgeService.register(canvas);
+    this.toolbarService.register();
 
     return canvas;
   };

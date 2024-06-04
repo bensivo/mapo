@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TextNode } from '../../models/textnode.interface';
+import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,12 @@ export class TextNodeService {
 
   constructor(
     private textNodeStore: TextNodeStore,
+    private toolbarStore: ToolbarStore,
   ) { }
 
   register(canvas: fabric.Canvas) {
     this.canvas = canvas;
+
     canvas.on('mouse:dblclick', (e) => {
       if (e.target) {
         if (e.target.data?.type === 'text-node') {
@@ -35,6 +38,17 @@ export class TextNodeService {
 
     canvas.on('mouse:down', (e) => {
       if (!e.target) {
+
+        if (this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE) {
+          if (!e.absolutePointer) {
+            console.warn('No absolute pointer on event', e)
+            return;
+          }
+
+          this.addPendingTextNode(e.absolutePointer.y, e.absolutePointer.x);
+          return;
+        }
+
         // Exit edit mode for any active IText objects
         const objects = canvas.getObjects();
         for (const obj of objects) {
@@ -92,12 +106,14 @@ export class TextNodeService {
     itext.on('editing:exited', (e) => {
       if (itext.text === '') {
         this.textNodeStore.remove(textNode.id);
+        this.toolbarStore.setTool(Tool.POINTER);
         return;
       }
 
       this.textNodeStore.update(textNode.id, {
         text: itext.text,
       });
+      this.toolbarStore.setTool(Tool.POINTER);
     });
 
     // Create a bounding rect around the itext
@@ -148,10 +164,10 @@ export class TextNodeService {
     })
 
     itext.on('editing:exited', (e) => {
-      this.debugLog('itext editing:exited')
+      this.toolbarStore.setTool(Tool.POINTER);
       if (itext.text === '') {
-        this.debugLog('Removing empty itext')
         this.canvas.remove(itext);
+        this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
         return;
       }
 
@@ -160,6 +176,7 @@ export class TextNodeService {
 
     this.canvas.add(itext);
     itext.enterEditing();
+    this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
   }
 
 
@@ -193,7 +210,6 @@ export class TextNodeService {
    * @param group
    */
   private editTextNode(group: fabric.Group) {
-    this.debugLog('enterEditTextNode', group);
     const objects = group.getObjects();
     const itext = objects[1] as fabric.IText;
     const rect = objects[0] as fabric.Rect;
@@ -211,6 +227,8 @@ export class TextNodeService {
     const len = itext.text?.length || 0;
     itext.setSelectionStart(len);
     itext.setSelectionEnd(len);
+
+    this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
   }
 
 

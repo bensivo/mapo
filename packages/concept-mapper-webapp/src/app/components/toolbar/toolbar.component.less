@@ -1,0 +1,39 @@
+.toolbar-container {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    display: flex;
+    flex-direction: row;
+
+    .tool {
+        height: 3rem;
+        width: 3rem;
+        margin: 1rem;
+        display: block;
+        text-align: center;
+        border: solid 1px black;
+        border-radius: 1rem;
+        position: relative;
+    }
+
+    i {
+        font-size: 1.5rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .subtext {
+        position: absolute;
+        bottom: -50%;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    .enabled {
+        background-color: lightgrey;
+    }
+}

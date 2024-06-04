@@ -3,6 +3,7 @@ import { fabric } from 'fabric';
 import { Injectable } from "@angular/core";
 import { EdgeService } from './edge.service';
 import { EdgeStore } from '../../store/edge.store';
+import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
 /**
  * Manages events and state for drawing edges between nodes
@@ -18,29 +19,20 @@ export class DrawEdgeService {
 
     constructor(
         private edgeStore: EdgeStore,
+        private toolbarStore: ToolbarStore,
     ) { }
 
     register(canvas: fabric.Canvas) {
         this.canvas = canvas;
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'e') {
-                this.enabled = !this.enabled;
-            }
-
-            if (e.key === 'Escape') {
-                this.enabled = false;
-            }
-
-            if (this.enabled == false) {
+        this.toolbarStore.tool$.subscribe((tool) => {
+            if (tool !== Tool.CREATE_EDGE && this.line !== null) {
                 this.removePendingEdge();
             }
-
-            console.log('DrawEdge enabled', this.enabled);
         });
 
         canvas.on('mouse:up', (e) => {
-            if (!this.enabled) {
+            if (this.toolbarStore.tool.value !== Tool.CREATE_EDGE) {
                 return;
             }
 
@@ -65,7 +57,7 @@ export class DrawEdgeService {
         });
 
         canvas.on('mouse:move', (e) => {
-            if (!this.enabled) {
+            if (this.toolbarStore.tool.value !== Tool.CREATE_EDGE) {
                 return;
             }
 
@@ -123,6 +115,7 @@ export class DrawEdgeService {
             });
         }
 
+        this.toolbarStore.setTool(Tool.POINTER);
         this.removePendingEdge();
     }
 
