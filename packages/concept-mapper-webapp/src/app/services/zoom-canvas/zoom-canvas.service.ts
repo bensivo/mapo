@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import {fabric} from 'fabric';
+import { fabric } from 'fabric';
 
 @Injectable({
     providedIn: 'root'
@@ -15,6 +15,6 @@ export class ZoomCanvasService {
             canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
             opt.e.preventDefault();
             opt.e.stopPropagation();
-          });
+        })
     }
 }
