@@ -43,6 +43,7 @@ Remove empty nodes:
 Delete node (Backspace):
     G: I have a node
     W: I select the node and press "Backspace"
+    
     T: the node is deleted
 
 Delete node (Delete):
@@ -92,6 +93,11 @@ Delete edge (Delete):
     G: I have a edge
     W: I select the edge and press "Delete"
     T: the edge is deleted
+
+Delete edge (d):
+    G: I have a edge
+    W: I select the edge and press "d"
+    T: the edge is deleted
 ```
 
 ## Pan
@@ -111,4 +117,23 @@ Minimize:
     G: The help text is open
     W: I click on the minimize button in the top right
     T: The help text closes
+```
+
+
+## Groups
+```
+Move group of nodes:
+    G: there are many nodes
+    W: I click and drag to select many, then move
+    T: All the nodes move
+
+Move group of with edges:
+    G: there are many nodes, with edges
+    W: I click and drag to select many, then move
+    T: All the nodes and edges move
+
+Move group of with edges (partial):
+    G: there are many nodes, with edges
+    W: I click and drag to select some nodes (not not all connected nodes)
+    T: The edges to non-selected nodes also update
 ```
