@@ -9,6 +9,7 @@ export class PanCanvasService {
   lastPosY = 0;
 
   register(canvas: fabric.Canvas): void {
+    
     canvas.on('mouse:down', (opt) => {
       const e = opt.e;
       if (e.button === 2) { // right click

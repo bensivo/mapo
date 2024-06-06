@@ -1,7 +1,6 @@
 import * as uuid from 'uuid';
 import { fabric } from 'fabric';
 import { Injectable } from "@angular/core";
-import { EdgeService } from './edge.service';
 import { EdgeStore } from '../../store/edge.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 

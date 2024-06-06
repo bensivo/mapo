@@ -182,8 +182,8 @@ export class TextNodeService {
 
 
   private finalizeTextNode(itext: fabric.IText) {
-    const x = itext.aCoords?.tl?.x;
-    const y = itext.aCoords?.tl?.y;
+    const x = itext.left;
+    const y = itext.top;
     const text = itext.text;
 
     if (x == undefined || y == undefined || !text) {
@@ -253,7 +253,7 @@ export class TextNodeService {
     }
 
     if (!object.left || !object.top) {
-      console.warn('Cannot update textnode in store. No aCoords on object:modified event', object);
+      console.warn('Cannot update textnode in store. No coords on object:modified event', object);
       return;
     }
 

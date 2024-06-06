@@ -5,6 +5,7 @@ import { EdgeService } from '../edge/edge.service';
 import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
 import { TextNodeService } from '../text-node/text-node.service';
 import { ToolbarService } from '../toolbar/toolbar.service';
+import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class CanvasService {
 
   constructor(
     private panCanvasService: PanCanvasService,
+    private zoomCanvasService: ZoomCanvasService,
     private textNodeService: TextNodeService,
     private edgeService: EdgeService,
     private drawEdgeService: DrawEdgeService,
@@ -39,6 +41,7 @@ export class CanvasService {
     })
 
     this.panCanvasService.register(canvas);
+    this.zoomCanvasService.register(canvas);
     this.textNodeService.register(canvas);
     this.edgeService.register(canvas);
     this.drawEdgeService.register(canvas);
