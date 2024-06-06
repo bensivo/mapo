@@ -48,7 +48,7 @@ export class ToolbarService {
                 return;
             }
 
-            if (e.key === 'Backspace' || e.key === 'Delete') {
+            if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'd') {
                 if (this.toolbarStore.tool.value !== Tool.POINTER) {
                     return;
                 }

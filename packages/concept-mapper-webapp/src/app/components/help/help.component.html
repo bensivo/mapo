@@ -1,0 +1,43 @@
+<div class="show-help" *ngIf="!show">
+    <!-- <i class="minimize ri-fullscreen-exit-line" (click)="toggleHelp()"></i> -->
+    <i class="ri-question-line" (click)="toggleHelp()"></i>
+</div>
+
+<div class="help-container" *ngIf="show">
+    <i class="minimize ri-fullscreen-exit-line" (click)="toggleHelp()"></i>
+
+    <p>Add a node:</p>
+        <ul>
+            <li>Press 't' to select the 'text' tool, then left-click on the canvas</li>
+            <li>Type in node content</li>
+            <li>Press 'Escape' or left-click on the canvas to finish</li>
+        </ul>
+
+        <span class="note">Tip: You can also double-click on the canvas to add a node without pressing 't'</span>
+    
+    <p>Edit a node</p>
+        <ul>
+            <li>Press 'Escape' to select the pointer tool</li>
+            <li>Double-click on a node to begin editing its content</li>
+            <li>Press 'Escape' or left-click on the canvas to finish</li>
+        </ul>
+
+    <p>Draw an edge:</p>
+        <ul>
+            <li>Press 'e' to select the 'edge' tool</li>
+            <li>Left-click on the start node</li>
+            <li>Left-click on the end node</li>
+        </ul>
+
+    <p>Delete objects:</p>
+        <ul>
+            <li>Press 'Escape' to select the pointer tool</li>
+            <li>Left-click the node or edge you want to delete</li>
+            <li>Press "Backspace", "Delete", or "d"</li>
+        </ul>
+
+    <p>Move the canvas:</p>
+        <ul>
+            <li>Right-click and drag on the canvas</li>
+        </ul>
+</div>

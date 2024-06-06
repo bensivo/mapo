@@ -5,6 +5,7 @@ Test cases are written in cucumber syntax. Given When Then. These are abbreviate
 
 
 ## Text Nodes
+```
 Enter edit mode:
     W: I double-click on an empty space
     T: I enter "edit-text" mode
@@ -49,12 +50,19 @@ Delete node (Delete):
     W: I select the node and press "Delete"
     T: the node is deleted
 
+Delete node (d):
+    G: I have a node
+    W: I select the node and press "d"
+    T: the node is deleted
+
 Delete node - connected edges:
     G: I have a node, with edges connected to it
     W: I select the node and press "Delete"
     T: the node is deleted, and the edges connected to it are also deleted
+```
 
 ## Edges
+```
 Start drawing edge:
     G: There is a node
     W: I press "e" and click on that node
@@ -84,8 +92,23 @@ Delete edge (Delete):
     G: I have a edge
     W: I select the edge and press "Delete"
     T: the edge is deleted
+```
 
 ## Pan
+```
 Panning:
     W: I click and drag with the right mouse button
     T: The canvas should pan
+
+```
+## Help
+```
+Expand:
+    W: I click on the question mark in teh top right
+    T: The help text opens
+
+Minimize:
+    G: The help text is open
+    W: I click on the minimize button in the top right
+    T: The help text closes
+```
