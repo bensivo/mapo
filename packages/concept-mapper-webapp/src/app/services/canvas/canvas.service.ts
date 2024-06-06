@@ -42,7 +42,7 @@ export class CanvasService {
     this.textNodeService.register(canvas);
     this.edgeService.register(canvas);
     this.drawEdgeService.register(canvas);
-    this.toolbarService.register();
+    this.toolbarService.register(canvas);
 
     return canvas;
   };

@@ -3,10 +3,6 @@
 We haven't automated tests yet, so here are some manual test cases.
 Test cases are written in cucumber syntax. Given When Then. These are abbreviated to just "G", "W", "T"
 
-## Pan
-Panning:
-    W: I click and drag with the right mouse button
-    T: The canvas should pan
 
 ## Text Nodes
 Enter edit mode:
@@ -43,6 +39,21 @@ Remove empty nodes:
     W: I end editing, with no text left in the node
     T: the node is not added, it is removed
 
+Delete node (Backspace):
+    G: I have a node
+    W: I select the node and press "Backspace"
+    T: the node is deleted
+
+Delete node (Delete):
+    G: I have a node
+    W: I select the node and press "Delete"
+    T: the node is deleted
+
+Delete node - connected edges:
+    G: I have a node, with edges connected to it
+    W: I select the node and press "Delete"
+    T: the node is deleted, and the edges connected to it are also deleted
+
 ## Edges
 Start drawing edge:
     G: There is a node
@@ -63,3 +74,18 @@ Move edges with nodes:
     G: I have drawn an edge between 2 nodes
     W: I move one of the nodes
     T: The edge should move too
+
+Delete edge (Backspace):
+    G: I have a edge
+    W: I select the edge and press "Backspace"
+    T: the edge is deleted
+
+Delete edge (Delete):
+    G: I have a edge
+    W: I select the edge and press "Delete"
+    T: the edge is deleted
+
+## Pan
+Panning:
+    W: I click and drag with the right mouse button
+    T: The canvas should pan

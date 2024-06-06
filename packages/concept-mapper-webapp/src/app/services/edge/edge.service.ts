@@ -66,6 +66,10 @@ export class EdgeService {
                 hasControls: false,
                 perPixelTargetFind: true,
                 padding: 10, // Needed for 'per-pixel-target-find' to work when the line is perfectly horizontal or vertical
+                data: {
+                    type: 'edge',
+                    id: edge.id,
+                }
             });
 
             this.canvas.add(line);

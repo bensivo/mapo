@@ -1,15 +1,25 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
+import { fabric } from "fabric";
+import { EdgeStore } from "../../store/edge.store";
+import { TextNodeStore } from "../../store/text-node.store";
 import { Tool, ToolbarStore } from "../../store/toolbar.store";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ToolbarService {
+
+    private canvas!: fabric.Canvas;
+
     constructor(
         private toolbarStore: ToolbarStore,
+        private textNodeStore: TextNodeStore,
+        private edgeStore: EdgeStore,
     ) { }
 
-    register() {
+    register(canvas: fabric.Canvas) {
+        this.canvas = canvas;
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.toolbarStore.setTool(Tool.POINTER);
@@ -36,6 +46,21 @@ export class ToolbarService {
                     this.toolbarStore.setTool(Tool.CREATE_EDGE);
                 }
                 return;
+            }
+
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                if (this.toolbarStore.tool.value !== Tool.POINTER) {
+                    return;
+                }
+
+                this.canvas.getActiveObjects().forEach((object) => {
+                    if (object.data?.type === 'text-node') {
+                        this.textNodeStore.remove(object.data.id);
+                    }
+                    if (object.data?.type === 'edge') {
+                        this.edgeStore.remove(object.data.id);
+                    }
+                });
             }
         });
     }
