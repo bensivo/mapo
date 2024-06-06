@@ -20,6 +20,28 @@ export class ToolbarService {
     register(canvas: fabric.Canvas) {
         this.canvas = canvas;
 
+        // document.addEventListener('paste', (e: any) => {
+        //     console.log(e.clipboardData);
+        //     var items = e.clipboardData.items;
+        //     if (items.length > 0) {
+
+        //     const item = items[0];
+        //     const blob = item.getAsFile();
+        //     const URLObj = window.URL || window.webkitURL;
+        //     const source = URLObj.createObjectURL(blob);
+        //     console.log(source);
+
+        //     // TODO: add teh image to the mouse's current location
+        //     // TODO: check that this works on other browsers, on other operating systems
+        //     fabric.Image.fromURL(source, (img: fabric.Image)=> {
+        //         this.canvas.add(img);
+        //     }, {
+
+        //     });
+		// 		e.preventDefault();
+		// 	}
+        // })
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.toolbarStore.setTool(Tool.POINTER);
