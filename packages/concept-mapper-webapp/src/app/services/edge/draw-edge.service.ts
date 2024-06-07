@@ -13,7 +13,7 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 export class DrawEdgeService {
     canvas!: fabric.Canvas;
     enabled: boolean = false;
-    line: fabric.Line | null = null;
+    arrow: fabric.Polyline | null = null;
     start: fabric.Object | null = null;
 
     constructor(
@@ -25,7 +25,7 @@ export class DrawEdgeService {
         this.canvas = canvas;
 
         this.toolbarStore.tool$.subscribe((tool) => {
-            if (tool !== Tool.CREATE_EDGE && this.line !== null) {
+            if (tool !== Tool.CREATE_EDGE && this.arrow !== null) {
                 this.removePendingEdge();
             }
         });
@@ -39,7 +39,7 @@ export class DrawEdgeService {
                 return;
             }
 
-            if (e.target instanceof fabric.Line) {
+            if (e.target instanceof fabric.Polyline) {
                 return;
             }
 
@@ -48,7 +48,7 @@ export class DrawEdgeService {
                 return;
             }
 
-            if (this.line === null) {
+            if (this.arrow === null) {
                 this.startEdge(e.target);
             } else {
                 this.endEdge(e.target);
@@ -65,7 +65,7 @@ export class DrawEdgeService {
                 return;
             }
 
-            if (this.line !== null) {
+            if (this.arrow !== null) {
                 this.updateEdge(e.absolutePointer);
             }
         });
@@ -73,31 +73,36 @@ export class DrawEdgeService {
 
     startEdge(object: fabric.Object) {
         this.start = object;
-        this.line = new fabric.Line([
+
+        this.arrow = this.drawArrow(
             object.getCenterPoint().x,
             object.getCenterPoint().y,
             object.getCenterPoint().x,
             object.getCenterPoint().y,
-        ], {
-            stroke: 'black',
-            selectable: false,
-        });
-        this.canvas.add(this.line);
-        this.canvas.sendToBack(this.line);
+        );
+
+        this.canvas.add(this.arrow);
+        this.canvas.sendToBack(this.arrow);
     }
     updateEdge(point: fabric.Point) {
-        if (this.line === null) {
+        if (this.arrow === null || this.start === null) {
             return;
-        }
+        } 
+            this.canvas.remove(this.arrow);
 
-        this.line.set({
-            x2: point.x,
-            y2: point.y,
-        });
-        this.canvas.renderAll();
+        const srcX = this.start.getCenterPoint().x;
+        const srcY = this.start.getCenterPoint().y;
+        this.arrow = this.drawArrow(
+            srcX, 
+            srcY,
+            point.x,
+            point.y
+        );
+        this.canvas.add(this.arrow);
+        this.canvas.sendToBack(this.arrow);
     }
     endEdge(object: fabric.Object) {
-        if (this.line === null || this.start === null) {
+        if (this.arrow === null || this.start === null) {
             return;
         }
 
@@ -119,13 +124,55 @@ export class DrawEdgeService {
     }
 
     removePendingEdge() {
-        if (this.line === null || this.start === null) {
+        if (this.arrow === null || this.start === null) {
             return;
         }
 
-        this.canvas.remove(this.line);
+        this.canvas.remove(this.arrow);
         this.start = null;
-        this.line = null;
+        this.arrow = null;
         this.enabled = false;
+    }
+
+    drawArrow(srcX: number, srcY: number, destX: number, destY: number) {
+        const lineAngle = Math.atan2(destY - srcY, destX - srcX);
+        const headLen = 10;
+        const headAngle = Math.PI / 8;
+
+        var points = [
+            {
+                x: srcX, // start point
+                y: srcY
+            }, 
+            {
+                x: destX, // end point
+                y: destY
+            }, 
+            {
+                x: destX - headLen * Math.cos(lineAngle - headAngle), // "left" corner of the head, if the arrow was pointing up
+                y: destY - headLen * Math.sin(lineAngle - headAngle),
+            },
+            {
+                x: destX - headLen * Math.cos(lineAngle + headAngle), // "right" corner of th head, if the arrow was pointing up
+                y: destY - headLen * Math.sin(lineAngle + headAngle),
+            },
+            {
+                x: destX, // end point
+                y: destY
+            }, 
+            {
+                x: srcX, // start point
+                y: srcY
+            }, 
+        ];
+
+        const poly = new fabric.Polyline(points, {
+            fill: 'black',
+            stroke: 'black',
+            strokeWidth: 1,
+            selectable: true,
+        });
+
+        return poly;
     }
 }

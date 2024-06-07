@@ -4,7 +4,6 @@ import { EdgeStore } from '../../store/edge.store';
 import { Edge } from "../../models/edge.interface";
 import { TextNodeStore } from "../../store/text-node.store";
 
-
 @Injectable({
     providedIn: 'root'
 })
@@ -40,7 +39,7 @@ export class EdgeService {
 
         // NOTE: Eventually, we should optimize this code to not completely remove and re-add all lines on each render.
         for (const object of this.canvas.getObjects()) {
-            if (object instanceof fabric.Line) {
+            if (object instanceof fabric.Polyline) {
                 this.canvas.remove(object);
                 continue;
             }
@@ -54,31 +53,90 @@ export class EdgeService {
             const startObject = objects[edge.startNodeId];
             const endObject = objects[edge.endNodeId];
             
-            const { x: startX, y: startY } = this.getCenterPoint(startObject);
-            const { x: endX, y: endY } = this.getCenterPoint(endObject);
-
-            const line = new fabric.Line([
-                startX,
-                startY,
-                endX,
-                endY,
-            ], {
-                stroke: 'black',
-                selectable: true,
-                lockScalingX: true,
-                lockScalingY: true,
-                hasControls: false,
-                perPixelTargetFind: true,
-                padding: 10, // Needed for 'per-pixel-target-find' to work when the line is perfectly horizontal or vertical
-                data: {
-                    type: 'edge',
-                    id: edge.id,
-                }
-            });
-
-            this.canvas.add(line);
-            this.canvas.sendToBack(line);
+            const arrow = this.drawArrow(edge.id, startObject, endObject);
+            this.canvas.add(arrow);
+            this.canvas.sendToBack(arrow);
+           
         }
+    }
+
+    // Make the arrow N units shorter, but still pointing in the same direction
+    private subtractArrowLength(srcX: number, srcY: number, destX: number, destY: number, n: number): { x: number, y: number } {
+        const lineAngle = Math.atan2(destY - srcY, destX - srcX);
+
+        return {
+            x: destX - n * Math.cos(lineAngle),
+            y: destY - n * Math.sin(lineAngle),
+        }
+    }
+
+    private drawArrow(id: string, src: fabric.Object, dest: fabric.Object) {
+        const srcX = this.getCenterPoint(src).x;
+        const srcY = this.getCenterPoint(src).y;
+        let destX = this.getCenterPoint(dest).x;
+        let destY = this.getCenterPoint(dest).y;
+
+        do {
+            const point = this.subtractArrowLength(srcX, srcY, destX, destY, 5);
+            destX = point.x;
+            destY = point.y;
+        } while(dest.containsPoint(new fabric.Point(destX, destY), null, true))
+
+        // // Subtract 3 more from the end, just for aesthetics
+        // const point = this.subtractArrowLength(srcX, srcY, destX, destY, 3);
+        // destX = point.x;
+        // destY = point.y;
+
+        const lineAngle = Math.atan2(destY - srcY, destX - srcX);
+
+        const headLen = 10;
+        const headAngle = Math.PI / 8;
+
+        // calculate the points.
+        var points = [
+            {
+                x: srcX, // start point
+                y: srcY
+            }, 
+            {
+                x: destX, // end point
+                y: destY
+            }, 
+            {
+                x: destX - headLen * Math.cos(lineAngle - headAngle), // "left" corner of the head, if the arrow was pointing up
+                y: destY - headLen * Math.sin(lineAngle - headAngle),
+            },
+            {
+                x: destX - headLen * Math.cos(lineAngle + headAngle), // "right" corner of th head, if the arrow was pointing up
+                y: destY - headLen * Math.sin(lineAngle + headAngle),
+            },
+            {
+                x: destX, // end point
+                y: destY
+            }, 
+            {
+                x: srcX, // start point
+                y: srcY
+            }, 
+        ];
+
+        const poly = new fabric.Polyline(points, {
+            fill: 'black',
+            stroke: 'black',
+            strokeWidth: 1,
+            selectable: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            hasControls: false,
+            perPixelTargetFind: true,
+            padding: 10, // Needed for 'per-pixel-target-find' to work when the line is perfectly horizontal or vertical
+            data: {
+                type: 'edge',
+                id: id,
+            }
+        });
+
+        return poly;
     }
 
     private getCenterPoint(object: fabric.Object): fabric.Point {
