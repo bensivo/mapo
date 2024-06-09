@@ -12,5 +12,5 @@ import { HelpComponent } from './components/help/help.component';
   styleUrl: './app.component.less'
 })
 export class AppComponent {
-  title = 'concept-mapper-webapp';
+  title = 'mapo-webapp';
 }
