@@ -5,3 +5,7 @@ tasks:
   dev:
     cmds:
       - npx ng serve -o
+
+  build:
+    cmds:
+      - npx ng build

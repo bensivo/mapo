@@ -1,0 +1,12 @@
+version: 3.4
+
+
+tasks:
+  plan:
+    cmds: 
+      - tofu init
+      - tofu plan -out plan.tfplan
+
+  apply:
+    cmds: 
+      - tofu apply plan.tfplan

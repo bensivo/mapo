@@ -18,7 +18,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
-    "fabric": "^5.3.0",
+    "fabric": "5.3.0-browser",
     "remixicon": "^4.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -31,6 +31,7 @@
     "@angular/compiler-cli": "^18.0.0",
     "@types/fabric": "^5.3.7",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.14.2",
     "@types/uuid": "^9.0.8",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -39,5 +40,5 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.4.2"
-  }
+  } 
 }
