@@ -1,6 +1,5 @@
 # Mapo Configure
-
-Perfom one-time setup of mapo VM instances (created with mapo-infra), using ansible
+Deploy mapo to a VM using ansible. Run after deploying the VM with 'mapo-infra'
 
 The ansible playbook in this folder does these actions:
 - Install Nginx, certbox, and python3-certbot-nginx
