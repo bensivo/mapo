@@ -8,16 +8,20 @@ The ansible playbook in this folder does these actions:
 - Run certbot, to get a certificate from letsencrypt, and enable a cronjob to refresh it as needed
 
 ## Usage
-1. Make sure ansible is installed
+1. Deploy the VM with 'mapo-infra' and build the webapp with 'mapo-webapp'
     ```
     pip install ansible
     ```
-2. Generate the `inventory.yml` file
+2. Make sure ansible is installed
+    ```
+    pip install ansible
+    ```
+3. Generate the `inventory.yml` file
     ```sh
     task inventory
     ```
-3. Update your DNS provider to point "mapo.bensivo.com" to your instance IP
-4. Run the ansible playbook with Taskfile
+4. Update your DNS provider to point "mapo.bensivo.com" to your instance IP
+5. Run the ansible playbook with Taskfile
     ```
     task playbook
     ```
