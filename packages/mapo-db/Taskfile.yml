@@ -1,0 +1,10 @@
+version: 3.4
+
+
+tasks:
+  install:
+    cmds:
+      - npm install
+  migrations:
+    cmds:
+      - node migrations.js

@@ -1,0 +1,30 @@
+<div class="homepage-container">
+    <!-- <h3>My Mindmaps</h3>
+    <div class="mindmaps-container" *ngIf="data$ | async; let data" >
+        <ag-grid-angular
+            class="ag-theme-quartz"
+            [rowData]="data.rows"
+            [columnDefs]="data.columns"
+            [pagination]="true"
+            [paginationAutoPageSize]="true"
+        ></ag-grid-angular>
+    </div> -->
+
+    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form-widget">
+        <div>
+          <label for="email">Email</label>
+          <input
+            id="email"
+            formControlName="email"
+            class="inputField"
+            type="email"
+            placeholder="Your email"
+          />
+        </div>
+        <div>
+          <button type="submit" class="button block" [disabled]="loading">
+            {{ loading ? 'Loading' : 'Send magic link' }}
+          </button>
+        </div>
+      </form>
+</div>

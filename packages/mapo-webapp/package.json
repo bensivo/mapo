@@ -18,6 +18,9 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "@supabase/supabase-js": "^2.43.4",
+    "ag-grid-angular": "^31.3.2",
+    "axios": "^1.7.2",
     "fabric": "5.3.0-browser",
     "remixicon": "^4.2.0",
     "rxjs": "~7.8.0",
@@ -40,5 +43,5 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.4.2"
-  } 
+  }
 }
