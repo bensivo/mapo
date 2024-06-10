@@ -1,0 +1,62 @@
+- name: Mapo Webapp Setup
+  hosts: mapo
+  vars: 
+    domain_name: mapo.bensivo.com
+    domain_email: bensivo@gmail.com
+
+  tasks:
+    - name: Create mapo user
+      ansible.builtin.user:
+        name: mapo
+        create_home: yes
+    
+    - name: Update apt
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt: name=nginx state=latest
+
+    - name: Start nginx
+      service:
+          name: nginx
+          state: started
+    
+    # TODO: Use /etc/nginx/sites-available and /etc/nginx/sites-enabled instead of the default location
+    - name: Write /etc/nginx/sites-enabled/{{ domain_name }}
+      ansible.builtin.copy:
+        content: |
+          server {
+              listen 80;
+              listen [::]:80;
+              server_name {{ domain_name }};
+
+              root /mapo/html;
+
+              location / {
+              }
+          }
+        dest: /etc/nginx/sites-enabled/{{ domain_name }}
+
+    - name: Link /etc/nginx/sites-available/{{ domain_name }}
+      ansible.builtin.file:
+        src: /etc/nginx/sites-enabled/{{ domain_name }}
+        dest: /etc/nginx/sites-available/{{ domain_name }}
+        state: link
+
+    - name: Copy static site
+      ansible.builtin.copy:
+        src: "{{ playbook_dir}}/../mapo-webapp/dist/mapo-webapp/browser/"
+        dest: /mapo/html
+
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - name: Install certbot
+      apt: name=certbot state=latest
+      
+    - name: Install python3-certbot-nginx
+      apt: name=python3-certbot-nginx state=latest
+    
+    - name: Run certbot
+      command: certbot --nginx -d {{ domain_name }} --non-interactive --agree-tos --email {{ domain_email }}

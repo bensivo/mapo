@@ -76,6 +76,11 @@ resource "local_file" "root_password" {
   filename = "outputs/${local.name}.password"
 }
 
+resource "local_file" "ip" {
+  content = linode_instance.this.ip_address
+  filename = "outputs/${local.name}.ip"
+}
+
 output "ip" {
-  value = linode_instance.this.ipv4
+  value = linode_instance.this.ip_address
 }

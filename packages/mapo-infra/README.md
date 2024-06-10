@@ -12,16 +12,4 @@ task plan
 task apply
 ```
 
-Then SSH into the instance with:
-```
-INSTANCE_IP=`tofu output -json | jq -r '.ip.value[0]'`
-ssh -i ./outputs/mapo-webapp-dev.pem root@$INSTANCE_IP
-```
-
-
-## Post-Creation steps
-TODO: steps for:
-- Installing nginx
-- Writing nginx config
-- Copying html files into the right folder
-- Reloading nginx
+Then run the ansible playbook in "mapo-configure" to install nginx and configure the VM to host it as a static site

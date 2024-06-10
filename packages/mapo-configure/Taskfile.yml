@@ -1,0 +1,20 @@
+version: 3.4
+
+tasks:
+  inventory:
+    cmds:
+      - |
+        INSTANCE_NAME="mapo-webapp-dev"
+        INSTANCE_IP=`cat ../mapo-infra/outputs/$INSTANCE_NAME.ip`
+        INSTANCE_KEY="../mapo-infra/outputs/$INSTANCE_NAME.pem"
+
+        echo "mapo:
+          hosts:
+            $INSTANCE_NAME:
+              ansible_host: $INSTANCE_IP
+              ansible_user: root 
+              ansible_ssh_private_key_file: $INSTANCE_KEY
+        " > inventory.yml
+  playbook:
+    cmds: 
+      - ansible-playbook -i inventory.yml playbook.yml
