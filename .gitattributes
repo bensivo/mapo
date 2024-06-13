@@ -4,3 +4,5 @@ docs/media/Canvas[[:space:]]page[[:space:]](login).png filter=lfs diff=lfs merge
 docs/media/Canvas[[:space:]]page.png filter=lfs diff=lfs merge=lfs -text
 docs/media/Homepage[[:space:]](login).png filter=lfs diff=lfs merge=lfs -text
 docs/media/Homepage.png filter=lfs diff=lfs merge=lfs -text
+docs/media/demo-screenshot.png filter=lfs diff=lfs merge=lfs -text
+packages/mapo-webapp/public/example-mind-map.png filter=lfs diff=lfs merge=lfs -text

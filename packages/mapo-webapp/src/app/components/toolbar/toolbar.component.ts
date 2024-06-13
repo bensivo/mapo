@@ -13,7 +13,9 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 export class ToolbarComponent {
     tool$ = this.toolbarStore.tool$;
 
-    constructor(private toolbarStore: ToolbarStore) {}
+    constructor(private toolbarStore: ToolbarStore) {
+        console.log('ToolbarComponent initialized');
+    }
 
     selectTool(tool: string) {
         this.toolbarStore.setTool(tool as Tool);

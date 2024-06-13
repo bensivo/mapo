@@ -103,7 +103,7 @@ export class TextNodeService {
       top: textNode.y,
       left: textNode.x,
       fontSize: 16,
-      fontFamily: 'Roboto; sans-serif',
+      fontFamily: 'Roboto',
     });
     itext.on('editing:exited', (e) => {
       if (itext.text === '') {
@@ -120,7 +120,7 @@ export class TextNodeService {
 
     // Create a bounding rect around the itext
     const boundingRect = itext.getBoundingRect(true);
-    const padding = 5;
+    const padding = 10;
     const top = boundingRect.top - padding;
     const left = boundingRect.left - padding;
     const width = boundingRect.width + padding * 2;
@@ -131,9 +131,10 @@ export class TextNodeService {
       width,
       height,
       fill: 'white',
-      rx: 5,
-      ry: 5,
+      rx: 10,
+      ry: 10,
       stroke: 'black',
+      strokeWidth: 1,
       hasControls: false,
     });
 
@@ -161,7 +162,7 @@ export class TextNodeService {
       top: top,
       left: left,
       fontSize: 16,
-      fontFamily: 'Roboto; sans-serif',
+      fontFamily: 'Roboto',
     })
 
     itext.on('editing:exited', (e) => {
@@ -257,8 +258,8 @@ export class TextNodeService {
       return;
     }
 
-    const x = object.left + 5; // Add 5 to account for the padding between the group and the itext itself
-    const y = object.top + 5; // Add 5 to account for the padding between the group and the itext itself
+    const x = object.left + 10; // Add 10 to account for the padding between the group and the itext itself
+    const y = object.top + 10; // Add 10 to account for the padding between the group and the itext itself
 
     this.textNodeStore.update(id, {
       x,
@@ -305,7 +306,7 @@ export class TextNodeService {
    * When an object is in a group, it's "top" and "left" values are relative to the group's center
    * This function calculates the object's "top" and "left" relative to the canvas origin
    * 
-   * https://stackoverflow.com/a/71360370 
+   * https://stackoverflow.om/a/71360370 
    * @param object
    * @param group 
    */

@@ -14,6 +14,7 @@ export class CanvasComponent implements OnInit {
   constructor(private canvasService: CanvasService) { }
 
   ngOnInit(): void {
+    console.log('initializing canvas');
     this.canvasService.initializeCanvas('fabric-canvas');
   }
 }
