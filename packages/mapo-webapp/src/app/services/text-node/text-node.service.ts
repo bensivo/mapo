@@ -36,9 +36,6 @@ export class TextNodeService {
       this.addPendingTextNode(e.absolutePointer.y, e.absolutePointer.x);
     });
 
-    // canvas.on('mouse:up', (e) => {
-    //   console.log('mouse:up', e)
-    // });
     canvas.on('mouse:down', (e) => {
       if (!e.target) {
 
@@ -63,7 +60,6 @@ export class TextNodeService {
     });
 
     this.canvas.on('object:modified', (e) => {
-      // console.log('object:modified', e)
       const target = e.target;
       if (!target) {
         console.warn('No target on object:modified event', e);
@@ -105,27 +101,16 @@ export class TextNodeService {
 
   private renderTextNode(textNode: TextNode) {
     // Create itext object, containing text
-    const itext = new fabric.IText(textNode.text, {
+    const text = new fabric.Text(textNode.text, {
       top: textNode.y,
       left: textNode.x,
       fontSize: 16,
       fontFamily: 'Roboto',
     });
-    itext.on('editing:exited', (e) => {
-      if (itext.text === '') {
-        this.textNodeStore.remove(textNode.id);
-        this.toolbarStore.setTool(Tool.POINTER);
-        return;
-      }
-
-      this.textNodeStore.update(textNode.id, {
-        text: itext.text,
-      });
-      this.toolbarStore.setTool(Tool.POINTER);
-    });
+    
 
     // Create a bounding rect around the itext
-    const boundingRect = itext.getBoundingRect(true);
+    const boundingRect = text.getBoundingRect(true);
     const padding = 10;
     const top = boundingRect.top - padding;
     const left = boundingRect.left - padding;
@@ -146,10 +131,10 @@ export class TextNodeService {
 
     // Order the new objects
     this.canvas.sendToBack(rect);
-    this.canvas.bringToFront(itext);
+    this.canvas.bringToFront(text);
 
     // Create a group and add it to the canvas
-    const group = new fabric.Group([rect, itext], {
+    const group = new fabric.Group([rect, text], {
       hasControls: false,
       data: {
         type: 'text-node',
@@ -218,18 +203,34 @@ export class TextNodeService {
    * @param group
    */
   private editTextNode(group: fabric.Group) {
-    const objects = group.getObjects();
-    const itext = objects[1] as fabric.IText;
-    const rect = objects[0] as fabric.Rect;
+    const textNodeId = group.data?.id;
+    if (!textNodeId) {
+      console.warn('Error editing text node. No data.id', group);
+      return;
+    }
 
-    group.ungroupOnCanvas();
+    const objects = group.getObjects();
+    const text = objects[1] as fabric.Text;
+    const rect = objects[0] as fabric.Rect;
 
     // Remove the rect, because it will not group or shrink as the user is editing the text.
     // When the editing is done, a new rect will be drawn around the itext
+    group.ungroupOnCanvas();
     this.canvas.remove(rect);
+    this.canvas.remove(text);
 
+    // Replace the text with an itext
+    const itext = new fabric.IText(text?.text ?? '', {
+      top: text.top,
+      left: text.left,
+      fontSize: 16,
+      fontFamily: 'Roboto',
+      backgroundColor: 'white',
+    })
+    this.canvas.add(itext);
+
+    // Activate the itext, entering edit mode and moving the cursor to the right.
     this.canvas.setActiveObject(itext);
-
     itext.enterEditing();
 
     const len = itext.text?.length || 0;
@@ -237,6 +238,20 @@ export class TextNodeService {
     itext.setSelectionEnd(len);
 
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
+
+    itext.on('editing:exited', (e) => {
+      if (itext.text === '') {
+        this.textNodeStore.remove(textNodeId);
+        this.toolbarStore.setTool(Tool.POINTER);
+        return;
+      }
+
+      this.textNodeStore.update(textNodeId, {
+        text: itext.text,
+      });
+      this.toolbarStore.setTool(Tool.POINTER);
+      this.canvas.remove(itext);
+    });
   }
 
   /**

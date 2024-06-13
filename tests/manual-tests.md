@@ -137,3 +137,19 @@ Move group of with edges (partial):
     W: I click and drag to select some nodes (not not all connected nodes)
     T: The edges to non-selected nodes also update
 ```
+
+
+## Persistence
+Loading from storage:
+    G: I have drawn some nodes and edges
+    W: I reload the page
+    T: They are still there
+
+'mouse:up' bug:
+    G: I have refershed the page, and loaded some nodes from storage
+    W: AS MY FIRST ACTIION, I move a node
+    T: Edge edit still works, panning still works
+
+    This was a bug triggered by deleting an IText node from within an object:modified callback
+    For some reason, if you do that, the mouse:up event stops working. I fixed it by switching IText nodes
+    with Text nodes when you're not actually editing.
