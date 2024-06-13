@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HelpComponent {
 
-    show: boolean = true;
+    show: boolean = false;
 
     toggleHelp() {
         this.show = !this.show;

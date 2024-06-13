@@ -34,6 +34,7 @@
               root /mapo/html;
 
               location / {
+                try_files $uri $uri/ /index.html;
               }
           }
         dest: /etc/nginx/sites-enabled/{{ domain_name }}

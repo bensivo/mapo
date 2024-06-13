@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CanvasComponent } from './components/canvas/canvas.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { HelpComponent } from './components/help/help.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-root',

@@ -12,7 +12,24 @@ export class TextNodeStore {
 
     constructor(
         private edgeStore: EdgeStore,
-    ) { }
+    ) {
+        const persisted = localStorage.getItem('mapo-state-text-nodes');
+        if (persisted) {
+            try {
+                const textNodes: TextNode[] = JSON.parse(persisted);
+                console.log('Hydrating text nodes from local storage', textNodes)
+                this.textNodes.next(textNodes);
+            } catch (e) {
+                console.error('Failed to load text-nodes from local storage', e);
+            }
+        }
+
+        this.textNodes$.subscribe((textNodes) => {
+            console.log('Persisting nodes', textNodes)
+            // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
+            localStorage.setItem('mapo-state-text-nodes', JSON.stringify(textNodes));
+        });
+    }
 
     insert(textNode: TextNode) {
         this.textNodes.next([...this.textNodes.value, textNode]);

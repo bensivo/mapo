@@ -36,6 +36,9 @@ export class TextNodeService {
       this.addPendingTextNode(e.absolutePointer.y, e.absolutePointer.x);
     });
 
+    // canvas.on('mouse:up', (e) => {
+    //   console.log('mouse:up', e)
+    // });
     canvas.on('mouse:down', (e) => {
       if (!e.target) {
 
@@ -60,6 +63,7 @@ export class TextNodeService {
     });
 
     this.canvas.on('object:modified', (e) => {
+      // console.log('object:modified', e)
       const target = e.target;
       if (!target) {
         console.warn('No target on object:modified event', e);
@@ -94,6 +98,8 @@ export class TextNodeService {
       for (const textNode of textNodes) {
         this.renderTextNode(textNode);
       }
+
+      this.canvas.renderAll();
     });
   }
 
@@ -310,7 +316,7 @@ export class TextNodeService {
    * @param object
    * @param group 
    */
-  private calculateGroupObjectCoordinates(object: fabric.Object, group: fabric.Object): {left: number, top: number} | null {
+  private calculateGroupObjectCoordinates(object: fabric.Object, group: fabric.Object): { left: number, top: number } | null {
     const groupLeft = group.left;
     const groupTop = group.top;
     const groupWidth = group.width;

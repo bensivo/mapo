@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 
 import { CanvasService } from '../../services/canvas/canvas.service';
 
@@ -9,12 +9,11 @@ import { CanvasService } from '../../services/canvas/canvas.service';
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.less'
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements AfterViewInit {
 
   constructor(private canvasService: CanvasService) { }
 
-  ngOnInit(): void {
-    console.log('initializing canvas');
+  ngAfterViewInit(): void {
     this.canvasService.initializeCanvas('fabric-canvas');
   }
 }
