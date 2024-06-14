@@ -1,8 +1,8 @@
-import * as uuid from 'uuid';
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
+import * as uuid from 'uuid';
+import { FabricUtils } from '../../shared/fabric-utils';
 import { TextNodeStore } from '../../store/text-node.store';
-import { TextNode } from '../../models/textnode.interface';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
 @Injectable({
@@ -37,24 +37,24 @@ export class TextNodeService {
     });
 
     canvas.on('mouse:down', (e) => {
-      if (!e.target) {
-
-        if (this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE) {
-          if (!e.absolutePointer) {
-            console.warn('No absolute pointer on event', e)
-            return;
-          }
-
-          this.addPendingTextNode(e.absolutePointer.y, e.absolutePointer.x);
+      if (e.target) {
+        return;
+      }
+      if (this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE) {
+        if (!e.absolutePointer) {
+          console.warn('No absolute pointer on event', e)
           return;
         }
 
-        // Exit edit mode for any active IText objects
-        const objects = canvas.getObjects();
-        for (const obj of objects) {
-          if (obj instanceof fabric.IText && obj.isEditing) {
-            obj.exitEditing();
-          }
+        this.addPendingTextNode(e.absolutePointer.y, e.absolutePointer.x);
+        return;
+      }
+
+      // Exit edit mode for any active IText objects
+      const objects = canvas.getObjects();
+      for (const obj of objects) {
+        if (obj instanceof fabric.IText && obj.isEditing) {
+          obj.exitEditing();
         }
       }
     });
@@ -81,67 +81,17 @@ export class TextNodeService {
 
     this.textNodeStore.textNodes$.subscribe((textNodes) => {
       // Remove all existing text nodes
-      for (const obj of this.canvas.getObjects()) {
-        if (obj.data?.type === 'text-node') {
-          this.canvas.remove(obj);
-          for (const child of (obj as fabric.Group).getObjects()) {
-            this.canvas.remove(child);
-          }
-        }
+      for (const obj of FabricUtils.getTextNodes(this.canvas)) {
+        FabricUtils.removeTextNode(this.canvas, obj);
       }
 
       // Render all the text nodes
       for (const textNode of textNodes) {
-        this.renderTextNode(textNode);
+        FabricUtils.createTextNode(this.canvas, textNode.id, textNode.text, textNode.y, textNode.x)
       }
 
       this.canvas.renderAll();
     });
-  }
-
-  private renderTextNode(textNode: TextNode) {
-    // Create itext object, containing text
-    const text = new fabric.Text(textNode.text, {
-      top: textNode.y,
-      left: textNode.x,
-      fontSize: 16,
-      fontFamily: 'Roboto',
-    });
-    
-
-    // Create a bounding rect around the itext
-    const boundingRect = text.getBoundingRect(true);
-    const padding = 10;
-    const top = boundingRect.top - padding;
-    const left = boundingRect.left - padding;
-    const width = boundingRect.width + padding * 2;
-    const height = boundingRect.height + padding * 2;
-    const rect = new fabric.Rect({
-      top,
-      left,
-      width,
-      height,
-      fill: 'white',
-      rx: 10,
-      ry: 10,
-      stroke: 'black',
-      strokeWidth: 1,
-      hasControls: false,
-    });
-
-    // Order the new objects
-    this.canvas.sendToBack(rect);
-    this.canvas.bringToFront(text);
-
-    // Create a group and add it to the canvas
-    const group = new fabric.Group([rect, text], {
-      hasControls: false,
-      data: {
-        type: 'text-node',
-        id: textNode.id,
-      },
-    });
-    this.canvas.add(group);
   }
 
   /**
@@ -149,27 +99,20 @@ export class TextNodeService {
     * After the user has finished editing, the IText will be converted to a TextNode
     */
   private addPendingTextNode(top: number, left: number) {
-    const itext = new fabric.IText('', {
-      top: top,
-      left: left,
-      fontSize: 16,
-      fontFamily: 'Roboto',
-    })
+    const itext = FabricUtils.createIText(this.canvas, '', top, left);
+    FabricUtils.selectIText(this.canvas, itext);
+    this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
     itext.on('editing:exited', (e) => {
       this.toolbarStore.setTool(Tool.POINTER);
       if (itext.text === '') {
         this.canvas.remove(itext);
-        this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
+        this.toolbarStore.setTool(Tool.POINTER);
         return;
       }
 
       this.finalizeTextNode(itext);
     });
-
-    this.canvas.add(itext);
-    itext.enterEditing();
-    this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
   }
 
 
@@ -220,37 +163,27 @@ export class TextNodeService {
     this.canvas.remove(text);
 
     // Replace the text with an itext
-    const itext = new fabric.IText(text?.text ?? '', {
-      top: text.top,
-      left: text.left,
-      fontSize: 16,
-      fontFamily: 'Roboto',
-      backgroundColor: 'white',
-    })
-    this.canvas.add(itext);
+    if (!text.top || !text.left) {
+      console.warn('Cannot edit text node. No top or left on text object', text);
+      return;
+    }
 
-    // Activate the itext, entering edit mode and moving the cursor to the right.
-    this.canvas.setActiveObject(itext);
-    itext.enterEditing();
-
-    const len = itext.text?.length || 0;
-    itext.setSelectionStart(len);
-    itext.setSelectionEnd(len);
-
+    const itext = FabricUtils.createIText(this.canvas, text.text ?? '', text.top, text.left);
+    FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
     itext.on('editing:exited', (e) => {
+      this.canvas.remove(itext);
+      this.toolbarStore.setTool(Tool.POINTER);
+
       if (itext.text === '') {
         this.textNodeStore.remove(textNodeId);
-        this.toolbarStore.setTool(Tool.POINTER);
-        return;
+      } else {
+        this.textNodeStore.update(textNodeId, {
+          text: itext.text,
+        });
       }
 
-      this.textNodeStore.update(textNodeId, {
-        text: itext.text,
-      });
-      this.toolbarStore.setTool(Tool.POINTER);
-      this.canvas.remove(itext);
     });
   }
 
