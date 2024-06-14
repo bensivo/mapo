@@ -32,6 +32,19 @@ export class EdgeStore {
         this.edges.next([...this.edges.value, edge]);
     }
 
+    update(id: string, dto: Partial<Edge>) {
+        this.edges.next(this.edges.value.map((e) => {
+            if (e.id === id) {
+                return {
+                    ...e,
+                    ...dto,
+                };
+            }
+            return e;
+        
+        }));
+    }
+
     remove(id: string) {
         this.edges.next([...this.edges.value.filter((edge) => edge.id !== id)]);
     }

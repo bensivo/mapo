@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { fabric } from 'fabric';
-import { EdgeStore } from '../../store/edge.store';
 import { Edge } from "../../models/edge.interface";
+import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from "../../store/text-node.store";
+import { Tool, ToolbarStore } from "../../store/toolbar.store";
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class EdgeService {
     constructor(
         private edgeStore: EdgeStore,
         private textNodeStore: TextNodeStore,
+        private toolbarStore: ToolbarStore,
     ) { }
 
     register(canvas: fabric.Canvas) {
@@ -25,6 +27,18 @@ export class EdgeService {
             }
             this.render(this.edgeStore.edges.value);
         });
+        
+        canvas.on('mouse:dblclick', (e) => {
+            if (!e.target) {
+                return;
+            }
+
+            if (e.target.data?.type !== 'edge' && e.target.data?.type !== 'edge-text') {
+                return;
+            }
+
+            this.editText(e.target.data.id);
+        })
 
         this.edgeStore.edges$.subscribe((edges) => {
             this.render(edges);
@@ -35,7 +49,7 @@ export class EdgeService {
     }
 
     render(edges: Edge[]) {
-        const objects: Record<string, fabric.Object> = {};
+        const textNodes: Record<string, fabric.Object> = {};
 
         // NOTE: Eventually, we should optimize this code to not completely remove and re-add all lines on each render.
         for (const object of this.canvas.getObjects()) {
@@ -44,19 +58,32 @@ export class EdgeService {
                 continue;
             }
 
+            if (object instanceof fabric.Text && object.data?.type === 'edge-text') {
+                this.canvas.remove(object);
+                continue;
+            }
+
             if (object.data?.id !== undefined) {
-                objects[object.data.id] = object;
+                textNodes[object.data.id] = object;
             }
         }
 
         for (const edge of edges) {
-            const startObject = objects[edge.startNodeId];
-            const endObject = objects[edge.endNodeId];
+            const startObject = textNodes[edge.startNodeId];
+            const endObject = textNodes[edge.endNodeId];
             
             const arrow = this.drawArrow(edge.id, startObject, endObject);
             this.canvas.add(arrow);
             this.canvas.sendToBack(arrow);
-           
+
+            if (edge.text) {
+                const text = this.drawText(edge.id, edge.text || '', arrow);
+                if (!text) {
+                    return;
+                }
+
+                this.canvas.add(text);
+            }
         }
     }
 
@@ -68,6 +95,81 @@ export class EdgeService {
             x: destX - n * Math.cos(lineAngle),
             y: destY - n * Math.sin(lineAngle),
         }
+    }
+
+    private editText(id: string) {
+            console.log('Double click on edge', id)
+
+
+            let text: string = '';
+            let arrow: fabric.Polyline | undefined;
+
+            for (const object of this.canvas.getObjects()) {
+                // Remove existing text object, saving the text itself
+                if (object.data?.id === id && object instanceof fabric.Text) {
+                    text = object.text ?? '';
+                    this.canvas.remove(object);
+                    continue;
+                }
+
+                if (object.data?.id === id && object instanceof fabric.Polyline) {
+                    arrow = object;
+                }
+            }
+
+            if (!arrow) {
+                console.warn('Could not locate itext coordinats. No existing text or arrow', id);
+                return;
+            }
+
+            const itext = new fabric.IText(text, {
+                fontFamily: 'Roboto',
+                fontSize: 12,
+                backgroundColor: 'white',
+            });
+    
+            const boundingRect = itext.getBoundingRect();
+            itext.set({
+                left: arrow.getCenterPoint().x - boundingRect.width / 2,
+                top: arrow.getCenterPoint().y - boundingRect.height / 2,
+            })
+            this.canvas.add(itext);
+            this.canvas.setActiveObject(itext);
+            
+            itext.enterEditing();
+            this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
+
+            const len = itext.text?.length || 0;
+            itext.setSelectionStart(len);
+            itext.setSelectionEnd(len);
+
+            itext.on('editing:exited', (e) => {
+                this.edgeStore.update(id, {
+                    text: itext.text ?? '',
+                })
+                this.canvas.remove(itext);
+                this.toolbarStore.setTool(Tool.POINTER);
+            });
+    }
+
+    private drawText(id: string, text: string, arrow: fabric.Object): fabric.Text | undefined{
+        const textObj = new fabric.Text(text, {
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            backgroundColor: 'white',
+            selectable: false,
+            data: {
+                id: id,
+                type: 'edge-text'
+            }
+        });
+
+        const boundingRect = textObj.getBoundingRect();
+        textObj.set({
+            left: arrow.getCenterPoint().x - boundingRect.width / 2,
+            top: arrow.getCenterPoint().y - boundingRect.height / 2,
+        })
+        return textObj;
     }
 
     private drawArrow(id: string, src: fabric.Object, dest: fabric.Object) {
@@ -82,10 +184,10 @@ export class EdgeService {
             destY = point.y;
         } while(dest.containsPoint(new fabric.Point(destX, destY), null, true))
 
-        // // Subtract 3 more from the end, just for aesthetics
-        // const point = this.subtractArrowLength(srcX, srcY, destX, destY, 3);
-        // destX = point.x;
-        // destY = point.y;
+        // Subtract 3 more from the end, just for aesthetics
+        const point = this.subtractArrowLength(srcX, srcY, destX, destY, 3);
+        destX = point.x;
+        destY = point.y;
 
         const lineAngle = Math.atan2(destY - srcY, destX - srcX);
 

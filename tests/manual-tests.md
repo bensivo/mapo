@@ -98,6 +98,26 @@ Delete edge (d):
     G: I have a edge
     W: I select the edge and press "d"
     T: the edge is deleted
+
+Label edge:
+    G: I have an edge
+    W: I double click on the edge
+    T: I enter 'edit-text' mode and can start typing.
+
+Finish label edge (click):
+    G: I an editing the label of an edge
+    W: I click outside the label
+    T: I exit editing, and the label is rendered on the edge
+
+Finish label edge (Esc):
+    G: I an editing the label of an edge
+    W: I press 'Escape'
+    T: I exit editing, and the label is rendered on the edge
+
+Update label edge:
+    G: I have an edge with an existing label
+    W: I double click the arrow, or the text
+    T: I enter 'edit-text' mode and can start typing. The exiting text should be pre-loaded
 ```
 
 ## Pan
