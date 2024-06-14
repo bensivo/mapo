@@ -1,0 +1,21 @@
+<div class="files-page">
+    <div class="icons">
+        <i class="ri-user-line"></i>
+    </div>
+    <div class="header">
+        <h1>My Files</h1>
+
+        <button class="create-mindmap-button" (click)="onClickCreateMindMap()">Create Mind Map</button>
+    </div>
+
+    <div class="card-container">
+        <div class="card" *ngFor="let data of data">
+            <i class="card-options ri-more-2-fill"></i>
+            <div class="card-img"></div>
+            <div class="card-content">
+                <p class="card-title">{{data.title}}</p>
+                <p class="card-subtitle">Updated at: {{data.updatedAt.toLocaleTimeString()}} {{data.updatedAt.toLocaleDateString()}}</p>
+            </div>
+        </div>
+    </div>
+</div>
