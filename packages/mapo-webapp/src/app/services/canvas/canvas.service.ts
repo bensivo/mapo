@@ -4,19 +4,20 @@ import { fabric } from 'fabric';
 import { DrawEdgeService } from '../edge/draw-edge.service';
 import { EdgeService } from '../edge/edge.service';
 import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
-import { TextNodeService } from '../text-node/text-node.service';
 import { ToolbarService } from '../toolbar/toolbar.service';
 import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanvasService {
 
+  canvas$: BehaviorSubject<fabric.Canvas | null> = new BehaviorSubject<fabric.Canvas | null>(null);
+
   constructor(
     private panCanvasService: PanCanvasService,
     private zoomCanvasService: ZoomCanvasService,
-    private textNodeService: TextNodeService,
     private edgeService: EdgeService,
     private drawEdgeService: DrawEdgeService,
     private toolbarService: ToolbarService,
@@ -45,14 +46,13 @@ export class CanvasService {
       canvas.setHeight(htmlCanvas.offsetHeight);
     })
 
+    this.canvas$.next(canvas);
+
     this.panCanvasService.register(canvas);
     this.zoomCanvasService.register(canvas);
-    this.textNodeService.register(canvas);
     this.edgeService.register(canvas);
     this.drawEdgeService.register(canvas);
     this.toolbarService.register(canvas);
   };
 
 }
-
-

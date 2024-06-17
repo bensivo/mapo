@@ -1,4 +1,11 @@
 import { fabric } from 'fabric';
+import { TextNode } from '../models/textnode.interface';
+
+/**
+ * Functions for drawing different shapes on the fabric canvas.
+ * 
+ * By putting this in a different class, we can test all our service functions without mocking all of fabric.js
+ */
 export class FabricUtils {
     static createIText(canvas: fabric.Canvas, text: string, top: number, left: number): fabric.IText {
         const itext = new fabric.IText(text, {
@@ -29,10 +36,10 @@ export class FabricUtils {
         itext.setSelectionEnd(len);
     }
 
-    static createTextNode(canvas: fabric.Canvas, id: string, text: string, top: number, left: number): fabric.Object {
-        const textObj = new fabric.Text(text, {
-            top: top,
-            left: left,
+    static createTextNode(canvas: fabric.Canvas, textnode: TextNode): fabric.Object {
+        const textObj = new fabric.Text(textnode.text, {
+            top: textnode.y,
+            left: textnode.x,
             fontSize: 16,
             fontFamily: 'Roboto',
         });
@@ -62,7 +69,7 @@ export class FabricUtils {
         const group = new fabric.Group([rect, textObj], {
             hasControls: false,
             data: {
-                id: id,
+                id: textnode.id,
                 type: 'text-node',
             },
         });

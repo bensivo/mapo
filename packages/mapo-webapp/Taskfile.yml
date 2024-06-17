@@ -9,3 +9,7 @@ tasks:
   build:
     cmds:
       - npx ng build
+
+  test:
+    cmds:
+      - npx ng test

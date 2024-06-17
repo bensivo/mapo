@@ -4,7 +4,7 @@ import { Edge } from "../../models/edge.interface";
 import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from "../../store/text-node.store";
 import { Tool, ToolbarStore } from "../../store/toolbar.store";
-import { FabricUtils } from "../../shared/fabric-utils";
+import { FabricUtils } from "../../utils/fabric-utils";
 
 @Injectable({
     providedIn: 'root'
