@@ -5,6 +5,7 @@ import { HelpComponent } from './components/help/help.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { TextNodeController } from './controllers/text-node.controller';
 import { DrawEdgeController } from './controllers/draw-edge.controller';
+import { EdgeController } from './controllers/edge.controller';
 
 @Component({
   selector: 'app-root',
@@ -20,5 +21,6 @@ export class AppComponent {
   constructor(
     private textNodeController: TextNodeController,
     private drawEdgeController: DrawEdgeController,
+    private edgeController: EdgeController,
   ) { }
 }

@@ -10,7 +10,6 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 })
 export class DrawEdgeService {
     canvas: fabric.Canvas | null = null;
-
     arrow: fabric.Polyline | null = null;
     startObj: fabric.Object | null = null;
 

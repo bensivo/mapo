@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import fabric from "fabric/fabric-impl";
+import { fabric } from "fabric";
 import { CanvasService } from "../services/canvas/canvas.service";
 import { DrawEdgeService } from "../services/edge/draw-edge.service";
 import { Tool, ToolbarStore } from "../store/toolbar.store";
