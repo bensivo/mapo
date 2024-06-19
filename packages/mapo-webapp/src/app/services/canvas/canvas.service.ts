@@ -1,7 +1,6 @@
 import FontFaceObserver from 'fontfaceobserver';
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
 import { ToolbarService } from '../toolbar/toolbar.service';
 import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
 import { BehaviorSubject } from 'rxjs';
@@ -14,9 +13,7 @@ export class CanvasService {
   canvas$: BehaviorSubject<fabric.Canvas | null> = new BehaviorSubject<fabric.Canvas | null>(null);
 
   constructor(
-    private panCanvasService: PanCanvasService,
     private zoomCanvasService: ZoomCanvasService,
-    // private edgeService: EdgeService,
     private toolbarService: ToolbarService,
   ) { }
 
@@ -45,7 +42,6 @@ export class CanvasService {
 
     this.canvas$.next(canvas);
 
-    this.panCanvasService.register(canvas);
     this.zoomCanvasService.register(canvas);
     this.toolbarService.register(canvas);
   };
