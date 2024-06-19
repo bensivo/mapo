@@ -44,7 +44,6 @@ export class TextNodeController {
     }
 
     onDoubleClick(e: fabric.IEvent) {
-        console.log('OnDoubleClick', e)
         if (!this.canvas) {
             console.warn('DoubleClick ignored. No canvas');
             return;
@@ -64,7 +63,6 @@ export class TextNodeController {
     }
 
     onMouseDown(e: fabric.IEvent) {
-        console.log('OnMouseDown', e)
         if (!this.canvas) {
             console.warn('MouseDown ignored. No canvas');
             return;
@@ -121,6 +119,7 @@ export class TextNodeController {
             return;
         }
 
+        // TODO: this logic should be in the service
         if (itext.text === '') {
             this.canvas.remove(itext);
             return;

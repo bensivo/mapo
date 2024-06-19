@@ -1,7 +1,6 @@
 import FontFaceObserver from 'fontfaceobserver';
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { DrawEdgeService } from '../edge/draw-edge.service';
 import { EdgeService } from '../edge/edge.service';
 import { PanCanvasService } from '../pan-canvas/pan-canvas.service';
 import { ToolbarService } from '../toolbar/toolbar.service';
@@ -19,7 +18,6 @@ export class CanvasService {
     private panCanvasService: PanCanvasService,
     private zoomCanvasService: ZoomCanvasService,
     private edgeService: EdgeService,
-    private drawEdgeService: DrawEdgeService,
     private toolbarService: ToolbarService,
   ) { }
 
@@ -51,7 +49,6 @@ export class CanvasService {
     this.panCanvasService.register(canvas);
     this.zoomCanvasService.register(canvas);
     this.edgeService.register(canvas);
-    this.drawEdgeService.register(canvas);
     this.toolbarService.register(canvas);
   };
 

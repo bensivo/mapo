@@ -4,6 +4,7 @@ import { CanvasComponent } from './components/canvas/canvas.component';
 import { HelpComponent } from './components/help/help.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { TextNodeController } from './controllers/text-node.controller';
+import { DrawEdgeController } from './controllers/draw-edge.controller';
 
 @Component({
   selector: 'app-root',
@@ -15,5 +16,9 @@ import { TextNodeController } from './controllers/text-node.controller';
 export class AppComponent {
   title = 'mapo-webapp';
 
-  constructor(private textNodeController: TextNodeController) { }
+  // These controllers injected here just so that they initialize themselves
+  constructor(
+    private textNodeController: TextNodeController,
+    private drawEdgeController: DrawEdgeController,
+  ) { }
 }
