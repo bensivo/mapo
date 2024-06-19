@@ -27,6 +27,6 @@ export class AppComponent {
     private panCanvasController: PanCanvasController,
     private debugController: DebugController,
   ) {
-    debugController.run();
+    // debugController.run();
   }
 }

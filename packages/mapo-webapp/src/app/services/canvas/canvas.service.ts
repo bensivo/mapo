@@ -45,5 +45,4 @@ export class CanvasService {
     this.zoomCanvasService.register(canvas);
     this.toolbarService.register(canvas);
   };
-
 }

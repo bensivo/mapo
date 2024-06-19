@@ -14,14 +14,7 @@ import { TextNodeController } from "./text-node.controller";
     providedIn: 'root',
 })
 export class DebugController {
-
-    // These controllers injected here just so that they initialize themselves
     constructor(
-        private textNodeController: TextNodeController,
-        private drawEdgeController: DrawEdgeController,
-        private edgeController: EdgeController,
-        private panCanvasController: PanCanvasController,
-
         private textNodeStore: TextNodeStore,
         private edgeStore: EdgeStore,
         private panCanvasService: PanCanvasService,
