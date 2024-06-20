@@ -28,6 +28,10 @@ export class EdgeStore {
         });
     }
 
+    set(edges: Edge[]) {
+        this.edges.next(edges);
+    }
+
     insert(edge: Edge) {
         this.edges.next([...this.edges.value, edge]);
     }

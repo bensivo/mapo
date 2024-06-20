@@ -123,7 +123,7 @@ Update label edge:
 ## Pan
 ```
 Panning:
-    W: I click and drag with the right mouse button
+    W: I right-click and drag 
     T: The canvas should pan
 
 ```
@@ -173,3 +173,29 @@ Loading from storage:
     This was a bug triggered by deleting an IText node from within an object:modified callback
     For some reason, if you do that, the mouse:up event stops working. I fixed it by switching IText nodes
     with Text nodes when you're not actually editing.
+
+
+## Title
+Setting title:
+    G: I am on the canvas
+    W: I click on the title
+    T: I can edit it
+
+Persisting title:
+    G: I have set a title
+    W: I reload the page
+    T: The title is still there
+
+
+## Save / Load
+Save to file:
+    G: I have drawn some nodes and edges
+    W: I click on the save icon
+    T: A file is downloaded `${title}.mapo`
+
+Load from file:
+    G: I have some other drawing open
+    W: I click on the load icon, and select a .mapo file
+    T: That drawing overrides the one I had
+    T: The title is updated to fit what it was when that file was saved (may not actually match the filename on the FS)
+

@@ -31,6 +31,10 @@ export class TextNodeStore {
         });
     }
 
+    set(textNodes: TextNode[]) {
+        this.textNodes.next(textNodes);
+    }
+
     insert(textNode: TextNode) {
         this.textNodes.next([...this.textNodes.value, textNode]);
     }

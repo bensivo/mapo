@@ -2,10 +2,6 @@ import { Injectable } from "@angular/core";
 import { PanCanvasService } from "../services/pan-canvas/pan-canvas.service";
 import { EdgeStore } from "../store/edge.store";
 import { TextNodeStore } from "../store/text-node.store";
-import { DrawEdgeController } from "./draw-edge.controller";
-import { EdgeController } from "./edge.controller";
-import { PanCanvasController } from "./pan-canvas.controller";
-import { TextNodeController } from "./text-node.controller";
 
 /**
  * Test controller that simulates a bunch of actiosn to test the app
