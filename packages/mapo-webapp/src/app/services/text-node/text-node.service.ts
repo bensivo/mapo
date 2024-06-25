@@ -120,7 +120,10 @@ export class TextNodeService {
             return;
         }
 
-        const itext = FabricUtils.createIText(this.canvas, text.text ?? '', text.top, text.left);
+        const centerX = text.getCenterPoint().x;
+        const centerY = text.getCenterPoint().y;
+
+        const itext = FabricUtils.createIText(this.canvas, text.text ?? '', centerY, centerX);
         FabricUtils.selectIText(this.canvas, itext);
         this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
