@@ -22,7 +22,6 @@
           name: nginx
           state: started
     
-    # TODO: Use /etc/nginx/sites-available and /etc/nginx/sites-enabled instead of the default location
     - name: Write /etc/nginx/sites-enabled/{{ domain_name }}
       ansible.builtin.copy:
         content: |
