@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bensivo/mapo/packages/mapo-api/controller"
-	"github.com/bensivo/mapo/packages/mapo-api/service"
+	"github.com/bensivo/mapo/packages/mapo-api/files"
+	"github.com/bensivo/mapo/packages/mapo-api/health"
 	"github.com/bensivo/mapo/packages/mapo-api/sqlite"
 )
 
@@ -20,11 +20,15 @@ func main() {
 		panic(err)
 	}
 
-	svc := service.NewFileService(db)
+	svc := files.NewFileService(db)
 
 	mux := &http.ServeMux{}
-	fileController := controller.NewHttpFileController(svc)
+
+	fileController := files.NewHttpFileController(svc)
 	fileController.Register(mux)
+
+	healthController := health.NewHttpHealthController()
+	healthController.Register(mux)
 
 	fmt.Println("Listening on http://localhost:8080")
 	err = http.ListenAndServe(":8080", mux)

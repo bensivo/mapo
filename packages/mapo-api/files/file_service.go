@@ -1,10 +1,13 @@
-package service
+package files
+
+// file_service.go
+//
+// Contains FileService, responsible for interacting with the sql database to perform CRUD operations on user files.
+//
 
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/bensivo/mapo/packages/mapo-api/model"
 )
 
 type FileService struct {
@@ -20,7 +23,7 @@ func NewFileService(db *sql.DB) *FileService {
 }
 
 // Insert a file into the database
-func (s *FileService) InsertFile(userID int, name string, contentBase64 string) (*model.File, error) {
+func (s *FileService) InsertFile(userID int, name string, contentBase64 string) (*File, error) {
 
 	row := s.db.QueryRow(`
 		INSERT INTO files (user_id, name, content_base64) VALUES (?, ?, ?) RETURNING *;
@@ -37,7 +40,7 @@ func (s *FileService) InsertFile(userID int, name string, contentBase64 string) 
 		return nil, fmt.Errorf("failed to scan insert response: %w", err)
 	}
 
-	return &model.File{
+	return &File{
 		ID:            data.ID,
 		UserID:        data.UserID,
 		Name:          data.Name,
@@ -46,7 +49,7 @@ func (s *FileService) InsertFile(userID int, name string, contentBase64 string) 
 }
 
 // Get all files from the database
-func (s *FileService) GetFiles() ([]model.File, error) {
+func (s *FileService) GetFiles() ([]File, error) {
 	rows, err := s.db.Query(`
 		SELECT id, user_id, name, content_base64 FROM files;
 	`)
@@ -55,9 +58,9 @@ func (s *FileService) GetFiles() ([]model.File, error) {
 	}
 	defer rows.Close()
 
-	files := []model.File{}
+	files := []File{}
 	for rows.Next() {
-		var data struct { // Although right now this type matches model.File, it's a good idea to keep them separate, in case the db schema changes
+		var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
 			ID            int
 			UserID        int
 			Name          string
@@ -68,7 +71,7 @@ func (s *FileService) GetFiles() ([]model.File, error) {
 			return nil, err
 		}
 
-		files = append(files, model.File{
+		files = append(files, File{
 			ID:            data.ID,
 			UserID:        data.UserID,
 			Name:          data.Name,
@@ -81,12 +84,12 @@ func (s *FileService) GetFiles() ([]model.File, error) {
 
 // Get a single file from the Database, by its ID
 // returns a nil pointer if the file does not exist
-func (s *FileService) GetFile(fileID int) (*model.File, error) {
+func (s *FileService) GetFile(fileID int) (*File, error) {
 	row := s.db.QueryRow(`
 		SELECT id, user_id, name, content_base64 FROM files WHERE id = ?;
 	`, fileID)
 
-	var data struct { // Although right now this type matches model.File, it's a good idea to keep them separate, in case the db schema changes
+	var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
 		ID            int
 		UserID        int
 		Name          string
@@ -102,7 +105,7 @@ func (s *FileService) GetFile(fileID int) (*model.File, error) {
 		return nil, fmt.Errorf("failed to get file: %w", err)
 	}
 
-	return &model.File{
+	return &File{
 		ID:            data.ID,
 		UserID:        data.UserID,
 		Name:          data.Name,

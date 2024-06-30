@@ -1,4 +1,4 @@
-package controller
+package files
 
 // http_file_controller.go
 //
@@ -12,14 +12,14 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bensivo/mapo/packages/mapo-api/service"
+	"github.com/bensivo/mapo/packages/mapo-api/util"
 )
 
 type HTTPFileController struct {
-	svc *service.FileService
+	svc *FileService
 }
 
-func NewHttpFileController(svc *service.FileService) *HTTPFileController {
+func NewHttpFileController(svc *FileService) *HTTPFileController {
 	return &HTTPFileController{
 		svc,
 	}
@@ -72,7 +72,7 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request) 
 
 	// Return response
 	// TODO, define a struct for the JSON response
-	c.writeJSON(w, file)
+	util.WriteJSON(w, file)
 }
 
 func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +83,7 @@ func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// TODO, define a struct for the JSON response
-	c.writeJSON(w, files)
+	util.WriteJSON(w, files)
 }
 
 func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request) {
@@ -101,7 +101,7 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.writeJSON(w, file)
+	util.WriteJSON(w, file)
 
 }
 func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +138,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	c.writeJSON(w, map[string]string{
+	util.WriteJSON(w, map[string]string{
 		"status": "ok",
 	})
 }
@@ -159,20 +159,5 @@ func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request
 	}
 
 	// Return response
-	c.writeJSON(w, map[string]string{"status": "ok"})
-}
-
-func (c *HTTPFileController) writeJSON(w http.ResponseWriter, data interface{}) {
-	// Serialize the data to JSON
-	bytes, err := json.Marshal(data)
-	if err != nil {
-		http.Error(w, "Failed to serialize data to JSON", http.StatusInternalServerError)
-		return
-	}
-
-	// Set the Content-Type header
-	w.Header().Set("Content-Type", "application/json")
-
-	// Write the JSON data to the response
-	w.Write(bytes)
+	util.WriteJSON(w, map[string]string{"status": "ok"})
 }

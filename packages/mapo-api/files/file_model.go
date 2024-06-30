@@ -1,15 +1,10 @@
-package model
+package files
 
 import "fmt"
 
 //
 // The model package stores all the core data structures and types used throughout the application
 //
-
-type User struct {
-	ID   int
-	Name string
-}
 
 type File struct {
 	ID            int

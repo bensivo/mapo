@@ -6,6 +6,10 @@
 
 # TODO: save the ids from the insert commands, and use them in the get, update and delete commands
 # instead of just hardcodign the id '1' in each request
+
+echo "Healthcheck"
+curl -s -X GET http://localhost:8080/health | jq -r
+
 echo "Inserting files"
 curl -s -X POST http://localhost:8080/files --data '
     {
