@@ -68,4 +68,27 @@ Options:
     - Would require FS backup so we don’t lost the whole DB
 
 Decision:
-- Supabase Postgres, because of the free tier, and the integration with their auth provider
+- SQLite in VM, with hourly backups to S3 using a cronjob
+
+
+## Observability Platform
+Context:
+- We need some service for tracking basic observability signals that are produced by our deployments
+- Signals: logs, metrics, traces
+
+Options:
+- NewRelic 
+  - Very generous free tier (100GB data)
+  - Supports otel
+  - Good UIs for all the observability we'd need in this app
+  - 8 day retention
+  - no limit on hosts
+
+- Datadog
+  - 1 day retention
+  - 5 hosts
+
+- Grafana Cloud
+  - 14 day retention
+  - 10k metrics
+  - 50GB per signal

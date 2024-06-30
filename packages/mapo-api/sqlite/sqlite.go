@@ -4,13 +4,21 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
+	"github.com/bensivo/mapo/packages/mapo-api/config"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func Connect() (*sql.DB, error) {
-	return sql.Open("sqlite3", "./mapo.db")
+	err := os.MkdirAll(filepath.Dir(config.SQLite3Filepath), os.ModePerm)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create directories: %w", err)
+	}
+
+	return sql.Open("sqlite3", config.SQLite3Filepath)
 }
 
 type Migration struct {

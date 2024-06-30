@@ -9,4 +9,25 @@ tasks:
   e2e:
     cmds:
       - ./e2e/e2e.sh
+
+  docker-build:
+    sources:
+      - ./**/*.go
+      - go.mod
+      - go.sum
+      - Dockerfile
+      - .dockerignore
+    cmds:
+      - docker build -t mapo-api .
+
+  docker-run:
+    cmds:
+      - task: docker-build
+      - |
+        docker run \
+          -p 8080:8080 \
+          -v $PWD/data:/mapo-api/data \
+          -e MAPO_API_SQLITE3_FILEPATH=/mapo-api/data/mapo-api.db \
+          -e MAPO_API_PORT=8080 \
+          mapo-api
       
