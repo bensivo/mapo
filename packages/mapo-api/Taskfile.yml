@@ -1,0 +1,12 @@
+version: 3.4
+
+tasks:
+  run:
+    cmds:
+      - if [ -f mapo.db ]; then rm mapo.db; fi
+      - go run main.go
+
+  e2e:
+    cmds:
+      - ./e2e/e2e.sh
+      
