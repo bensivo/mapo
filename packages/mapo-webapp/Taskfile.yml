@@ -1,8 +1,7 @@
 version: 3.4
 
-
 tasks:
-  dev:
+  run:
     cmds:
       - npx ng serve -o
 
@@ -13,3 +12,23 @@ tasks:
   test:
     cmds:
       - npx ng test
+    
+  docker-build:
+    sources:
+      - ./public/**/*
+      - ./src/**/*
+      - package.json
+      - package-lock.json
+      - angular.json
+      - Dockerfile
+      - nginx.conf
+    cmds:
+      - docker build -t mapo-webapp .
+
+  docker-run:
+    cmds:
+      - task: docker-build
+      - |
+        docker run \
+          -p 4200:80 \
+          mapo-webapp

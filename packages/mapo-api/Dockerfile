@@ -14,5 +14,5 @@ FROM debian:bookworm-slim
 WORKDIR /mapo-api
 COPY --from=build /build/mapo-api /mapo-api/mapo-api
 
-EXPOSE 8080
+EXPOSE 5000
 CMD [ "/mapo-api/mapo-api" ]

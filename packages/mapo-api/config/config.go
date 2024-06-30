@@ -11,7 +11,7 @@ var Port int
 func Initialize() error {
 	SQLite3Filepath = EnvWithDefault("MAPO_API_SQLITE3_FILEPATH", "./data/mapo-api.db")
 
-	portStr := EnvWithDefault("MAPO_API_PORT", "8080")
+	portStr := EnvWithDefault("MAPO_API_PORT", "5000")
 	portNum, err := strconv.Atoi(portStr)
 	if err != nil {
 		return err
