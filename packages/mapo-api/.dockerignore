@@ -1,3 +1,5 @@
 *.db
 .task/
 data/
+
+*.tar

@@ -1,6 +1,6 @@
-# mapo-webapp-deploy
+# mapo-api-deploy
 
-This package contains scripts for publishing mapo-webapp's Docker image to Github, and for deploying that image to the VM
+This package contains scripts for publishing mapo-api's Docker image to Github, and for deploying that image to the VM
 
 It uses Ansible to install and setup Nginx and LetsEncrypt
 

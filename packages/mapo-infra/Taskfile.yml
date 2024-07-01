@@ -3,9 +3,12 @@ version: 3.4
 
 tasks:
   plan:
+    requires:
+      vars: [ env ]
     cmds: 
       - tofu init
-      - tofu plan -out plan.tfplan
+      - tofu workspace select {{ .env }}
+      - tofu plan -out plan.tfplan --var-file={{ .env }}.tfvars
 
   apply:
     cmds: 
