@@ -13,6 +13,7 @@ import (
 func main() {
 	config.Initialize()
 
+	fmt.Println("Connecting to SQLite3 database...")
 	db, err := sqlite.Connect()
 	if err != nil {
 		panic(err)

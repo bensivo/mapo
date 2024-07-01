@@ -11,22 +11,24 @@
 # - The VM is up and running (using mapo-infra and mapo-infa-configure)
 # 
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <tag>"
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <env> <tag>"
     exit 1
 fi
 
-DOCKER_IMAGE_TAG=$1
+ENV=$1
+DOCKER_IMAGE_TAG=$2
+
 
 # Fetch secrets from infisical
 echo "Fetching secrets from infisical"
-GHCR_USERNAME=`infisical secrets get GHCR_USERNAME --plain --silent`
-GHCR_TOKEN=`infisical secrets get GHCR_TOKEN --plain --silent`
-INSTANCE_IP=`infisical secrets get INSTANCE_IP --plain --silent`
+GHCR_USERNAME=`infisical secrets get GHCR_USERNAME --plain --silent --env=$ENV`
+GHCR_TOKEN=`infisical secrets get GHCR_TOKEN --plain --silent --env=$ENV`
+INSTANCE_IP=`infisical secrets get INSTANCE_IP --plain --silent --env=$ENV`
 
 # Read SSH private key into a file, instead of as a string
 SSH_KEY_FILEPATH="instance.pem" 
-infisical secrets get INSTANCE_SSH_PRIVATE_KEY --plain --silent > $SSH_KEY_FILEPATH
+infisical secrets get INSTANCE_SSH_PRIVATE_KEY --plain --silent --env=$ENV > $SSH_KEY_FILEPATH
 chmod 600 $SSH_KEY_FILEPATH
 
 # Login to ghcr.io (on the remote maching)

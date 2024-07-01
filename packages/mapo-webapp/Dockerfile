@@ -1,4 +1,4 @@
-FROM node:20-bookworm as build
+FROM node:20-bookworm AS build
 
 WORKDIR /build/
 
@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+RUN npx ng build --configuration=production --base-href /app/
 
 
 FROM nginx:1.27-bookworm

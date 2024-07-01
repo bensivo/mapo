@@ -19,4 +19,4 @@ Manage the infrastructure used to deploy Mapo, using opentofu
     task apply
     ```
 
-Then run the ansible playbook in "mapo-configure" to install nginx and configure the VM to host it as a static site
+Then run the ansible playbook in "mapo-infra-configure" to install nginx and configure the VM to host it as a static site

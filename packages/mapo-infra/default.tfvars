@@ -1,1 +1,0 @@
-instance_name = "mapo-webapp-dev"

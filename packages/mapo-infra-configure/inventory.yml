@@ -1,7 +1,7 @@
 mapo:
   hosts:
-    mapo-dev:
-      ansible_host: 45.33.27.52
+    mapo-prod:
+      ansible_host: 45.56.120.180
       ansible_user: root 
-      ansible_ssh_private_key_file: ../mapo-infra/outputs/mapo-dev.pem
+      ansible_ssh_private_key_file: ../mapo-infra/outputs/mapo-prod.pem
 
