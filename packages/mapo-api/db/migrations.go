@@ -1,25 +1,11 @@
-package sqlite
+package db
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 	"time"
-
-	"github.com/bensivo/mapo/packages/mapo-api/config"
-	_ "github.com/mattn/go-sqlite3"
 )
-
-func Connect() (*sql.DB, error) {
-	err := os.MkdirAll(filepath.Dir(config.SQLite3Filepath), os.ModePerm)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create directories: %w", err)
-	}
-
-	return sql.Open("sqlite3", config.SQLite3Filepath)
-}
 
 type Migration struct {
 	Name string
@@ -40,8 +26,9 @@ func RunMigrations(db *sql.DB) error {
 			Name: "create_users",
 			SQL: `
 			CREATE TABLE IF NOT EXISTS users (
-				id INTEGER PRIMARY KEY,
-				name TEXT
+				id TEXT PRIMARY KEY,
+				email TEXT,
+				display_name TEXT
 			);
 			`,
 		},
@@ -50,17 +37,11 @@ func RunMigrations(db *sql.DB) error {
 			SQL: `
 			CREATE TABLE IF NOT EXISTS files (
 				id INTEGER PRIMARY KEY,
-				user_id INTEGER,
+				user_id TEXT,
 				name TEXT,
 				content_base64 TEXT,
 				FOREIGN KEY(user_id) REFERENCES users(id)
 			);
-			`,
-		},
-		{
-			Name: "seed_test_user", // TODO: remove this later
-			SQL: `
-				INSERT INTO users (id, name) VALUES (1, 'testuser');
 			`,
 		},
 	}
@@ -75,7 +56,7 @@ func RunMigrations(db *sql.DB) error {
 }
 
 func RunMigration(db *sql.DB, migration Migration) error {
-	row := db.QueryRow("SELECT count(*) as count FROM migrations WHERE name = ?;", migration.Name)
+	row := db.QueryRow("SELECT count(*) as count FROM migrations WHERE name = $1;", migration.Name)
 	var rowData struct {
 		Count int
 	}
@@ -97,33 +78,13 @@ func RunMigration(db *sql.DB, migration Migration) error {
 		}
 
 		_, err = tx.Exec(
-			"INSERT INTO migrations (name, ts) VALUES (?, ?);",
+			"INSERT INTO migrations (name, ts) VALUES ($1, $2);",
 			migration.Name,
 			time.Now().Unix(),
 		)
 
 		return err
 	})
-
-	// tx, err := db.Begin()
-	// if err != nil {
-	// 	return fmt.Errorf("failed to start transaction: %w", err)
-	// }
-
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	fmt.Println(err)
-	// 	return fmt.Errorf("failed to execute migration: %w", err)
-	// }
-
-	// err = tx.Commit()
-	// if err != nil {
-	// 	// TODO: do we need to rollback if the commit failed?
-	// 	fmt.Println(err)
-	// 	return fmt.Errorf("failed to commit migration: %w", err)
-	// }
-
-	// return nil
 }
 
 // Source: https://www.reddit.com/r/golang/comments/18flz7z/defer_rollback_and_committing_a_transaction_in_a/

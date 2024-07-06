@@ -24,6 +24,10 @@ echo "Fetching secrets from infisical"
 GHCR_USERNAME=`infisical secrets get GHCR_USERNAME --plain --silent --env=$ENV`
 GHCR_TOKEN=`infisical secrets get GHCR_TOKEN --plain --silent --env=$ENV`
 INSTANCE_IP=`infisical secrets get INSTANCE_IP --plain --silent --env=$ENV`
+JWT_AUDIENCE=`infisical secrets get JWT_AUDIENCE --plain --silent --env=$ENV`
+JWT_ISSUER=`infisical secrets get JWT_ISSUER --plain --silent --env=$ENV`
+JWT_SECRET=`infisical secrets get JWT_SECRET --plain --silent --env=$ENV`
+POSTGRES_CONNECTION_STRING=`infisical secrets get POSTGRES_CONNECTION_STRING --plain --silent --env=$ENV`
 
 # Read SSH private key into a file, instead of as a string
 SSH_KEY_FILEPATH="instance.pem" 
@@ -50,6 +54,10 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
         -p 3000:3000 \
         -v /mapo:/mapo \
         -e MAPO_API_SQLITE3_FILEPATH=/mapo/mapo.db \
+        -e JWT_AUDIENCE=$JWT_AUDIENCE \
+        -e JWT_ISSUER=$JWT_ISSUER \
+        -e JWT_SECRET=$JWT_SECRET \
+        -e POSTGRES_CONNECTION_STRING=$POSTGRES_CONNECTION_STRING \
         ghcr.io/bensivo/mapo-api:$DOCKER_IMAGE_TAG;
 "
 

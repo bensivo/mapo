@@ -26,12 +26,12 @@ func NewFileService(db *sql.DB) *FileService {
 func (s *FileService) InsertFile(userID int, name string, contentBase64 string) (*File, error) {
 
 	row := s.db.QueryRow(`
-		INSERT INTO files (user_id, name, content_base64) VALUES (?, ?, ?) RETURNING *;
+		INSERT INTO files (user_id, name, content_base64) VALUES ($1, $2, $3) RETURNING *;
 	`, 1, name, contentBase64)
 
 	var data struct {
 		ID            int
-		UserID        int
+		UserID        string
 		Name          string
 		ContentBase64 string
 	}
@@ -62,7 +62,7 @@ func (s *FileService) GetFiles() ([]File, error) {
 	for rows.Next() {
 		var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
 			ID            int
-			UserID        int
+			UserID        string
 			Name          string
 			ContentBase64 string
 		}
@@ -86,12 +86,12 @@ func (s *FileService) GetFiles() ([]File, error) {
 // returns a nil pointer if the file does not exist
 func (s *FileService) GetFile(fileID int) (*File, error) {
 	row := s.db.QueryRow(`
-		SELECT id, user_id, name, content_base64 FROM files WHERE id = ?;
+		SELECT id, user_id, name, content_base64 FROM files WHERE id = $1;
 	`, fileID)
 
 	var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
 		ID            int
-		UserID        int
+		UserID        string
 		Name          string
 		ContentBase64 string
 	}
@@ -115,7 +115,7 @@ func (s *FileService) GetFile(fileID int) (*File, error) {
 
 // Update a file in the database
 // Only updates fields that are not empty
-func (s *FileService) UpdateFile(fileID int, userID int, name string, contentBase64 string) error {
+func (s *FileService) UpdateFile(fileID int, userID string, name string, contentBase64 string) error {
 	existing, err := s.GetFile(fileID)
 	if err == ErrFileNotFound {
 		return err
@@ -127,7 +127,7 @@ func (s *FileService) UpdateFile(fileID int, userID int, name string, contentBas
 
 	// Set the new value to the existing one, then overwrite any non-zero / non-empty values
 	updated := existing
-	if userID != 0 {
+	if userID != "" {
 		updated.UserID = userID
 	}
 	if name != "" {
@@ -139,7 +139,7 @@ func (s *FileService) UpdateFile(fileID int, userID int, name string, contentBas
 
 	// Write our new value to the database
 	_, err = s.db.Exec(`
-		UPDATE files SET user_id = ?, name = ?, content_base64 = ? WHERE id = ?;
+		UPDATE files SET user_id = $1, name = $2, content_base64 = $3 WHERE id = $4;
 	`, updated.UserID, updated.Name, updated.ContentBase64, fileID)
 	if err != nil {
 		return fmt.Errorf("failed to update file: %w", err)
@@ -151,7 +151,7 @@ func (s *FileService) UpdateFile(fileID int, userID int, name string, contentBas
 // Remove a file from the database
 func (s *FileService) DeleteFile(fileID int) error {
 	_, err := s.db.Exec(`
-		DELETE FROM files WHERE id = ?;
+		DELETE FROM files WHERE id = $1;
 	`, fileID)
 	if err != nil {
 		return fmt.Errorf("failed to remove file: %w", err)

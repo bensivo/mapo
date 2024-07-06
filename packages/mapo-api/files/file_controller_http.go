@@ -12,16 +12,20 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/bensivo/mapo/packages/mapo-api/jwt"
+	"github.com/bensivo/mapo/packages/mapo-api/users"
 	"github.com/bensivo/mapo/packages/mapo-api/util"
 )
 
 type HTTPFileController struct {
 	svc *FileService
+	jwt *jwt.JwtService
 }
 
-func NewHttpFileController(svc *FileService) *HTTPFileController {
+func NewHttpFileController(svc *FileService, jwt *jwt.JwtService) *HTTPFileController {
 	return &HTTPFileController{
 		svc,
+		jwt,
 	}
 }
 
@@ -29,22 +33,22 @@ func (c *HTTPFileController) Register(mux *http.ServeMux) {
 	fmt.Println("Registering routes from HTTPFileController")
 
 	fmt.Println("Registering route POST /files")
-	mux.HandleFunc("POST /files", c.onPostFile)
+	mux.HandleFunc("POST /files", util.WithLogger(c.jwt.WithJWTAuth(c.onPostFile)))
 
 	fmt.Println("Registering route GET /files")
-	mux.HandleFunc("GET /files", c.onGetFiles)
+	mux.HandleFunc("GET /files", util.WithLogger(c.jwt.WithJWTAuth(c.onGetFiles)))
 
 	fmt.Println("Registering route GET /files/{fileid}")
-	mux.HandleFunc("GET /files/{fileid}", c.onGetFile)
+	mux.HandleFunc("GET /files/{fileid}", util.WithLogger(c.jwt.WithJWTAuth(c.onGetFile)))
 
 	fmt.Println("Registering route PATCH /files/{fileid}")
-	mux.HandleFunc("PATCH /files/{fileid}", c.onUpdateFile)
+	mux.HandleFunc("PATCH /files/{fileid}", util.WithLogger(c.jwt.WithJWTAuth(c.onUpdateFile)))
 
 	fmt.Println("Registering route DELETE /files/{fileid}")
-	mux.HandleFunc("DELETE /files/{fileid}", c.onDeleteFile)
+	mux.HandleFunc("DELETE /files/{fileid}", util.WithLogger(c.jwt.WithJWTAuth(c.onDeleteFile)))
 }
 
-func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
 	var data struct {
 		UserID        int    `json:"userId"`
@@ -75,7 +79,7 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request) 
 	util.WriteJSON(w, file)
 }
 
-func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request, user *users.User) {
 	files, err := c.svc.GetFiles()
 	if err != nil {
 		http.Error(w, "Failed to get files", http.StatusInternalServerError)
@@ -86,7 +90,7 @@ func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request) 
 	util.WriteJSON(w, files)
 }
 
-func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 
 	fileIDStr := r.PathValue("fileid")
 	fileID, err := strconv.Atoi(fileIDStr)
@@ -104,7 +108,7 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, file)
 
 }
-func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
 	var data struct {
 		UserID        int    `json:"user_id"`
@@ -142,7 +146,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 		"status": "ok",
 	})
 }
-func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Get fileid from path
 	idStr := r.PathValue("fileid")
 	fileID, err := strconv.Atoi(idStr)

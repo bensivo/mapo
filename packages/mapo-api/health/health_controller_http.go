@@ -21,7 +21,7 @@ func (c *HTTPHealthController) Register(mux *http.ServeMux) {
 	fmt.Println("Registering routes from HTTPHealthController")
 
 	fmt.Println("Registering route GET /health")
-	mux.HandleFunc("GET /health", c.onGetHealth)
+	mux.HandleFunc("GET /health", util.WithLogger(c.onGetHealth))
 }
 
 func (c *HTTPHealthController) onGetHealth(w http.ResponseWriter, r *http.Request) {
