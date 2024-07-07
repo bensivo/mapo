@@ -4,20 +4,20 @@ import { CommonModule } from '@angular/common';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
 @Component({
-    selector: 'app-toolbar',
-    standalone: true,
-    imports: [CommonModule],
-    templateUrl: './toolbar.component.html',
-    styleUrl: './toolbar.component.less'
+  selector: 'app-toolbar',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './toolbar.component.html',
+  styleUrl: './toolbar.component.less',
 })
 export class ToolbarComponent {
-    tool$ = this.toolbarStore.tool$;
+  tool$ = this.toolbarStore.tool$;
 
-    constructor(private toolbarStore: ToolbarStore) {
-        console.log('ToolbarComponent initialized');
-    }
+  constructor(private toolbarStore: ToolbarStore) {
+    console.log('ToolbarComponent initialized');
+  }
 
-    selectTool(tool: string) {
-        this.toolbarStore.setTool(tool as Tool);
-    }
+  selectTool(tool: string) {
+    this.toolbarStore.setTool(tool as Tool);
+  }
 }

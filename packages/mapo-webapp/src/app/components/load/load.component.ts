@@ -9,7 +9,7 @@ import { TitleStore } from '../../store/title.store';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './load.component.html',
-  styleUrl: './load.component.less'
+  styleUrl: './load.component.less',
 })
 export class LoadComponent {
   show: boolean = false;
@@ -18,10 +18,10 @@ export class LoadComponent {
     private edgeStore: EdgeStore,
     private textNodeStore: TextNodeStore,
     private titleStore: TitleStore,
-  ){}
+  ) {}
 
   toggleLoad() {
-      this.show = !this.show;
+    this.show = !this.show;
   }
 
   load() {
@@ -30,7 +30,7 @@ export class LoadComponent {
     fileInput.accept = '.mapo';
     fileInput.onchange = (e) => {
       const target = e.target as HTMLInputElement;
-      if (!target.files){
+      if (!target.files) {
         return;
       }
 

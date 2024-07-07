@@ -1,6 +1,6 @@
 export interface TextNode {
-    id: string;
-    text: string;
-    x: number;
-    y: number;
+  id: string;
+  text: string;
+  x: number;
+  y: number;
 }

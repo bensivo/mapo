@@ -1,14 +1,26 @@
 <div class="toolbar-container" *ngIf="tool$ | async; let tool">
-    <div class="tool" [ngClass]="{'enabled': tool === 'pointer'}" (click)="selectTool('pointer')">
-        <i class="ri-cursor-line"></i>
-        <span class="subtext">Esc</span>
-    </div>
-    <div class="tool create-text-node" [ngClass]="{'enabled': tool === 'create-text-node'}" (click)="selectTool('create-text-node')">
-        <i class="ri-text-snippet"></i>
-        <span class="subtext">t</span>
-    </div>
-    <div class="tool create-edge" [ngClass]="{'enabled': tool === 'create-edge'}" (click)="selectTool('create-edge')">
-        <i class="ri-expand-right-fill"></i>
-        <span class="subtext">e</span>
-    </div>
+  <div
+    class="tool"
+    [ngClass]="{ enabled: tool === 'pointer' }"
+    (click)="selectTool('pointer')"
+  >
+    <i class="ri-cursor-line"></i>
+    <span class="subtext">Esc</span>
+  </div>
+  <div
+    class="tool create-text-node"
+    [ngClass]="{ enabled: tool === 'create-text-node' }"
+    (click)="selectTool('create-text-node')"
+  >
+    <i class="ri-text-snippet"></i>
+    <span class="subtext">t</span>
+  </div>
+  <div
+    class="tool create-edge"
+    [ngClass]="{ enabled: tool === 'create-edge' }"
+    (click)="selectTool('create-edge')"
+  >
+    <i class="ri-expand-right-fill"></i>
+    <span class="subtext">e</span>
+  </div>
 </div>

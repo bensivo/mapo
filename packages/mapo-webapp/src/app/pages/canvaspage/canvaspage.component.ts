@@ -9,10 +9,15 @@ import { TitleComponent } from '../../components/title/title.component';
 @Component({
   selector: 'app-canvaspage',
   standalone: true,
-  imports: [CanvasComponent, ToolbarComponent, HelpComponent, SaveComponent, LoadComponent, TitleComponent],
+  imports: [
+    CanvasComponent,
+    ToolbarComponent,
+    HelpComponent,
+    SaveComponent,
+    LoadComponent,
+    TitleComponent,
+  ],
   templateUrl: './canvaspage.component.html',
-  styleUrl: './canvaspage.component.less'
+  styleUrl: './canvaspage.component.less',
 })
-export class CanvaspageComponent {
-
-}
+export class CanvaspageComponent {}

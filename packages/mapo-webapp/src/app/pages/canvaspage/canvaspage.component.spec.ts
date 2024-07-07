@@ -8,10 +8,9 @@ describe('CanvaspageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CanvaspageComponent]
-    })
-    .compileComponents();
-    
+      imports: [CanvaspageComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(CanvaspageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

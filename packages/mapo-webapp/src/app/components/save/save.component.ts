@@ -9,7 +9,7 @@ import { TitleStore } from '../../store/title.store';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './save.component.html',
-  styleUrl: './save.component.less'
+  styleUrl: './save.component.less',
 })
 export class SaveComponent {
   show: boolean = false;
@@ -18,15 +18,15 @@ export class SaveComponent {
     private edgeStore: EdgeStore,
     private textNodeStore: TextNodeStore,
     private titleStore: TitleStore,
-  ){}
+  ) {}
 
   toggleSave() {
-      this.show = !this.show;
+    this.show = !this.show;
   }
 
   save() {
     const edges = this.edgeStore.edges.value;
-    const textNodes = this.textNodeStore.textNodes.value;;
+    const textNodes = this.textNodeStore.textNodes.value;
     const title = this.titleStore.title.value;
 
     const data = JSON.stringify({
@@ -34,7 +34,8 @@ export class SaveComponent {
       textNodes: textNodes,
       title: title,
     });
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data);
+    const dataUri =
+      'data:application/json;charset=utf-8,' + encodeURIComponent(data);
 
     const link = document.createElement('a');
     link.setAttribute('href', dataUri);

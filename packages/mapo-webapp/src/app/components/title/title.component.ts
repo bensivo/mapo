@@ -8,16 +8,15 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './title.component.html',
-  styleUrl: './title.component.less'
+  styleUrl: './title.component.less',
 })
 export class TitleComponent {
-
   title$ = this.titleStore.title$;
 
   constructor(
     private titleStore: TitleStore,
     private toolbarStore: ToolbarStore,
-  ){}
+  ) {}
 
   onFocus() {
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);

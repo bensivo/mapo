@@ -1,3 +1,9 @@
 <div class="title" *ngIf="title$ | async; let title">
-    <input type="text" [value]="title" (change)="onChange($event)" (focus)="onFocus()" (blur)="onBlur()">
+  <input
+    type="text"
+    [value]="title"
+    (change)="onChange($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  />
 </div>

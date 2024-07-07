@@ -14,7 +14,7 @@ import { TextNodeController } from './controllers/text-node.controller';
   standalone: true,
   imports: [RouterOutlet, CanvasComponent, ToolbarComponent, HelpComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.less'
+  styleUrl: './app.component.less',
 })
 export class AppComponent {
   title = 'mapo-webapp';

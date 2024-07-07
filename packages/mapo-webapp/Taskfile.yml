@@ -5,6 +5,10 @@ tasks:
     cmds:
       - npx ng serve -o
 
+  fmt:
+    cmds:
+      - npx prettier --write .
+
   build:
     cmds:
       - npx ng build
@@ -12,7 +16,7 @@ tasks:
   test:
     cmds:
       - npx ng test
-    
+
   docker-build:
     sources:
       - ./public/**/*

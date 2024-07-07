@@ -6,16 +6,16 @@ import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CanvasService {
-
-  canvas$: BehaviorSubject<fabric.Canvas | null> = new BehaviorSubject<fabric.Canvas | null>(null);
+  canvas$: BehaviorSubject<fabric.Canvas | null> =
+    new BehaviorSubject<fabric.Canvas | null>(null);
 
   constructor(
     private zoomCanvasService: ZoomCanvasService,
     private toolbarService: ToolbarService,
-  ) { }
+  ) {}
 
   async initializeCanvas(id: string): Promise<void> {
     // Make sure the Roboto font is loaded before we initialize the canvas.
@@ -38,11 +38,11 @@ export class CanvasService {
     window.addEventListener('resize', () => {
       canvas.setWidth(htmlCanvas.offsetWidth);
       canvas.setHeight(htmlCanvas.offsetHeight);
-    })
+    });
 
     this.canvas$.next(canvas);
 
     this.zoomCanvasService.register(canvas);
     this.toolbarService.register(canvas);
-  };
+  }
 }

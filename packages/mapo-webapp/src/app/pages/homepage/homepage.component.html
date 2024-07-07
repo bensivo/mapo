@@ -1,21 +1,43 @@
 <div class="homepage">
+  <img class="background-img" src="example-mind-map.png" />
 
-    <img class="background-img" src="example-mind-map.png">
-
-    <div class="content">
-
-        <h1 class="title">Mapo</h1>
-        <span class="subtitle">Mind maps made easy</span>
-        <span class="author">by bensivo</span>
-
-        <div class="btn-container">
-            <button class="start-mapping-btn" (click)="onClickStartMapping()">
-                Start mapping
-            </button>
-            <!-- <button class="signup-signin-btn">
-                Sign up or Sign in
-            </button> -->
-        </div>
-
+  <div *ngIf="state$ | async as state" class="content">
+    <div *ngIf="state == 'signed-out'">
+      <h1 class="title">Mapo</h1>
+      <span class="subtitle">Mind maps made easy</span>
+      <span class="author">by bensivo</span>
+      <div class="btn-container">
+        <button class="start-mapping-btn" (click)="onClickStartMapping()">
+          Start mapping
+        </button>
+        <button class="signup-signin-btn" (click)="onClickSignUpSignIn()">
+          Sign up / Sign in
+        </button>
+      </div>
     </div>
+
+    <div *ngIf="state == 'signing-in'" class="signin-container">
+      <h1 class="title">Mapo</h1>
+      <div class="btn-container">
+        <button class="signup-signin-btn" (click)="onClickSignInWithGoogle()">
+          Sign in with Google
+        </button>
+        <button class="signup-signin-btn" (click)="onClickCancel()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="state == 'signed-in'" class="btn-container">
+      <h1 class="title">Mapo</h1>
+      <span class="subtitle">Mind maps made easy</span>
+      <span class="author">by bensivo</span>
+      <div class="btn-container">
+        <button (click)="onClickMyFiles()">Go to My Files</button>
+        <button class="signup-signin-btn" (click)="onClickSignOut()">
+          Sign out
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

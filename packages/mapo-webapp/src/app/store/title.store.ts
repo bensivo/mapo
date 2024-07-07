@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TitleStore {
-
   title = new BehaviorSubject<string>('Untitled');
   title$ = this.title.asObservable();
 
@@ -16,9 +15,9 @@ export class TitleStore {
     }
 
     this.title$.subscribe((title) => {
-        console.log('Persisting title', title)
-        // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
-        localStorage.setItem('mapo-state-title', title);
+      console.log('Persisting title', title);
+      // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
+      localStorage.setItem('mapo-state-title', title);
     });
   }
 

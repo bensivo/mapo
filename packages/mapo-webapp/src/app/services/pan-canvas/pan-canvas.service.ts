@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { CanvasService } from '../canvas/canvas.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PanCanvasService {
-
   canvas: fabric.Canvas | null = null;
 
   _isPanning = false;
@@ -43,7 +42,7 @@ export class PanCanvasService {
 
     const vpt = this.canvas.viewportTransform;
     if (!vpt) {
-      console.log('No viewport transform')
+      console.log('No viewport transform');
       return;
     }
 
@@ -61,12 +60,12 @@ export class PanCanvasService {
     }
 
     const vpt = this.canvas.viewportTransform;
-      if (!vpt) {
-        console.log('No viewport transform')
-        return;
-      }
+    if (!vpt) {
+      console.log('No viewport transform');
+      return;
+    }
 
-      this.canvas.setViewportTransform(vpt);
-      this._isPanning = false;
+    this.canvas.setViewportTransform(vpt);
+    this._isPanning = false;
   }
 }

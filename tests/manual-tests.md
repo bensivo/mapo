@@ -3,6 +3,27 @@
 We haven't automated tests yet, so here are some manual test cases.
 Test cases are written in cucumber syntax. Given When Then. These are abbreviated to just "G", "W", "T"
 
+## Login
+```
+Skip login:
+    G: I am on the homepage, not logged in
+    W: I click "Start Mapping"
+    T: I go directly to the canvas
+
+Sign in with google:
+    G: I am not logged in
+    W: I click "Sign in with google"
+    T: I am signed in
+
+Sign out: 
+    G: I am signed in
+    W: I hit "sign out"
+    T: The site returns to the "signed-out" state
+
+My Files:
+    G: I am logged in, on the homepage
+    T: I see the button "Go to My Files"
+```
 
 ## Text Nodes
 ```
