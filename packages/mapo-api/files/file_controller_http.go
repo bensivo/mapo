@@ -111,7 +111,7 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
 	var data struct {
-		UserID        int    `json:"user_id"`
+		UserID        string `json:"user_id"`
 		Name          string `json:"name"`
 		ContextBase64 string `json:"content_base64"`
 	}

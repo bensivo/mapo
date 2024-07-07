@@ -1,0 +1,14 @@
+version: 3.4
+
+tasks:
+  fmt:
+    cmds:
+      - npx prettier --write .
+
+  run:
+    cmds:
+      - |
+        export JWT_AUDIENCE=`infisical secrets get JWT_AUDIENCE --plain --silent --env=dev`
+        export JWT_ISSUER=`infisical secrets get JWT_ISSUER --plain --silent --env=dev`
+        export JWT_SECRET=`infisical secrets get JWT_SECRET --plain --silent --env=dev`
+        npx jest
