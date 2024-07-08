@@ -46,16 +46,15 @@ export class EdgeService {
       const startObject = textNodes[edge.startNodeId];
       const endObject = textNodes[edge.endNodeId];
 
-      FabricUtils.createArrow(this.canvas, edge.id, startObject, endObject);
+      const polyline = FabricUtils.createArrow(
+        this.canvas,
+        edge.id,
+        startObject,
+        endObject,
+      );
 
       if (edge.text) {
-        FabricUtils.createArrowText(
-          this.canvas,
-          edge.id,
-          edge.text,
-          startObject,
-          endObject,
-        );
+        FabricUtils.createArrowText(this.canvas, edge.id, edge.text, polyline);
       }
     }
   }
@@ -72,33 +71,37 @@ export class EdgeService {
       return;
     }
 
+    const arrowObj = FabricUtils.getArrow(this.canvas, id);
     const textObj = FabricUtils.getArrowText(this.canvas, id);
-    const startObj = FabricUtils.findById<fabric.Object>(
-      this.canvas,
-      edge.startNodeId,
-    );
-    const endObj = FabricUtils.findById<fabric.Object>(
-      this.canvas,
-      edge.endNodeId,
-    );
+    const text = textObj?.text ?? '';
 
-    if (!startObj || !endObj) {
+    if (!arrowObj) {
       console.warn('Could not find one or more objects for editing edge', edge);
       return;
     }
 
-    const centerpointLeft =
-      startObj.getCenterPoint().x +
-      (endObj.getCenterPoint().x - startObj.getCenterPoint().x) / 2;
-    const centerpointTop =
-      startObj.getCenterPoint().y +
-      (endObj.getCenterPoint().y - startObj.getCenterPoint().y) / 2;
+    if (textObj !== undefined) {
+      this.canvas.remove(textObj);
+    }
+
+    const srcX = arrowObj.data.srcX;
+    const srcY = arrowObj.data.srcY;
+    const destX = arrowObj.data.destX;
+    const destY = arrowObj.data.destY;
+
+    if (!srcX || !srcY || !destX || !destY) {
+      console.warn('arrowObj does not have srcX, srcY, destX, destY', arrowObj);
+      return;
+    }
+
+    const centerpointX = srcX + (destX - srcX) / 2;
+    const centerpointY = srcY + (destY - srcY) / 2;
 
     const itext = FabricUtils.createIText(
       this.canvas,
-      textObj?.text ?? '',
-      centerpointTop,
-      centerpointLeft,
+      text,
+      centerpointY,
+      centerpointX,
     );
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);

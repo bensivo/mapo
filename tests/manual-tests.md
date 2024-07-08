@@ -95,6 +95,11 @@ Cancel Edge:
     W: I press "e" or "Escape"
     T: The line I'm drawing should be cancelled
 
+Cancel Edge (click):
+    G: I am drawing an edge (above)
+    W: I click on empty space
+    T: The line I'm drawing should be cancelled
+
 Finish drawing edge:
     G: I am drawing an edge (above)
     W: I left-click on any other node

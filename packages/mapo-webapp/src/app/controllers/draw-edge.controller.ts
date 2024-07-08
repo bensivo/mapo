@@ -46,6 +46,10 @@ export class DrawEdgeController {
     }
 
     if (e.target?.data?.type !== 'text-node') {
+      if (this.drawEdgeService.isDrawingEdge()) {
+        this.drawEdgeService.removePendingEdge();
+        this.toolbarStore.setTool(Tool.POINTER);
+      }
       return;
     }
 

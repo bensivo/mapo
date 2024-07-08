@@ -7,6 +7,15 @@ import { TextNode } from '../models/textnode.interface';
  * By putting this in a different class, we can test all our service functions without mocking all of fabric.js
  */
 export class FabricUtils {
+  /**
+   * Create an itext node centered on the point given
+   *
+   * @param canvas
+   * @param text
+   * @param top
+   * @param left
+   * @returns
+   */
   static createIText(
     canvas: fabric.Canvas,
     text: string,
@@ -14,8 +23,6 @@ export class FabricUtils {
     left: number,
   ): fabric.IText {
     const itext = new fabric.IText(text, {
-      top: top,
-      left: left,
       fontSize: 16,
       fontFamily: 'Roboto',
       backgroundColor: 'white',
@@ -110,28 +117,37 @@ export class FabricUtils {
     src: fabric.Object,
     dest: fabric.Object,
   ): fabric.Polyline {
-    const srcX = this.getCenterPoint(src).x;
-    const srcY = this.getCenterPoint(src).y;
+    let srcX = this.getCenterPoint(src).x;
+    let srcY = this.getCenterPoint(src).y;
     let destX = this.getCenterPoint(dest).x;
     let destY = this.getCenterPoint(dest).y;
 
-    do {
-      const point = this.subtractArrowLength(srcX, srcY, destX, destY, 5);
+    // Iteratively push the start-point of the arrow towards the end, until it is no longer inside the src node
+    // Then do 1 more push just for aesthetics
+    while (src.containsPoint(new fabric.Point(srcX, srcY), null, true)) {
+      const point = this.translateTowards(srcX, srcY, destX, destY, 5);
+      srcX = point.x;
+      srcY = point.y;
+    }
+    const newSrc = this.translateTowards(srcX, srcY, destX, destY, 5);
+    srcX = newSrc.x;
+    srcY = newSrc.y;
+
+    // Iteratively push the end-point of the arrow towards the start, until it is no longer inside the dest node
+    // Then do 1 more push just for aesthetics
+    while (dest.containsPoint(new fabric.Point(destX, destY), null, true)) {
+      const point = this.translateTowards(destX, destY, srcX, srcY, 5);
       destX = point.x;
       destY = point.y;
-    } while (dest.containsPoint(new fabric.Point(destX, destY), null, true));
+    }
+    const newDest = this.translateTowards(destX, destY, srcX, srcY, 5);
+    destX = newDest.x;
+    destY = newDest.y;
 
-    // Subtract 3 more from the end, just for aesthetics
-    const point = this.subtractArrowLength(srcX, srcY, destX, destY, 3);
-    destX = point.x;
-    destY = point.y;
-
+    // Calculate the points of the final arrow polygon and draw it
     const lineAngle = Math.atan2(destY - srcY, destX - srcX);
-
     const headLen = 10;
     const headAngle = Math.PI / 8;
-
-    // calculate the points.
     var points = [
       {
         x: srcX, // start point
@@ -172,6 +188,10 @@ export class FabricUtils {
       data: {
         type: 'edge',
         id: id,
+        srcX: srcX,
+        srcY: srcY,
+        destX: destX,
+        destY: destY,
       },
     });
 
@@ -180,7 +200,7 @@ export class FabricUtils {
     return poly;
   }
 
-  private static getCenterPoint(object: fabric.Object): fabric.Point {
+  public static getCenterPoint(object: fabric.Object): fabric.Point {
     if (!object.group) {
       return object.getCenterPoint();
     } else {
@@ -197,7 +217,7 @@ export class FabricUtils {
   }
 
   // Make the arrow N units shorter, but still pointing in the same direction
-  private static subtractArrowLength(
+  private static translateTowards(
     srcX: number,
     srcY: number,
     destX: number,
@@ -205,10 +225,12 @@ export class FabricUtils {
     n: number,
   ): { x: number; y: number } {
     const lineAngle = Math.atan2(destY - srcY, destX - srcX);
+    const x = srcX + n * Math.cos(lineAngle);
+    const y = srcY + n * Math.sin(lineAngle);
 
     return {
-      x: destX - n * Math.cos(lineAngle),
-      y: destY - n * Math.sin(lineAngle),
+      x,
+      y,
     };
   }
 
@@ -220,15 +242,20 @@ export class FabricUtils {
     canvas: fabric.Canvas,
     id: string,
     text: string,
-    src: fabric.Object,
-    dest: fabric.Object,
-  ): fabric.Text {
-    const centerpointLeft =
-      src.getCenterPoint().x +
-      (dest.getCenterPoint().x - src.getCenterPoint().x) / 2;
-    const centerpointTop =
-      src.getCenterPoint().y +
-      (dest.getCenterPoint().y - src.getCenterPoint().y) / 2;
+    arrow: fabric.Polyline,
+  ): fabric.Text | null {
+    const srcX = arrow.data.srcX;
+    const srcY = arrow.data.srcY;
+    const destX = arrow.data.destX;
+    const destY = arrow.data.destY;
+
+    if (!srcX || !srcY || !destX || !destY) {
+      console.warn('Arrow does not have srcX, srcY, destX, destY', arrow);
+      return null;
+    }
+
+    const centerpointX = srcX + (destX - srcX) / 2;
+    const centerpointY = srcY + (destY - srcY) / 2;
 
     const textObj = new fabric.Text(text, {
       fontFamily: 'Roboto',
@@ -243,13 +270,25 @@ export class FabricUtils {
 
     const boundingRect = textObj.getBoundingRect();
     textObj.set({
-      left: centerpointLeft - boundingRect.width / 2,
-      top: centerpointTop - boundingRect.height / 2,
+      left: centerpointX - boundingRect.width / 2,
+      top: centerpointY - boundingRect.height / 2,
     });
 
     canvas.add(textObj);
     canvas.bringToFront(textObj);
     return textObj;
+  }
+
+  static getArrow(
+    canvas: fabric.Canvas,
+    id: string,
+  ): fabric.Object | undefined {
+    for (const object of canvas.getObjects()) {
+      if (object.data?.type === 'edge' && object.data?.id === id) {
+        return object as fabric.Polyline;
+      }
+    }
+    return undefined;
   }
 
   static getArrowTexts(canvas: fabric.Canvas): fabric.Object[] {

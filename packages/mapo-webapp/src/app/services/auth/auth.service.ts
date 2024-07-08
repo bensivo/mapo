@@ -62,7 +62,7 @@ export class AuthService {
 
   async signInWithGoogle(): Promise<OAuthResponse> {
     const res = await this.supabase.auth.signInWithOAuth({
-    // Configuring google oauth from supabase: https://supabase.com/docs/guides/auth/social-login/auth-google
+      // Configuring google oauth from supabase: https://supabase.com/docs/guides/auth/social-login/auth-google
       provider: 'google',
     });
     console.log('Google OAuth response', res);

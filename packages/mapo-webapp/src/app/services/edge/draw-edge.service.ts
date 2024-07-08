@@ -149,7 +149,7 @@ export class DrawEdgeService {
       fill: 'black',
       stroke: 'black',
       strokeWidth: 1,
-      selectable: true,
+      selectable: false,
     });
 
     return poly;
