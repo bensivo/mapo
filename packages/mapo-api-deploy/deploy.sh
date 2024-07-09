@@ -19,6 +19,9 @@ fi
 ENV=$1
 DOCKER_IMAGE_TAG=$2
 
+# postgresql://postgres.dauzhiqsfamfeihvfzdg:WMYWa4Nbj%2AkAUf%25%25Wa%26C@aws-0-us-west-1.pooler.supabase.com:6543/postgres
+# postgresql://postgres:WMYWa4Nbj%2AkAUf%25%25Wa%26C@db.dauzhiqsfamfeihvfzdg.supabase.co:5432/postgres
+
 # Fetch secrets from infisical
 echo "Fetching secrets from infisical"
 GHCR_USERNAME=`infisical secrets get GHCR_USERNAME --plain --silent --env=$ENV`

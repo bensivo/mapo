@@ -3,10 +3,10 @@ package files
 import "fmt"
 
 type File struct {
-	ID            int
-	UserID        string
-	Name          string
-	ContentBase64 string
+	ID            int    `json:"id"`
+	UserID        string `json:"userId"`
+	Name          string `json:"name"`
+	ContentBase64 string `json:"contentBase64"`
 }
 
 func (f File) String() string {

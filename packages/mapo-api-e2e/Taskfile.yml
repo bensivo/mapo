@@ -11,4 +11,4 @@ tasks:
         export JWT_AUDIENCE=`infisical secrets get JWT_AUDIENCE --plain --silent --env=dev`
         export JWT_ISSUER=`infisical secrets get JWT_ISSUER --plain --silent --env=dev`
         export JWT_SECRET=`infisical secrets get JWT_SECRET --plain --silent --env=dev`
-        npx jest
+        npx jest --runInBand

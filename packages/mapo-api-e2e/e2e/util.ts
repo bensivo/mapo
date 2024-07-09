@@ -6,10 +6,10 @@ const jwtSecret = process.env.JWT_SECRET ?? '';
 const jwtIssuer = process.env.JWT_ISSUER ?? '';
 const jwtAudience = process.env.JWT_AUDIENCE ?? '';
 
-const jwtSubject = '11111111-1111-1111-1111-111111111111';
-const jwtEmail = 'testuser@bensivo.com';
+export const jwtSubject = '11111111-1111-1111-1111-111111111111';
+export const jwtEmail = 'testuser@bensivo.com';
 
-export function generateToken() {
+export function generateToken(subject?: string) {
   const jwtPayload = {
     // NOTE: this is not the full JWT payload
     // but it has all the fields we care about for testing
@@ -17,7 +17,7 @@ export function generateToken() {
     exp: Date.now() / 1000 + 60 * 60, // 1 hour from now
     iat: Date.now() / 1000,
     iss: jwtIssuer,
-    sub: jwtSubject,
+    sub: subject ?? jwtSubject,
     email: jwtEmail,
   };
 

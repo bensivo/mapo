@@ -51,25 +51,27 @@ func (c *HTTPFileController) Register(mux *http.ServeMux) {
 func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
 	var data struct {
-		UserID        int    `json:"userId"`
 		Name          string `json:"name"`
 		ContextBase64 string `json:"contentBase64"`
 	}
 	bytes, err := io.ReadAll(r.Body)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to read request body", http.StatusBadRequest)
 		return
 	}
 
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to parse JSON request body", http.StatusBadRequest)
 		return
 	}
 
 	// Call service
-	file, err := c.svc.InsertFile(data.UserID, data.Name, data.ContextBase64)
+	file, err := c.svc.InsertFile(user.ID, data.Name, data.ContextBase64)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to insert file", http.StatusInternalServerError)
 		return
 	}
@@ -80,7 +82,7 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, 
 }
 
 func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request, user *users.User) {
-	files, err := c.svc.GetFiles()
+	files, err := c.svc.GetFiles(user.ID)
 	if err != nil {
 		http.Error(w, "Failed to get files", http.StatusInternalServerError)
 		return
@@ -99,7 +101,11 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 		return
 	}
 
-	file, err := c.svc.GetFile(fileID)
+	file, err := c.svc.GetFile(user.ID, fileID)
+	if err == ErrFileNotFound {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
 	if err != nil {
 		http.Error(w, "Failed to get file", http.StatusInternalServerError)
 		return
@@ -111,9 +117,8 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
 	var data struct {
-		UserID        string `json:"user_id"`
 		Name          string `json:"name"`
-		ContextBase64 string `json:"content_base64"`
+		ContextBase64 string `json:"contentBase64"`
 	}
 	bytes, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -136,7 +141,11 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 	}
 
 	// Call service
-	err = c.svc.UpdateFile(fileID, data.UserID, data.Name, data.ContextBase64)
+	err = c.svc.UpdateFile(fileID, user.ID, data.Name, data.ContextBase64)
+	if err == ErrFileNotFound {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
 	if err != nil {
 		http.Error(w, "Failed to update file", http.StatusInternalServerError)
 		return
@@ -156,7 +165,11 @@ func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request
 	}
 
 	// Call service
-	err = c.svc.DeleteFile(fileID)
+	err = c.svc.DeleteFile(user.ID, fileID)
+	if err == ErrFileNotFound {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
 	if err != nil {
 		http.Error(w, "Failed to delete file", http.StatusInternalServerError)
 		return

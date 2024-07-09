@@ -23,11 +23,13 @@ func NewFileService(db *sql.DB) *FileService {
 }
 
 // Insert a file into the database
-func (s *FileService) InsertFile(userID int, name string, contentBase64 string) (*File, error) {
+func (s *FileService) InsertFile(userID string, name string, contentBase64 string) (*File, error) {
 
 	row := s.db.QueryRow(`
-		INSERT INTO files (user_id, name, content_base64) VALUES ($1, $2, $3) RETURNING *;
-	`, 1, name, contentBase64)
+		INSERT INTO files (user_id, name, content_base64) 
+		VALUES ($1, $2, $3) 
+		RETURNING id, user_id, name, content_base64;
+	`, userID, name, contentBase64)
 
 	var data struct {
 		ID            int
@@ -49,10 +51,10 @@ func (s *FileService) InsertFile(userID int, name string, contentBase64 string) 
 }
 
 // Get all files from the database
-func (s *FileService) GetFiles() ([]File, error) {
+func (s *FileService) GetFiles(userID string) ([]File, error) {
 	rows, err := s.db.Query(`
-		SELECT id, user_id, name, content_base64 FROM files;
-	`)
+		SELECT id, user_id, name, content_base64 FROM files where user_id = $1;
+	`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get files: %w", err)
 	}
@@ -84,10 +86,10 @@ func (s *FileService) GetFiles() ([]File, error) {
 
 // Get a single file from the Database, by its ID
 // returns a nil pointer if the file does not exist
-func (s *FileService) GetFile(fileID int) (*File, error) {
+func (s *FileService) GetFile(userID string, fileID int) (*File, error) {
 	row := s.db.QueryRow(`
-		SELECT id, user_id, name, content_base64 FROM files WHERE id = $1;
-	`, fileID)
+		SELECT id, user_id, name, content_base64 FROM files WHERE user_id = $1 and id = $2;
+	`, userID, fileID)
 
 	var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
 		ID            int
@@ -116,7 +118,7 @@ func (s *FileService) GetFile(fileID int) (*File, error) {
 // Update a file in the database
 // Only updates fields that are not empty
 func (s *FileService) UpdateFile(fileID int, userID string, name string, contentBase64 string) error {
-	existing, err := s.GetFile(fileID)
+	existing, err := s.GetFile(userID, fileID)
 	if err == ErrFileNotFound {
 		return err
 	}
@@ -125,11 +127,12 @@ func (s *FileService) UpdateFile(fileID int, userID string, name string, content
 		return fmt.Errorf("failed to get file for update: %w", err)
 	}
 
+	if existing.UserID != userID {
+		return fmt.Errorf("file does not belong to user")
+	}
+
 	// Set the new value to the existing one, then overwrite any non-zero / non-empty values
 	updated := existing
-	if userID != "" {
-		updated.UserID = userID
-	}
 	if name != "" {
 		updated.Name = name
 	}
@@ -149,10 +152,16 @@ func (s *FileService) UpdateFile(fileID int, userID string, name string, content
 }
 
 // Remove a file from the database
-func (s *FileService) DeleteFile(fileID int) error {
-	_, err := s.db.Exec(`
-		DELETE FROM files WHERE id = $1;
-	`, fileID)
+func (s *FileService) DeleteFile(userID string, fileID int) error {
+
+	_, err := s.GetFile(userID, fileID)
+	if err == ErrFileNotFound {
+		return err
+	}
+
+	_, err = s.db.Exec(`
+		DELETE FROM files WHERE user_id = $1 and id = $2;
+	`, userID, fileID)
 	if err != nil {
 		return fmt.Errorf("failed to remove file: %w", err)
 	}
