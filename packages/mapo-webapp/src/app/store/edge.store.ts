@@ -22,7 +22,6 @@ export class EdgeStore {
     }
 
     this.edges$.subscribe((edges) => {
-      console.log('Persisting edges', edges);
       // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
       localStorage.setItem('mapo-state-edges', JSON.stringify(edges));
     });

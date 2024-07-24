@@ -15,7 +15,6 @@ export class TitleStore {
     }
 
     this.title$.subscribe((title) => {
-      console.log('Persisting title', title);
       // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
       localStorage.setItem('mapo-state-title', title);
     });

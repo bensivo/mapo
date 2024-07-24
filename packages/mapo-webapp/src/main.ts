@@ -1,7 +1,22 @@
+import { provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
+import axios from 'axios';
 
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err),
-);
+import { AppComponent } from './app/app.component';
+import { Config, provideConfig } from './app/app.config';
+import { routes } from './app/app.routes';
+
+axios.get('/config.json').then((res) => {
+  const config = res.data as Config;
+
+  bootstrapApplication(AppComponent, {
+    providers: [
+      provideZoneChangeDetection({ eventCoalescing: true }),
+      provideRouter(routes),
+      provideConfig(config),
+    ]
+  }).catch((err) =>
+    console.error(err),
+  );
+})

@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TitleStore } from '../../store/title.store';
+import { FileContent } from '../../models/file.interface';
+import { FilesService } from '../../services/files/files.service';
 
 @Component({
   selector: 'app-load',
@@ -15,9 +17,7 @@ export class LoadComponent {
   show: boolean = false;
 
   constructor(
-    private edgeStore: EdgeStore,
-    private textNodeStore: TextNodeStore,
-    private titleStore: TitleStore,
+    private filesService: FilesService,
   ) {}
 
   toggleLoad() {
@@ -41,22 +41,8 @@ export class LoadComponent {
           return;
         }
 
-        // TODO: Add a 'version' attribute to data, so that we can add more features in the future
-        // without breaking old saves
-        const data = JSON.parse(e.target.result as string);
-        const edges = data.edges;
-        const textNodes = data.textNodes;
-        const title = data.title;
-
-        // Set all stores to empty
-        this.edgeStore.set([]);
-        this.textNodeStore.set([]);
-        this.titleStore.set('');
-
-        // Set new values
-        this.textNodeStore.set(textNodes);
-        this.edgeStore.set(edges);
-        this.titleStore.set(title);
+        const content: FileContent = JSON.parse(e.target.result as string);
+        this.filesService.loadFile(content);
       };
       reader.readAsText(file);
     };

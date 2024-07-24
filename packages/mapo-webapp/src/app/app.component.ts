@@ -8,6 +8,8 @@ import { DrawEdgeController } from './controllers/draw-edge.controller';
 import { EdgeController } from './controllers/edge.controller';
 import { PanCanvasController } from './controllers/pan-canvas.controller';
 import { TextNodeController } from './controllers/text-node.controller';
+import { AuthService } from './services/auth/auth.service';
+import { FilesService } from './services/files/files.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,8 @@ export class AppComponent {
 
   // These controllers injected here just so that they initialize themselves
   constructor(
+    private authService: AuthService,
+    private fileService: FilesService,
     private textNodeController: TextNodeController,
     private drawEdgeController: DrawEdgeController,
     private edgeController: EdgeController,

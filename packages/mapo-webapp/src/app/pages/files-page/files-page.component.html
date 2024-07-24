@@ -1,25 +1,21 @@
 <div class="files-page">
-  <div class="icons">
-    <i class="ri-user-line"></i>
-  </div>
   <div class="header">
     <h1>My Files</h1>
-
-    <button class="create-mindmap-button" (click)="onClickCreateMindMap()">
-      Create Mind Map
+    <button class="create-mindmap-button" (click)="onClickNewMindMap()">
+      New Mind Map
     </button>
   </div>
 
-  <div class="card-container">
-    <div class="card" *ngFor="let data of data">
-      <i class="card-options ri-more-2-fill"></i>
+  <div *ngIf="files$ | async let files" class="card-container">
+    <div class="card" *ngFor="let file of files">
+      <i class="card-options ri-delete-bin-line" (click)="onClickDeleteFile(file)"></i>
       <div class="card-img"></div>
       <div class="card-content">
-        <p class="card-title">{{ data.title }}</p>
-        <p class="card-subtitle">
-          Updated at: {{ data.updatedAt.toLocaleTimeString() }}
-          {{ data.updatedAt.toLocaleDateString() }}
-        </p>
+        <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
+        <!-- <p class="card-subtitle">
+          Updated at: {{ file.updatedAt.toLocaleTimeString() }}
+          {{ file.updatedAt.toLocaleDateString() }}
+        </p> -->
       </div>
     </div>
   </div>

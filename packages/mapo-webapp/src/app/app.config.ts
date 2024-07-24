@@ -1,11 +1,15 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { InjectionToken } from '@angular/core';
 
-import { routes } from './app.routes';
+export interface Config {
+    ENV: string;
+    MAPO_API_BASE_URL: string;
+}
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-  ],
-};
+export const CONFIG = new InjectionToken<Config>('config');
+
+export function provideConfig(config: Config) {
+    return {  
+        provide: CONFIG,
+        useValue: config
+    }
+}

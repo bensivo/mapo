@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 0 32px;
+  margin: 12px 32px;
 
   h1 {
     margin: 0;
@@ -43,20 +43,19 @@
 
 .card-container {
   height: 100%;
-  // max-width: 50rem;
   margin: 32px;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   overflow-y: scroll;
+  height: fit-content;
 
   .card {
     position: relative;
     width: 250px;
-    // min-width: 256px;
-    // max-width: 256px;
     border: solid 2px black;
     border-radius: 16px;
+    // height: fit-content;
   }
 
   .card-options {

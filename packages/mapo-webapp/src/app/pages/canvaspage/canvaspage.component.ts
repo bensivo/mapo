@@ -5,6 +5,7 @@ import { HelpComponent } from '../../components/help/help.component';
 import { SaveComponent } from '../../components/save/save.component';
 import { LoadComponent } from '../../components/load/load.component';
 import { TitleComponent } from '../../components/title/title.component';
+import { HomeComponent } from '../../components/home/home.component';
 
 @Component({
   selector: 'app-canvaspage',
@@ -16,6 +17,7 @@ import { TitleComponent } from '../../components/title/title.component';
     SaveComponent,
     LoadComponent,
     TitleComponent,
+    HomeComponent,
   ],
   templateUrl: './canvaspage.component.html',
   styleUrl: './canvaspage.component.less',

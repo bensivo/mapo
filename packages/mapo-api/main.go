@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/rs/cors"
+
 	"github.com/bensivo/mapo/packages/mapo-api/config"
 	"github.com/bensivo/mapo/packages/mapo-api/db"
 	"github.com/bensivo/mapo/packages/mapo-api/files"
@@ -40,8 +42,17 @@ func main() {
 	httpFileController.Register(mux)
 	httpHealthController.Register(mux)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4200"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE"},
+		AllowedHeaders:   []string{"authorization", "content-type"},
+		Debug:            true,
+	})
+	handler := c.Handler(mux)
+
 	fmt.Printf("Listening on http://localhost:%d\n", config.Port)
-	err = http.ListenAndServe(fmt.Sprintf(":%d", config.Port), mux)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", config.Port), handler)
 	if err != nil {
 		panic(err)
 	}

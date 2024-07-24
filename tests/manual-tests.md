@@ -225,3 +225,51 @@ Load from file:
     T: That drawing overrides the one I had
     T: The title is updated to fit what it was when that file was saved (may not actually match the filename on the FS)
 
+
+## Save / Load to Profile
+
+Load files from profile:
+    G: I have logged in
+    W: I go to my files
+    T: I see my files
+
+Open files from profile:
+    G: I am logged in, on my files page
+    W: I click on one file
+    T: I see the contents of that file
+    W: I go back and click on another file
+    T: I see the contents of that file
+
+Create new file:
+    G: I am logged in, on my files page
+    W: I click on "New MindMap"
+    T: I see a blank canvas
+
+    W: I click save
+    T: My browser makes a POST request, and creates a new file
+
+Update file:
+    G: I have openned an existing file
+    W: I click save
+    T: My browser makes a PATCH request, to update the existing file
+
+Update brand new file:
+    G: I have clicked on "New Mindmap"
+    W: I click save the first time
+    T: My browser makes a POST request
+    W: I click save the second time
+    T: My browser makes a PATCH request
+
+Delete file:
+    G: I am logged in, on the "My files" page
+    W: I click on the trashcan button
+    T: My brwoser makes a DELETE request
+    T: THe file dissapears
+
+Rename a file (failing):
+    G: I am logged in, and have openned an existing file
+    W: I rename the file, and click "save"
+    T: My browser makes a PATCH request and updates the name of the existing file
+
+    W: I go back to "My files"
+    T: I should see the file has been renamed, not adding a new file

@@ -23,7 +23,6 @@ export class TextNodeStore {
     }
 
     this.textNodes$.subscribe((textNodes) => {
-      console.log('Persisting nodes', textNodes);
       // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
       localStorage.setItem('mapo-state-text-nodes', JSON.stringify(textNodes));
     });
