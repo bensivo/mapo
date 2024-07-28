@@ -273,3 +273,13 @@ Rename a file (failing):
 
     W: I go back to "My files"
     T: I should see the file has been renamed, not adding a new file
+
+
+## Bugs
+
+```
+Duplicate toolbar event listeners:
+    G: I have openned the canvas, then left to "my-file", then went back to the canvsa
+    W: I press 't'
+    T: the text-node tool is selected
+```

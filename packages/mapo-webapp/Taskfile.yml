@@ -26,6 +26,7 @@ tasks:
       - angular.json
       - Dockerfile
       - nginx.conf
+      - docker-entrypoint.sh
     cmds:
       - docker build -t mapo-webapp .
 
@@ -39,5 +40,6 @@ tasks:
           -e INFISICAL_CLIENT_ID=$INFISICAL_CLIENT_ID \
           -e INFISICAL_CLIENT_SECRET=$INFISICAL_CLIENT_SECRET \
           -e INFISICAL_ENV=dev \
+          -e INFISICAL_PROJECT_ID=3e288ed5-a408-4b19-adbd-50b911a27653 \
           -p 4200:80 \
           mapo-webapp

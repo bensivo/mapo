@@ -19,7 +19,6 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.de
 RUN apt-get update && apt-get install -y infisical
 
 
-COPY ./generate-config.sh ./generate-config.sh
-ENTRYPOINT ["./generate-config.sh"]
-
-CMD ["nginx", "-g", "daemon off;"]
+COPY ./docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+ENTRYPOINT ["./docker-entrypoint.sh"]

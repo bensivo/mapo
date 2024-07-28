@@ -25,6 +25,8 @@ echo "Fetching secrets from infisical"
 GHCR_USERNAME=`infisical secrets get GHCR_USERNAME --plain --silent --env=$ENV`
 GHCR_TOKEN=`infisical secrets get GHCR_TOKEN --plain --silent --env=$ENV`
 INSTANCE_IP=`infisical secrets get INSTANCE_IP --plain --silent --env=$ENV`
+INFISICAL_CLIENT_ID=`infisical secrets get INFISICAL_CLIENT_ID --plain --silent --env=$ENV`
+INFISICAL_CLIENT_SECRET=`infisical secrets get INFISICAL_CLIENT_SECRET --plain --silent --env=$ENV`
 
 # Read SSH private key into a file, instead of as a string
 SSH_KEY_FILEPATH="instance.pem" 
@@ -42,6 +44,7 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
     docker rm -f mapo-webapp || true;
 "
 
+
 # Run the new docker image
 ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
     set -x;
@@ -49,5 +52,9 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
         --restart always \
         --name mapo-webapp \
         -p 8080:80 \
+        -e INFISICAL_CLIENT_ID=$INFISICAL_CLIENT_ID \
+        -e INFISICAL_CLIENT_SECRET=$INFISICAL_CLIENT_SECRET \
+        -e INFISICAL_ENV=$ENV \
+        -e INFISICAL_PROJECT_ID=3e288ed5-a408-4b19-adbd-50b911a27653 \
         ghcr.io/bensivo/mapo-webapp:$DOCKER_IMAGE_TAG;
 "

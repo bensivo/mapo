@@ -17,14 +17,23 @@ if [[ -z "$INFISICAL_ENV" ]]; then
 fi
 
 # Login to Infisical
+echo "Logging in to infisical"
 export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=$INFISICAL_CLIENT_ID --client-secret=$INFISICAL_CLIENT_SECRET --plain --silent)
 
-MAPO_API_BASE_URL=`infisical secrets get MAPO_API_BASE_URL --plain --silent --env=dev`
+# Get configs from infisical
+MAPO_API_BASE_URL=`infisical secrets get MAPO_API_BASE_URL --plain --silent --env=$INFISICAL_ENV --projectId=$INFISICAL_PROJECT_ID`
 
 # Generate config file
-cat <<EOF
+echo "Generating config.json"
+cat > /mapo-webapp/html/config.json << EOF 
 {
     "ENV":  "${INFISICAL_ENV}",
     "MAPO_API_BASE_URL": "${MAPO_API_BASE_URL}"
 }
-EOF > /mapo/webapp/html/config.json
+EOF
+
+cat /mapo-webapp/html/config.json
+
+# Start nginx
+echo "Starting nginx"
+exec nginx -g 'daemon off;'
