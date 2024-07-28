@@ -7,7 +7,9 @@ import { AppComponent } from './app/app.component';
 import { Config, provideConfig } from './app/app.config';
 import { routes } from './app/app.routes';
 
-axios.get('/config.json').then((res) => {
+const configPath = window.location.href.includes('localhost') ? '/config.json' : '/app/config.json';
+
+axios.get(configPath).then((res) => {
   const config = res.data as Config;
 
   bootstrapApplication(AppComponent, {

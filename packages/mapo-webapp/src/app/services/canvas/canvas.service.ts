@@ -1,9 +1,11 @@
-import FontFaceObserver from 'fontfaceobserver';
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
+import FontFaceObserver from 'fontfaceobserver';
+import { BehaviorSubject } from 'rxjs';
 import { ToolbarService } from '../toolbar/toolbar.service';
 import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
-import { BehaviorSubject } from 'rxjs';
+
+export type DestroyCanvasCallback = () => void;
 
 @Injectable({
   providedIn: 'root',
@@ -11,13 +13,14 @@ import { BehaviorSubject } from 'rxjs';
 export class CanvasService {
   canvas$: BehaviorSubject<fabric.Canvas | null> =
     new BehaviorSubject<fabric.Canvas | null>(null);
+  
 
   constructor(
     private zoomCanvasService: ZoomCanvasService,
     private toolbarService: ToolbarService,
   ) {}
 
-  async initializeCanvas(id: string): Promise<void> {
+  async initializeCanvas(id: string): Promise<DestroyCanvasCallback> {
     // Make sure the Roboto font is loaded before we initialize the canvas.
     // http://fabricjs.com/loadfonts
     await new FontFaceObserver('Roboto').load();
@@ -35,14 +38,26 @@ export class CanvasService {
       targetFindTolerance: 10, // Makes it easier to select objects with "per-pixel-target-find" enabled, adding a padding
     });
 
-    window.addEventListener('resize', () => {
-      canvas.setWidth(htmlCanvas.offsetWidth);
-      canvas.setHeight(htmlCanvas.offsetHeight);
-    });
-
     this.canvas$.next(canvas);
 
-    this.zoomCanvasService.register(canvas);
-    this.toolbarService.register(canvas);
+    // TODO: create an observable for resize events
+    const resizeListener = () => {
+      canvas.setWidth(htmlCanvas.offsetWidth);
+      canvas.setHeight(htmlCanvas.offsetHeight);
+    };
+    window.addEventListener('resize', resizeListener);
+
+    // TODO: make the zoom and toolbar sevices subscribe to canvas, so the canvas service doesn't have to call them directly.
+    const zoomOnDestroy = this.zoomCanvasService.register(canvas);
+    const toolbarServiceOnDestroy = this.toolbarService.register(canvas);
+
+    return () => {
+      this.canvas$.next(null);
+
+      toolbarServiceOnDestroy(); // Cleanup toolbar listeners, preventing duplicate keypress events
+      zoomOnDestroy(); // Cleanup scroll listeners, preventing duplicate scroll events
+
+      window.removeEventListener('resize', resizeListener);
+    };
   }
 }

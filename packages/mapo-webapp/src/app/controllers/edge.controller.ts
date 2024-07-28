@@ -4,6 +4,7 @@ import { CanvasService } from '../services/canvas/canvas.service';
 import { EdgeService } from '../services/edge/edge.service';
 import { EdgeStore } from '../store/edge.store';
 import { TextNodeStore } from '../store/text-node.store';
+import { debounceTime, sampleTime, throttleTime } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -33,11 +34,12 @@ export class EdgeController {
     combineLatest([
       this.canvasService.canvas$,
       this.objectMoving$,
-      this.edgeStore.edges$,
-      this.textNodeStore.textNodes$,
-    ]).subscribe(([canvas, e, edges, textnodes]) => {
-      this.edgeService.render(edges);
-    });
+      this.edgeStore.edges$.pipe(sampleTime(20)), // Prevent too many renders at once if many edges are updated in quick succession
+      this.textNodeStore.textNodes$.pipe(sampleTime(20)),
+    ])
+      .subscribe(([canvas, e, edges, textnodes]) => {
+        this.edgeService.render(edges);
+      });
 
     // Add or edit text if the user double-clicks on an edge
     this.doubleClick$.subscribe((e) => {
@@ -63,9 +65,11 @@ export class EdgeController {
 
   private registerCanvasEventListers(canvas: fabric.Canvas) {
     canvas.on('object:moving', (e) => {
+      console.log('onObjectMoving')
       this.objectMoving$.next(e);
     });
     canvas.on('mouse:dblclick', (e) => {
+      console.log('onMouseDblClick')
       this.doubleClick$.next(e);
     });
   }

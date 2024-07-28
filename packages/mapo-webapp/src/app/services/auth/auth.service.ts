@@ -64,6 +64,9 @@ export class AuthService {
     const res = await this.supabase.auth.signInWithOAuth({
       // Configuring google oauth from supabase: https://supabase.com/docs/guides/auth/social-login/auth-google
       provider: 'google',
+      options: {
+        redirectTo: window.location.origin  // NOTE: the redirect URLs are configured in the Supabase dashboard. Under "Authentication" -> "URL Configuration" -> "Site URL"
+      }
     });
     console.log('Google OAuth response', res);
     return res;

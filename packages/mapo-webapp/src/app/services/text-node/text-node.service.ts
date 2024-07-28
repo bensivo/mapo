@@ -40,7 +40,7 @@ export class TextNodeService {
       FabricUtils.createTextNode(this.canvas, textNode);
     }
 
-    this.canvas.renderAll();
+    this.canvas.requestRenderAll();
   }
 
   addPendingTextNode(top: number, left: number): fabric.IText {
@@ -54,7 +54,7 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
-    this.canvas.renderAll();
+    this.canvas.requestRenderAll();
     return itext;
   }
 
@@ -135,6 +135,7 @@ export class TextNodeService {
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
     itext.on('editing:exited', (e) => {
+      console.log('onITextExited');
       if (!this.canvas) {
         return;
       }
@@ -191,6 +192,7 @@ export class TextNodeService {
    */
   updateTextNodesFromSelection(selection: fabric.ActiveSelection) {
     for (const object of selection.getObjects()) {
+      console.log('Object in selection', object.data.id);
       const type: string = object?.data?.type;
       if (type !== 'text-node') {
         continue;

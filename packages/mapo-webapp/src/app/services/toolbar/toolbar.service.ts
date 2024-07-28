@@ -4,6 +4,8 @@ import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
+export type OnDestroyCallback = () => void;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,9 +16,9 @@ export class ToolbarService {
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
-  ) {}
+  ) { }
 
-  register(canvas: fabric.Canvas) {
+  register(canvas: fabric.Canvas): OnDestroyCallback {
     this.canvas = canvas;
 
     // document.addEventListener('paste', (e: any) => {
@@ -41,7 +43,8 @@ export class ToolbarService {
     // 	}
     // })
 
-    document.addEventListener('keydown', (e) => {
+    const resizeListener = (e: KeyboardEvent) => {
+      console.log(e, this.toolbarStore.tool.value);
       if (e.key === 'Escape') {
         this.toolbarStore.setTool(Tool.POINTER);
       }
@@ -83,6 +86,12 @@ export class ToolbarService {
           }
         });
       }
-    });
+    };
+
+    document.addEventListener('keydown', resizeListener);
+
+    return () => {
+      document.removeEventListener('keydown', resizeListener);
+    }
   }
 }

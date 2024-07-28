@@ -6,6 +6,7 @@ import { CanvasService } from '../services/canvas/canvas.service';
 import { ToolbarStore } from '../store/toolbar.store';
 import { TextNodeStore } from '../store/text-node.store';
 import { combineLatest } from 'rxjs';
+import { debounceTime, throttleTime, sampleTime } from 'rxjs/operators';
 
 /**
  * Listens to different canvas and keyboard events, and invokes the TextNodeService where appropriate.
@@ -32,8 +33,9 @@ export class TextNodeController {
 
     combineLatest([
       this.canvasService.canvas$,
-      this.textNodeStore.textNodes$,
-    ]).subscribe(([canvas, textNodes]) => {
+      this.textNodeStore.textNodes$.pipe(sampleTime(20)), // Prevent too many renders at once if many text nodes are updated in quick succession
+    ])
+    .subscribe(([canvas, textNodes]) => {
       if (!canvas) {
         return;
       }
@@ -56,6 +58,7 @@ export class TextNodeController {
         e.absolutePointer.x,
       );
       itext.on('editing:exited', () => {
+        console.log('onITextExited');
         this.onITextExited(itext);
       });
     }
@@ -83,8 +86,9 @@ export class TextNodeController {
         e.absolutePointer.y,
         e.absolutePointer.x,
       );
-      this.canvas.renderAll();
+      this.canvas.requestRenderAll();
       itext.on('editing:exited', () => {
+        console.log('onITextExited');
         this.onITextExited(itext);
       });
       return;
@@ -142,12 +146,15 @@ export class TextNodeController {
    */
   private registerCanvasEventListers(canvas: fabric.Canvas) {
     canvas.on('mouse:dblclick', (e) => {
+      console.log('onDoubleClick');
       this.onDoubleClick(e);
     });
     canvas.on('mouse:down', (e) => {
+      console.log('onMouseDown');
       this.onMouseDown(e);
     });
     canvas.on('object:modified', (e) => {
+      console.log('onObjectModified');
       this.onObjectModified(e);
     });
   }
