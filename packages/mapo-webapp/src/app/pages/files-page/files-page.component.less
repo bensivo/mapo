@@ -4,24 +4,31 @@
   flex-direction: column;
 }
 
-.icons {
-  text-align: right;
-
-  i {
-    margin: 12px;
-    display: block;
-  }
-}
-
 .header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 12px 32px;
+  margin: 24px 32px;
+
+  .back-icon {
+    border-radius: 10rem;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #e9e6e6;
+    }
+  }
 
   h1 {
     margin: 0;
-    text-align: center;
+    font-size: 54px;
+    font-weight: 300;
+    display: block;
+    text-align: right;
+  }
+
+  i {
+    font-weight: 300;
   }
 
   button {
@@ -41,59 +48,58 @@
   }
 }
 
-.card-container {
+
+.no-files {
+  margin: 32px;
+}
+
+.row-container {
   height: 100%;
   margin: 32px;
+  overflow-y: auto;
+}
+
+.row {
+  padding: 4px 16px;
+
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  overflow-y: scroll;
-  height: fit-content;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
 
-  .card {
-    position: relative;
-    width: 250px;
-    border: solid 2px black;
-    border-radius: 16px;
-    // height: fit-content;
+  p {
+    flex-grow: 1;
+    margin-right: 16px;
   }
 
-  .card-options {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    border-radius: 16px;
-    border: solid 1px transparent;
+  i {
+    font-size: 18px;
+    margin-left: auto;
 
-    &:hover {
-      color: black;
-      border: solid 2px black;
-      cursor: pointer;
-    }
-  }
-
-  .card-img {
-    // width: 200px;
-    height: 200px;
-    background-color: lightgrey;
-    margin: 16px;
-  }
-
-  .card-content {
-    margin: 16px;
-  }
-
-  .card-title {
-    font-size: 16px;
+    border-radius: 1rem;
+    padding: 5px;
 
     &:hover {
       cursor: pointer;
-      text-decoration: underline;
-      text-decoration-thickness: 2px;
+      background-color: #e9e6e6;
     }
   }
+}
 
-  .card-subtitle {
-    font-size: 12px;
+.card-title {
+  font-size: 16px;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+.row:nth-child(odd) {
+  background-color: rgb(231, 231, 231);
+
+  i:hover {
+    background-color: white;
   }
 }

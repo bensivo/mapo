@@ -31,6 +31,10 @@ export class FilesPageComponent {
   
   ];
 
+  onClickBackArrow() {
+    this.router.navigate(['/']);
+  }
+
   onClickNewMindMap() {
     this.filesService.loadFile({
       id: null,

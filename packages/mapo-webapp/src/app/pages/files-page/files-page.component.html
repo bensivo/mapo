@@ -1,22 +1,23 @@
 <div class="files-page">
   <div class="header">
-    <h1>My Files</h1>
+    <h1>
+      <i class="ri-arrow-left-s-line back-icon" (click)="onClickBackArrow()"></i>
+      My Files
+    </h1>
     <button class="create-mindmap-button" (click)="onClickNewMindMap()">
       New Mind Map
     </button>
   </div>
 
-  <div *ngIf="files$ | async let files" class="card-container">
-    <div class="card" *ngFor="let file of files">
+
+
+  <div *ngIf="files$ | async as files" class="row-container">
+    <div *ngIf="files.length == 0">
+      <p class="no-files">No files found. Click on "New Mind Map" to start drawing.</p>
+    </div>
+    <div class="row" *ngFor="let file of files">
+      <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
       <i class="card-options ri-delete-bin-line" (click)="onClickDeleteFile(file)"></i>
-      <div class="card-img"></div>
-      <div class="card-content">
-        <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
-        <!-- <p class="card-subtitle">
-          Updated at: {{ file.updatedAt.toLocaleTimeString() }}
-          {{ file.updatedAt.toLocaleDateString() }}
-        </p> -->
-      </div>
     </div>
   </div>
 </div>
