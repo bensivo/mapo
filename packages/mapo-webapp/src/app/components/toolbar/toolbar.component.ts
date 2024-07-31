@@ -14,7 +14,6 @@ export class ToolbarComponent {
   tool$ = this.toolbarStore.tool$;
 
   constructor(private toolbarStore: ToolbarStore) {
-    console.log('ToolbarComponent initialized');
   }
 
   selectTool(tool: string) {

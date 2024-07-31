@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { CanvasComponent } from '../../components/canvas/canvas.component';
-import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { HelpComponent } from '../../components/help/help.component';
-import { SaveComponent } from '../../components/save/save.component';
-import { LoadComponent } from '../../components/load/load.component';
+import { IconbarComponent } from '../../components/iconbar/iconbar.component';
 import { TitleComponent } from '../../components/title/title.component';
-import { HomeComponent } from '../../components/home/home.component';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-canvaspage',
@@ -14,12 +12,10 @@ import { HomeComponent } from '../../components/home/home.component';
     CanvasComponent,
     ToolbarComponent,
     HelpComponent,
-    SaveComponent,
-    LoadComponent,
     TitleComponent,
-    HomeComponent,
+    IconbarComponent,
   ],
   templateUrl: './canvaspage.component.html',
   styleUrl: './canvaspage.component.less',
 })
-export class CanvaspageComponent {}
+export class CanvaspageComponent { }
