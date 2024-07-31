@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   OAuthResponse,
@@ -6,10 +6,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 import { AuthStore } from '../../store/auth.store';
-
-const SUPABASE_URL = 'https://dauzhiqsfamfeihvfzdg.supabase.co';
-const SUPABASE_PUBLIC_API_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhdXpoaXFzZmFtZmVpaHZmemRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc5ODg1MDUsImV4cCI6MjAzMzU2NDUwNX0.Gasq6nqP5JLxtH8GyNtirWtQ5K86ZJ90VH_zDKQ7QCQ';
+import { CONFIG, Config } from '../../app.config';
 
 @Injectable({
   providedIn: 'root',
@@ -20,32 +17,23 @@ export class AuthService {
   constructor(
     private authStore: AuthStore,
     private router: Router,
+    @Inject(CONFIG) private config: Config,
   ) {
-    this.supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_API_KEY);
+    console.log('config', this.config.SUPABASE_PROJECT_URL, this.config.SUPABASE_PUBLIC_API_KEY);
+    this.supabase = createClient(this.config.SUPABASE_PROJECT_URL, this.config.SUPABASE_PUBLIC_API_KEY);
 
-    const { data } = this.supabase.auth.onAuthStateChange((event, session) => {
-      console.log('event', event, session);
-
-      if (event === 'INITIAL_SESSION') {
-        // handle initial session
-      } else if (event === 'SIGNED_IN' && session != null) {
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session != null) {
         this.authStore.setUser({
           id: session.user.id,
           email: session.user.email ?? '',
         });
         this.authStore.setAccessToken(session.access_token);
         this.authStore.setState('signed-in');
-        console.log(session.access_token);
       } else if (event === 'SIGNED_OUT') {
         this.authStore.setUser(null);
         this.authStore.setAccessToken(null);
         this.authStore.setState('signed-out');
-      } else if (event === 'PASSWORD_RECOVERY') {
-        // handle password recovery event
-      } else if (event === 'TOKEN_REFRESHED') {
-        // handle token refreshed event
-      } else if (event === 'USER_UPDATED') {
-        // handle user updated event
       }
     });
   }

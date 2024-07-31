@@ -52,6 +52,7 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
         --restart always \
         --name mapo-webapp \
         -p 8080:80 \
+        -e APP_VERSION=$DOCKER_IMAGE_TAG \
         -e INFISICAL_CLIENT_ID=$INFISICAL_CLIENT_ID \
         -e INFISICAL_CLIENT_SECRET=$INFISICAL_CLIENT_SECRET \
         -e INFISICAL_ENV=$ENV \

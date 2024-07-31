@@ -22,13 +22,18 @@ export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=$IN
 
 # Get configs from infisical
 MAPO_API_BASE_URL=`infisical secrets get MAPO_API_BASE_URL --plain --silent --env=$INFISICAL_ENV --projectId=$INFISICAL_PROJECT_ID`
+SUPABASE_PROJECT_URL=`infisical secrets get SUPABASE_PROJECT_URL --plain --silent --env=$INFISICAL_ENV --projectId=$INFISICAL_PROJECT_ID`
+SUPABASE_PUBLIC_API_KEY=`infisical secrets get SUPABASE_PUBLIC_API_KEY --plain --silent --env=$INFISICAL_ENV --projectId=$INFISICAL_PROJECT_ID`
 
 # Generate config file
 echo "Generating config.json"
 cat > /mapo-webapp/html/config.json << EOF 
 {
     "ENV":  "${INFISICAL_ENV}",
-    "MAPO_API_BASE_URL": "${MAPO_API_BASE_URL}"
+    "APP_VERSION": "${APP_VERSION}",
+    "MAPO_API_BASE_URL": "${MAPO_API_BASE_URL}",
+    "SUPABASE_PROJECT_URL": "${SUPABASE_PROJECT_URL}",
+    "SUPABASE_PUBLIC_API_KEY": "${SUPABASE_PUBLIC_API_KEY}"
 }
 EOF
 

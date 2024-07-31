@@ -3,6 +3,13 @@
 We haven't automated tests yet, so here are some manual test cases.
 Test cases are written in cucumber syntax. Given When Then. These are abbreviated to just "G", "W", "T"
 
+## Version
+```
+Version number
+    G: I go to the homepage
+    T: I should see the app version in teh bottom left
+```
+
 ## Login
 ```
 Skip login:
@@ -227,6 +234,12 @@ Load from file:
 
 
 ## Save / Load to Profile
+
+No files:
+    G: I have logged in
+    G: I have no files
+    W: I go to my files
+    T: I see the text "no files found...."
 
 Load files from profile:
     G: I have logged in

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthStore } from '../../store/auth.store';
 
 @Component({
   selector: 'app-home',
@@ -12,9 +13,15 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   constructor(
     private router: Router,
-  ) {}
+    private authStore: AuthStore,
+  ) { }
 
   home() {
-    this.router.navigate(['files']);
+    const user = this.authStore.user.value;
+    if (user) {
+      this.router.navigate(['files']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

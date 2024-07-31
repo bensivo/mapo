@@ -9,15 +9,12 @@ Mockups are created in figma, then exported here as images. Actual application m
 ![Homepage](./media/Homepage%20(login).png)
 - Login modal. Ideally, this is animated to slide in from the bottom, instead of just immediately appearing.
 
-![Canvas](./media/Canvas%20page.png)
-- We should probably show some text / instructions when the canvas first loads (assuming it's blank)
+![Canvas (logged out)](./media/canvas-logged-out.png)
+- The canvas page when you're not logged in. So you can't go to my files or save the file
 
-![Canvas](./media/Canvas%20page%20(login).png)
-- Same login modal as on the homepage
+![Canvas (logged in)](./media/canvas-logged-in.png)
+- When you're logged in, the load and save buttons work suddenly
 
-![MyFiles](./media/My%20Files%20page.png)
+![My Files](./media/my-files.png)
 - Place to show all your drawings. For now, we don't expect people to have THAT many drawings, so  we need folders or anything.
 - In the future, we'll need some better way of organizing the drawings. Folders, tags, searchbar, sort by...
-
-![MyFiles](./media/My%20files%20page%20(card%20options).png)
-- Card options expanded, where you can rename or delete a card
