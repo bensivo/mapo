@@ -10,8 +10,6 @@ import { debounceTime, sampleTime, throttleTime } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class EdgeController {
-  canvas: fabric.Canvas | null = null;
-
   objectMoving$ = new BehaviorSubject<fabric.IEvent | null>(null);
   doubleClick$ = new BehaviorSubject<fabric.IEvent | null>(null);
 
@@ -26,7 +24,6 @@ export class EdgeController {
         return;
       }
 
-      this.canvas = canvas;
       this.registerCanvasEventListers(canvas);
     });
 

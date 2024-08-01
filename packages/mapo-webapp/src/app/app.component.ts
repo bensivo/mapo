@@ -10,6 +10,9 @@ import { PanCanvasController } from './controllers/pan-canvas.controller';
 import { TextNodeController } from './controllers/text-node.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
+import { ToolbarController } from './services/toolbar/toolbar.controller';
+import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
+import { CanvasResizeController } from './services/canvas/canvas-resize.controller';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +27,9 @@ export class AppComponent {
   // These controllers injected here just so that they initialize themselves
   constructor(
     private authService: AuthService,
+    private canvasController: CanvasResizeController,
+    private zoomCanvasController: ZoomCanvasController,
+    private toolbarController: ToolbarController,
     private fileService: FilesService,
     private textNodeController: TextNodeController,
     private drawEdgeController: DrawEdgeController,
