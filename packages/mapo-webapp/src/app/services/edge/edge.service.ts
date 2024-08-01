@@ -56,7 +56,7 @@ export class EdgeService {
         endObject,
       );
 
-      if (edge.text) {
+      if (edge.text && polyline) {
         FabricUtils.createArrowText(this.canvas, edge.id, edge.text, polyline);
       }
     }

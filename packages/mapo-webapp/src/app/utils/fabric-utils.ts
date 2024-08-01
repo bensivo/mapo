@@ -116,11 +116,19 @@ export class FabricUtils {
     id: string,
     src: fabric.Object,
     dest: fabric.Object,
-  ): fabric.Polyline {
+  ): fabric.Polyline | null {
     let srcX = this.getCenterPoint(src).x;
     let srcY = this.getCenterPoint(src).y;
     let destX = this.getCenterPoint(dest).x;
     let destY = this.getCenterPoint(dest).y;
+
+    // Skip drawing the arrow if the objects are intersecting
+    // The arrows will have 0 length, which causes fabric.js to get stuck in an infinite loop, freezing the app
+    // 
+    // See: https://github.com/bensivo/mapo/issues/49
+    if (src.intersectsWithObject(dest, true, true)) {
+      return null;
+    }
 
     // Iteratively push the start-point of the arrow towards the end, until it is no longer inside the src node
     // Then do 1 more push just for aesthetics
