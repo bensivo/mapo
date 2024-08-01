@@ -1,27 +1,28 @@
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { CanvasService } from '../services/canvas/canvas.service';
-import { DrawEdgeService } from '../services/edge/draw-edge.service';
-import { Tool, ToolbarStore } from '../store/toolbar.store';
+import { CanvasService } from '../canvas/canvas.service';
+import { DrawEdgeService } from './draw-edge.service';
+import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
+/**
+ * Listens to canvas edges to control the draw-edge service, for drawing pending edges between nodes
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class DrawEdgeController {
-  canvas: fabric.Canvas | null = null;
-
   constructor(
     private canvasService: CanvasService,
     private drawEdgeService: DrawEdgeService,
     private toolbarStore: ToolbarStore,
   ) {
-    this.canvasService.canvas$.subscribe((canvas) => {
-      if (!canvas) {
-        return;
-      }
-
-      this.canvas = canvas;
-      this.registerCanvasEventListers(canvas);
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
+      canvas.on('mouse:up', this.onMouseUp);
+      canvas.on('mouse:move', this.onMouseMove);
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      canvas.off('mouse:up', this.onMouseUp);
+      canvas.off('mouse:move', this.onMouseMove);
     });
 
     this.toolbarStore.tool$.subscribe((tool) => {
@@ -31,12 +32,7 @@ export class DrawEdgeController {
     });
   }
 
-  onMouseUp(e: fabric.IEvent) {
-    if (!this.canvas) {
-      console.warn('MouseUp ignored. No canvas');
-      return;
-    }
-
+  onMouseUp = (e: fabric.IEvent) => {
     if (this.toolbarStore.tool.value !== Tool.CREATE_EDGE) {
       return;
     }
@@ -58,9 +54,9 @@ export class DrawEdgeController {
     } else {
       this.drawEdgeService.endEdge(e.target);
     }
-  }
+  };
 
-  onMouseMove(e: fabric.IEvent) {
+  onMouseMove = (e: fabric.IEvent) => {
     if (!e.absolutePointer) {
       return;
     }
@@ -68,15 +64,5 @@ export class DrawEdgeController {
     if (this.drawEdgeService.isDrawingEdge()) {
       this.drawEdgeService.updateEdge(e.absolutePointer);
     }
-  }
-
-  private registerCanvasEventListers(canvas: fabric.Canvas) {
-    canvas.on('mouse:up', (e) => {
-      this.onMouseUp(e);
-    });
-
-    canvas.on('mouse:move', (e) => {
-      this.onMouseMove(e);
-    });
-  }
+  };
 }

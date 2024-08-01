@@ -11,9 +11,7 @@ import { CanvasService } from '../canvas/canvas.service';
 export class ZoomCanvasService {
   private canvas: fabric.Canvas | null = null;
 
-  constructor(
-    private canvasService: CanvasService,
-  ) {
+  constructor(private canvasService: CanvasService) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
     });
@@ -24,7 +22,7 @@ export class ZoomCanvasService {
 
   /**
    * Zoom the canvas in or out, centered around the x,y point given
-   * 
+   *
    * Negative delta value zooms in, positive delta value zooms out. Larger magnitude deltas zoom faster.
    * Using a normal scroll wheel, the smallest delta value is 16, going up in increments of 16.
    *
@@ -43,6 +41,6 @@ export class ZoomCanvasService {
     if (zoom < 0.01) {
       zoom = 0.01;
     }
-    this.canvas.zoomToPoint({ x, y, }, zoom);
+    this.canvas.zoomToPoint({ x, y }, zoom);
   }
 }

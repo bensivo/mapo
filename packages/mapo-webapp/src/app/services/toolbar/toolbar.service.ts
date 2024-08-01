@@ -10,18 +10,18 @@ export type OnDestroyCallback = () => void;
   providedIn: 'root',
 })
 export class ToolbarService {
-  constructor( private toolbarStore: ToolbarStore) { }
+  constructor(private toolbarStore: ToolbarStore) {}
 
   /**
    * Set the currently active tool
-   * @param tool 
+   * @param tool
    */
   select(tool: Tool) {
     this.toolbarStore.setTool(tool);
   }
 
   /**
-   * If the given tool is not selected, select it. 
+   * If the given tool is not selected, select it.
    * It it is selected, select the pointer tool.
    *
    * @param tool

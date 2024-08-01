@@ -17,8 +17,11 @@ export class EdgeService {
     private toolbarStore: ToolbarStore,
     private canvasService: CanvasService,
   ) {
-    this.canvasService.canvas$.subscribe((canvas) => {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
     });
   }
 

@@ -10,67 +10,64 @@ import { ToolbarService } from './toolbar.service';
  * When the canvas is active, listens for keyboard events, and controls the toolbar based on the actions pressed
  */
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class ToolbarController {
-    canvas: fabric.Canvas | null = null;
+  canvas: fabric.Canvas | null = null;
 
-    constructor(
-        private toolbarStore: ToolbarStore,
-        private textNodeStore: TextNodeStore,
-        private edgeStore: EdgeStore,
-        private canvasService: CanvasService,
-        private toolbarService: ToolbarService,
-    ) {
-        this.canvasService.canvasInitialized$.subscribe((canvas) => {
-            console.log('canvasInitialized');
-            this.canvas = canvas;
-            document.addEventListener('keydown', this.onKeyPress);
-        });
-        this.canvasService.canvasDestroyed$.subscribe((canvas) => {
-            console.log('canvasDestroyed');
-            this.canvas = null;
-            document.removeEventListener('keydown', this.onKeyPress);
-        });
+  constructor(
+    private toolbarStore: ToolbarStore,
+    private textNodeStore: TextNodeStore,
+    private edgeStore: EdgeStore,
+    private canvasService: CanvasService,
+    private toolbarService: ToolbarService,
+  ) {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
+      this.canvas = canvas;
+      document.addEventListener('keydown', this.onKeyPress);
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
+      document.removeEventListener('keydown', this.onKeyPress);
+    });
+  }
+
+  onKeyPress = (e: KeyboardEvent) => {
+    if (!this.canvas) {
+      return;
     }
 
-    onKeyPress = (e: KeyboardEvent) => {
-        console.log('onKeyPress', e);
-        if (!this.canvas) {
-            return;
-        }
+    if (e.key === 'Escape') {
+      this.toolbarService.select(Tool.POINTER);
+    }
 
-        if (e.key === 'Escape') {
-            this.toolbarService.select(Tool.POINTER);
-        }
+    if (this.toolbarStore.tool.value === Tool.EDIT_TEXT_NODE) {
+      return;
+    }
 
-        if (this.toolbarStore.tool.value === Tool.EDIT_TEXT_NODE) {
-            return;
-        }
+    if (e.key === 't') {
+      this.toolbarService.selectOrCancel(Tool.CREATE_TEXT_NODE);
+      return;
+    }
 
-        if (e.key === 't') {
-            this.toolbarService.selectOrCancel(Tool.CREATE_TEXT_NODE);
-            return;
-        }
+    if (e.key === 'e') {
+      this.toolbarService.selectOrCancel(Tool.CREATE_EDGE);
+      return;
+    }
 
-        if (e.key === 'e') {
-            this.toolbarService.selectOrCancel(Tool.CREATE_EDGE);
-            return;
-        }
+    if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'd') {
+      if (this.toolbarStore.tool.value !== Tool.POINTER) {
+        return;
+      }
 
-        if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'd') {
-            if (this.toolbarStore.tool.value !== Tool.POINTER) {
-                return;
-            }
-
-            this.canvas.getActiveObjects().forEach((object) => {
-                if (object.data?.type === 'text-node') {
-                    this.textNodeStore.remove(object.data.id);
-                }
-                if (object.data?.type === 'edge') {
-                    this.edgeStore.remove(object.data.id);
-                }
-            });
+      this.canvas.getActiveObjects().forEach((object) => {
+        if (object.data?.type === 'text-node') {
+          this.textNodeStore.remove(object.data.id);
         }
-    };
+        if (object.data?.type === 'edge') {
+          this.edgeStore.remove(object.data.id);
+        }
+      });
+    }
+  };
 }

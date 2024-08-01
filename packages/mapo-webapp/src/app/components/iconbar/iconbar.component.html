@@ -1,13 +1,38 @@
 <div class="iconbar">
-    <i data-tooltip="Home" class="ri-home-2-line" (click)="onClickHome()"></i>
-    <i *ngIf="!isLoggedIn" data-tooltip="My Files (login required)" class="ri-folder-3-line disabled"></i>
-    <i *ngIf="isLoggedIn" data-tooltip="My Files" class="ri-folder-3-line" (click)="onClickFiles()"></i>
-    <i *ngIf="!isLoggedIn" data-tooltip="Save (login required)" class="ri-save-2-line disabled"></i>
-    <i *ngIf="isLoggedIn" data-tooltip="Save" class="ri-save-2-line" (click)="onClickSave()"></i>
-    <i data-tooltip="Import from File" class="ri-file-upload-line" (click)="onClickImport()"></i>
-    <i data-tooltip="Export to File" class="ri-file-download-line" (click)="onClickExport()"></i>
-    <app-title></app-title>
+  <i data-tooltip="Home" class="ri-home-2-line" (click)="onClickHome()"></i>
+  <i
+    *ngIf="!isLoggedIn"
+    data-tooltip="My Files (login required)"
+    class="ri-folder-3-line disabled"
+  ></i>
+  <i
+    *ngIf="isLoggedIn"
+    data-tooltip="My Files"
+    class="ri-folder-3-line"
+    (click)="onClickFiles()"
+  ></i>
+  <i
+    *ngIf="!isLoggedIn"
+    data-tooltip="Save (login required)"
+    class="ri-save-2-line disabled"
+  ></i>
+  <i
+    *ngIf="isLoggedIn"
+    data-tooltip="Save"
+    class="ri-save-2-line"
+    (click)="onClickSave()"
+  ></i>
+  <i
+    data-tooltip="Import from File"
+    class="ri-file-upload-line"
+    (click)="onClickImport()"
+  ></i>
+  <i
+    data-tooltip="Export to File"
+    class="ri-file-download-line"
+    (click)="onClickExport()"
+  ></i>
+  <app-title></app-title>
 
-    <span class="hover-text"></span>
-  </div>
-  
+  <span class="hover-text"></span>
+</div>

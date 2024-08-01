@@ -27,7 +27,6 @@ export class HomepageComponent {
     // TODO: if signed in, redirect to files page
   }
 
-
   onClickStartMapping() {
     this.router.navigate(['/canvas']);
   }

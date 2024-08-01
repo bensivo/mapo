@@ -19,7 +19,7 @@ export class FilesPageComponent {
     private router: Router,
     private filesService: FilesService,
     private filesStore: FilesStore,
-  ) { 
+  ) {
     this.filesService.fetchFiles();
   }
 
@@ -27,8 +27,11 @@ export class FilesPageComponent {
 
   data = [
     { title: 'Lecture 1.2.3 - Overview', updatedAt: new Date() },
-    { title: 'Lecture 1.2.3 - Overview alskdj falskdj flaksjd flkasj dflkajsd flkasd', updatedAt: new Date() },
-  
+    {
+      title:
+        'Lecture 1.2.3 - Overview alskdj falskdj flaksjd flkasj dflkajsd flkasd',
+      updatedAt: new Date(),
+    },
   ];
 
   onClickBackArrow() {
@@ -41,7 +44,7 @@ export class FilesPageComponent {
       name: 'Untitled',
       textNodes: [],
       edges: [],
-    })
+    });
     this.router.navigate(['canvas']);
   }
 
@@ -58,7 +61,7 @@ export class FilesPageComponent {
       name: file.name,
       textNodes: content.textNodes,
       edges: content.edges,
-    }
+    };
 
     this.filesService.loadFile(fileContent);
     this.router.navigate(['canvas']);

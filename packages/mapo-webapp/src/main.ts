@@ -7,7 +7,9 @@ import { AppComponent } from './app/app.component';
 import { Config, provideConfig } from './app/app.config';
 import { routes } from './app/app.routes';
 
-const configPath = window.location.href.includes('localhost') ? '/config.json' : '/app/config.json';
+const configPath = window.location.href.includes('localhost')
+  ? '/config.json'
+  : '/app/config.json';
 
 axios.get(configPath).then((res) => {
   const config = res.data as Config;
@@ -17,8 +19,6 @@ axios.get(configPath).then((res) => {
       provideZoneChangeDetection({ eventCoalescing: true }),
       provideRouter(routes),
       provideConfig(config),
-    ]
-  }).catch((err) =>
-    console.error(err),
-  );
-})
+    ],
+  }).catch((err) => console.error(err));
+});

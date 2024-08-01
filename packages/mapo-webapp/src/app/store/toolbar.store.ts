@@ -17,7 +17,6 @@ export class ToolbarStore {
   tool$ = this.tool.asObservable();
 
   setTool(tool: Tool) {
-    console.log('Setting tool to', tool);
     this.tool.next(tool);
   }
 }

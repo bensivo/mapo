@@ -18,4 +18,4 @@ import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
   templateUrl: './canvaspage.component.html',
   styleUrl: './canvaspage.component.less',
 })
-export class CanvaspageComponent { }
+export class CanvaspageComponent {}

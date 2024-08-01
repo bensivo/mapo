@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 
-import { CanvasService, DestroyCanvasCallback } from '../../services/canvas/canvas.service';
+import { CanvasService } from '../../services/canvas/canvas.service';
 
 @Component({
   selector: 'app-canvas',
@@ -10,18 +10,13 @@ import { CanvasService, DestroyCanvasCallback } from '../../services/canvas/canv
   styleUrl: './canvas.component.less',
 })
 export class CanvasComponent implements AfterViewInit, OnDestroy {
-
-  private destroyCanvasCallback: DestroyCanvasCallback | null = null;
-
   constructor(private canvasService: CanvasService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.destroyCanvasCallback = await this.canvasService.initializeCanvas('fabric-canvas');
+    await this.canvasService.initializeCanvas();
   }
 
   ngOnDestroy(): void {
-    if (this.destroyCanvasCallback) {
-      this.destroyCanvasCallback();
-    }
+    this.canvasService.destroyCanvas();
   }
 }

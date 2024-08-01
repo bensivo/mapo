@@ -19,8 +19,10 @@ export class AuthService {
     private router: Router,
     @Inject(CONFIG) private config: Config,
   ) {
-    console.log('config', this.config.SUPABASE_PROJECT_URL, this.config.SUPABASE_PUBLIC_API_KEY);
-    this.supabase = createClient(this.config.SUPABASE_PROJECT_URL, this.config.SUPABASE_PUBLIC_API_KEY);
+    this.supabase = createClient(
+      this.config.SUPABASE_PROJECT_URL,
+      this.config.SUPABASE_PUBLIC_API_KEY,
+    );
 
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session != null) {
@@ -53,10 +55,9 @@ export class AuthService {
       // Configuring google oauth from supabase: https://supabase.com/docs/guides/auth/social-login/auth-google
       provider: 'google',
       options: {
-        redirectTo: window.location.origin  // NOTE: the redirect URLs are configured in the Supabase dashboard. Under "Authentication" -> "URL Configuration" -> "Site URL"
-      }
+        redirectTo: window.location.origin, // NOTE: the redirect URLs are configured in the Supabase dashboard. Under "Authentication" -> "URL Configuration" -> "Site URL"
+      },
     });
-    console.log('Google OAuth response', res);
     return res;
   }
 
@@ -66,9 +67,6 @@ export class AuthService {
       email: email,
       type: 'email',
     });
-
-    console.log('data', data);
-    console.log('error', error);
 
     if (!error) {
       this.authStore.setState('signed-in');
@@ -83,7 +81,9 @@ export class AuthService {
     if (!error) {
       this.authStore.setState('signed-out');
       this.router.navigate(['/']);
+      return;
     }
-    console.log('error', error);
+
+    console.error('error', error);
   }
 }

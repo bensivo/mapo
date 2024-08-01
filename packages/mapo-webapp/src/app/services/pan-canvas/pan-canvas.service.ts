@@ -12,8 +12,11 @@ export class PanCanvasService {
   lastPosY = 0;
 
   constructor(private canvasService: CanvasService) {
-    this.canvasService.canvas$.subscribe((canvas) => {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
     });
   }
 
@@ -42,7 +45,7 @@ export class PanCanvasService {
 
     const vpt = this.canvas.viewportTransform;
     if (!vpt) {
-      console.log('No viewport transform');
+      console.warn('No viewport transform');
       return;
     }
 
@@ -61,7 +64,7 @@ export class PanCanvasService {
 
     const vpt = this.canvas.viewportTransform;
     if (!vpt) {
-      console.log('No viewport transform');
+      console.warn('No viewport transform');
       return;
     }
 

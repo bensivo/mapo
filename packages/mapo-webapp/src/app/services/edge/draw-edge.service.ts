@@ -18,8 +18,11 @@ export class DrawEdgeService {
     private edgeStore: EdgeStore,
     private toolbarStore: ToolbarStore,
   ) {
-    this.canvasService.canvas$.subscribe((canvas) => {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
     });
   }
 

@@ -20,8 +20,11 @@ export class TextNodeService {
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
   ) {
-    this.canvasService.canvas$.subscribe((canvas) => {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
+    });
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
     });
   }
 
@@ -48,8 +51,6 @@ export class TextNodeService {
       throw new Error('No canvas on TextNodeService');
     }
 
-    console.log('Adding pending text node at', top, left);
-
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
@@ -62,8 +63,6 @@ export class TextNodeService {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
-
-    console.log('Finalizing text node', itext);
 
     const x = itext.left;
     const y = itext.top;
@@ -135,7 +134,6 @@ export class TextNodeService {
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
     itext.on('editing:exited', (e) => {
-      console.log('onITextExited');
       if (!this.canvas) {
         return;
       }
@@ -192,7 +190,6 @@ export class TextNodeService {
    */
   updateTextNodesFromSelection(selection: fabric.ActiveSelection) {
     for (const object of selection.getObjects()) {
-      console.log('Object in selection', object.data.id);
       const type: string = object?.data?.type;
       if (type !== 'text-node') {
         continue;

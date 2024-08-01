@@ -31,5 +31,5 @@ export class ZoomCanvasController {
 
     event.e.preventDefault();
     event.e.stopPropagation();
-  }
+  };
 }

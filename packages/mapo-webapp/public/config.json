@@ -1,6 +1,6 @@
 {
-    "ENV": "local",
-    "MAPO_API_BASE_URL": "http://localhost:3000",
-    "SUPABASE_PROJECT_URL": "https://dauzhiqsfamfeihvfzdg.supabase.co",
-    "SUPABASE_PUBLIC_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhdXpoaXFzZmFtZmVpaHZmemRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc5ODg1MDUsImV4cCI6MjAzMzU2NDUwNX0.Gasq6nqP5JLxtH8GyNtirWtQ5K86ZJ90VH_zDKQ7QCQ"
+  "ENV": "local",
+  "MAPO_API_BASE_URL": "http://localhost:3000",
+  "SUPABASE_PROJECT_URL": "https://dauzhiqsfamfeihvfzdg.supabase.co",
+  "SUPABASE_PUBLIC_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhdXpoaXFzZmFtZmVpaHZmemRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc5ODg1MDUsImV4cCI6MjAzMzU2NDUwNX0.Gasq6nqP5JLxtH8GyNtirWtQ5K86ZJ90VH_zDKQ7QCQ"
 }

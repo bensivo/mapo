@@ -1,10 +1,10 @@
 import { fabric } from 'fabric';
-import { Tool } from '../store/toolbar.store';
+import { Tool } from '../../store/toolbar.store';
 import { Injectable } from '@angular/core';
-import { TextNodeService } from '../services/text-node/text-node.service';
-import { CanvasService } from '../services/canvas/canvas.service';
-import { ToolbarStore } from '../store/toolbar.store';
-import { TextNodeStore } from '../store/text-node.store';
+import { TextNodeService } from './text-node.service';
+import { CanvasService } from '../canvas/canvas.service';
+import { ToolbarStore } from '../../store/toolbar.store';
+import { TextNodeStore } from '../../store/text-node.store';
 import { combineLatest } from 'rxjs';
 import { debounceTime, throttleTime, sampleTime } from 'rxjs/operators';
 
@@ -23,28 +23,34 @@ export class TextNodeController {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
   ) {
-    this.canvasService.canvas$.subscribe((canvas) => {
+    this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
-
-      if (canvas !== null) {
-        this.registerCanvasEventListers(canvas);
-      }
+      canvas.on('mouse:dblclick', this.onDoubleClick);
+      canvas.on('mouse:down', this.onMouseDown);
+      canvas.on('object:modified', this.onObjectModified);
     });
 
-    combineLatest([
-      this.canvasService.canvas$,
-      this.textNodeStore.textNodes$.pipe(sampleTime(20)), // Prevent too many renders at once if many text nodes are updated in quick succession
-    ])
-    .subscribe(([canvas, textNodes]) => {
-      if (!canvas) {
-        return;
-      }
+    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
+      this.canvas = null;
+      canvas.off('mouse:dblclick', this.onDoubleClick);
+      canvas.off('mouse:down', this.onMouseDown);
+      canvas.off('object:modified', this.onObjectModified);
+    });
 
+    // Rerender edges on any new canvas or text-node
+    //
+    // When the app is first loading, the order of these observables is not guaranteed.
+    // Combining them together makes sure we don't render until all are ready
+    combineLatest([
+      this.canvasService.canvasInitialized$,
+      this.textNodeStore.textNodes$.pipe(sampleTime(20)), // Prevent too many renders at once if many text nodes are updated in quick succession
+    ]).subscribe(([canvas, textNodes]) => {
       this.textNodeService.renderTextNodes(textNodes);
     });
   }
 
-  onDoubleClick(e: fabric.IEvent) {
+  // When double-clicking on the canvas, add a new text node
+  onDoubleClick = (e: fabric.IEvent) => {
     if (!this.canvas) {
       console.warn('DoubleClick ignored. No canvas');
       return;
@@ -58,7 +64,6 @@ export class TextNodeController {
         e.absolutePointer.x,
       );
       itext.on('editing:exited', () => {
-        console.log('onITextExited');
         this.onITextExited(itext);
       });
     }
@@ -67,9 +72,10 @@ export class TextNodeController {
       // double-click on a text node
       this.textNodeService.editTextNode(e.target as fabric.Group);
     }
-  }
+  };
 
-  onMouseDown(e: fabric.IEvent) {
+  // When clicking with the 'create-text-node' tool selected, add a new text node
+  onMouseDown = (e: fabric.IEvent) => {
     if (!this.canvas) {
       console.warn('MouseDown ignored. No canvas');
       return;
@@ -81,14 +87,12 @@ export class TextNodeController {
         return;
       }
 
-      // Add pending text node, itext
       const itext = this.textNodeService.addPendingTextNode(
         e.absolutePointer.y,
         e.absolutePointer.x,
       );
       this.canvas.requestRenderAll();
       itext.on('editing:exited', () => {
-        console.log('onITextExited');
         this.onITextExited(itext);
       });
       return;
@@ -100,9 +104,10 @@ export class TextNodeController {
         obj.exitEditing();
       }
     }
-  }
+  };
 
-  onObjectModified(e: fabric.IEvent) {
+  // When an object is modified, update the text node
+  onObjectModified = (e: fabric.IEvent) => {
     if (!this.canvas) {
       console.warn('OnObjectModified ignored. No canvas');
       return;
@@ -124,9 +129,10 @@ export class TextNodeController {
     if (e.target.data?.type === 'text-node') {
       this.textNodeService.updateTextNode(e.target as fabric.Group);
     }
-  }
+  };
 
-  onITextExited(itext: fabric.IText) {
+  // When an IText object is exited, finalize the text node (save its new value to the store)
+  onITextExited = (itext: fabric.IText) => {
     if (!this.canvas) {
       console.warn('onITextExited ignored. No canvas');
       return;
@@ -139,23 +145,5 @@ export class TextNodeController {
     }
 
     this.textNodeService.finalizeTextNode(itext);
-  }
-
-  /**
-   * Registers the event listeners for the TextNodeService.
-   */
-  private registerCanvasEventListers(canvas: fabric.Canvas) {
-    canvas.on('mouse:dblclick', (e) => {
-      console.log('onDoubleClick');
-      this.onDoubleClick(e);
-    });
-    canvas.on('mouse:down', (e) => {
-      console.log('onMouseDown');
-      this.onMouseDown(e);
-    });
-    canvas.on('object:modified', (e) => {
-      console.log('onObjectModified');
-      this.onObjectModified(e);
-    });
-  }
+  };
 }
