@@ -1,6 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'remixicon/fonts/remixicon.css';
 
+// Disable 2-finger swipe navigation, becuase 2-finger swipe is used for panning the canvas
+html,
+body {
+  overscroll-behavior-x: none;
+  touch-action: none;
+}
+
 body {
   margin: 0;
   padding: 0;

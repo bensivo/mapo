@@ -13,6 +13,7 @@ import { ToolbarController } from './services/toolbar/toolbar.controller';
 import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
 import { CanvasResizeController } from './services/canvas/canvas-resize.controller';
 import { PersistenceController } from './services/persistence/persistence.controller';
+import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.controller';
 
 @Component({
   selector: 'app-root',
@@ -32,10 +33,11 @@ export class AppComponent {
     private edgeController: EdgeController,
     private fileService: FilesService,
     private panCanvasController: PanCanvasController,
+    private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
     private toolbarController: ToolbarController,
-    private zoomCanvasController: ZoomCanvasController,
+    // private zoomCanvasController: ZoomCanvasController,
   ) {
     // debugController.run();
   }
