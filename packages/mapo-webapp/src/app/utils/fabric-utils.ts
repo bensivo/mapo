@@ -1,6 +1,79 @@
 import { fabric } from 'fabric';
 import { TextNode } from '../models/textnode.interface';
 
+
+/**
+ * A custom function added to the IText prototype for handling TAB keys.
+ * The default behavior for TAB in fabric is to exit editing mode, but we want
+ * it to push lines forward and backward, like a text editor.
+ *
+ * See the function comment for itext.keysMap. 
+ */
+(fabric.IText.prototype as any).onTabKeyDown = function(e: any) {
+  const selectionStart = this.selectionStart;
+  const selectionEnd = this.selectionEnd;
+  const lines = this.text.split('\n');
+
+  const getLineStartIndex = (lineNum: number) => {
+    let index = 0;
+    for(let i=0; i<lineNum; i++) {
+      index += lines[i].length + 1; // plus 1 for the newline
+    }
+    return index;
+  }
+
+  // Returns the line number for a given index
+  const getLineNumber = (index: number) => {
+    let lineNum = 0;
+    for(let i=0; i<index; i++) {
+      if (this.text[i] === '\n') {
+        lineNum++;
+      }
+    }
+
+    return lineNum;
+  }
+
+  const lineStart = getLineNumber(selectionStart);
+  const lineEnd = getLineNumber(selectionEnd);
+
+  for (let i=lineStart; i<=lineEnd; i++) {
+    if (e.shiftKey) {
+      const numToRemove = lines[i].match(/^ {0,4}/g)?.[0].length || 0;
+      lines[i] = lines[i].slice(numToRemove);
+      this.selectionEnd -= numToRemove;
+
+      // Decrement the selection start, if the selection didn't include the start of the line
+      // or if the selection was a single position
+      if (getLineStartIndex(i) < this.selectionStart || this.selectionEnd - this.selectionStart === 0) {
+        this.selectionStart -= numToRemove;
+      }
+    } else {
+      lines[i] = '    ' + lines[i];
+
+      // Increment the selection start, if the selection didn't include the start of the line
+      // or if the selection was a single position
+      if (getLineStartIndex(i) < this.selectionStart || this.selectionEnd - this.selectionStart === 0) {
+        this.selectionStart += 4;
+      }
+      this.selectionEnd += 4;
+    }
+  }
+
+  this.text = lines.join('\n');
+
+  // Instead of just updating the text on this JS object, we also need to update the html textarea element
+  // that is backing this IText object. This makes sure any further updates are on the new state.
+  //
+  // Inspired by the code from: http://fabricjs.com/docs/fabric.js.html#line29585
+  // Search for 'hiddenTextArea'
+  if (e.target) {
+    e.target.value = this.text;
+    e.target.selectionStart = this.selectionStart;
+    e.target.selectionEnd = this.selectionEnd;
+  }
+}
+
 /**
  * Functions for drawing different shapes on the fabric canvas.
  *
@@ -26,6 +99,24 @@ export class FabricUtils {
       fontSize: 16,
       fontFamily: 'Roboto',
       backgroundColor: 'white',
+      data: {
+        type: 'edit-text',
+      },
+      keysMap: {
+        // The default keysMap, from: http://fabricjs.com/docs/fabric.js.html#line29585
+        27: 'exitEditing',
+        33: 'moveCursorUp',
+        34: 'moveCursorDown',
+        35: 'moveCursorRight',
+        36: 'moveCursorLeft',
+        37: 'moveCursorLeft',
+        38: 'moveCursorUp',
+        39: 'moveCursorRight',
+        40: 'moveCursorDown',
+
+        // Custom keymap for tab key
+        9: 'onTabKeyDown',
+      }
     });
 
     const boundingRect = itext.getBoundingRect();
