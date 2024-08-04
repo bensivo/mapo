@@ -296,3 +296,43 @@ Duplicate toolbar event listeners:
     W: I press 't'
     T: the text-node tool is selected
 ```
+
+
+## IText Editing functionality
+
+Mouse Controls (select):
+    G: I am editing an itext (in a text box)
+    W: I click on the text bos with my mouse
+    T: the cursor updates to where I clicked
+
+Mouse Controls (drag):
+    G: I am editing an itext (in a text box)
+    W: I click and drag
+    T: I can select a section of text
+
+Tab to increment:
+    G: I am editing an itext (in a text box)
+    W: I select a single position, and press tab
+    T: The line I'm on moves forward 4 spaces
+
+Tab to increment (multi-line):
+    G: I am editing an itext (in a text box)
+    W: I click and drag to select many lines, then press tab
+    T: All lines should be incremented
+    T: My cursor should still be highligting the previously-selected text (look for slight errors in the position)
+
+Tab to decrement:
+    G: I am editing an itext (in a text box), and I"m on a line with prepended spaces
+    W: I press Shift+Tab
+    T: The line I'm on moves back 4 spaces
+
+Tab to decrement less than 4:
+    G: I am editing an itext (in a text box), and I"m on a line with prepended spaces (but < 4)
+    W: I press Shift+Tab
+    T: The line I'm on moves back up to 4 spaces, but not more
+
+Tab to decrement (multi-line):
+    G: I am editing an itext (in a text box)
+    W: I click and drag to select many lines, then press Shift+tab
+    T: All lines in selection should move back 4 spaces
+    T: My cursor should still be highligting the previously-selected text (look for slight errors in the position)
