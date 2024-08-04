@@ -81,6 +81,10 @@ export class TextNodeController {
       return;
     }
 
+    if (e.target && e.target.data?.type === 'edit-text') {
+      return;
+    }
+
     if (this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE) {
       if (!e.absolutePointer) {
         console.warn('No absolute pointer on event', e);
