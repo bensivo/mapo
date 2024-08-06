@@ -10,15 +10,15 @@ import { TextNodeController } from './services/text-node/text-node.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
 import { ToolbarController } from './services/toolbar/toolbar.controller';
-import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
 import { CanvasResizeController } from './services/canvas/canvas-resize.controller';
 import { PersistenceController } from './services/persistence/persistence.controller';
 import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.controller';
+import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CanvasComponent, ToolbarComponent, HelpComponent],
+  imports: [RouterOutlet, CanvasComponent, ToolbarComponent, HelpComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less',
 })

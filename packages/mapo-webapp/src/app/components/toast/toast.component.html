@@ -1,0 +1,7 @@
+<div *ngIf="toasts$ | async as toasts" class="toast-container">
+  <div *ngFor="let toast of toasts" class="toast">
+    <i class="ri-close-circle-line close-icon" (click)="onClickCloseToast(toast.id)"></i>
+    <span class="toast-title">{{toast.title}}</span>
+    <span class="toast-message">{{toast.message}}</span>
+  </div>
+</div>
