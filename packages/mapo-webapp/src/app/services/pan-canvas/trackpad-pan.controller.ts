@@ -36,7 +36,7 @@ export class TrackpadPanController {
             this.zoomCanvasService.zoomCanvas(delta, event.e.offsetX, event.e.offsetY);
         } else { // Triggers when scrolling normally, or when panning with two fingers on a trackpad.
             this.panCnavsService.startPan(0, 0);
-            this.panCnavsService.updatePan(e.deltaX, e.deltaY);
+            this.panCnavsService.updatePan(-e.deltaX, -e.deltaY);
             this.panCnavsService.endPan();
         }
     }

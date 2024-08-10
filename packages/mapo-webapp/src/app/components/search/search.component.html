@@ -1,0 +1,13 @@
+<div class="search-container">
+  <input type="text" placeholder="Search" (focus)="onInputFocus()" (keyup)="onInputKeyup($event)">
+
+  <div class="search-counter">
+    <span>{{searchCounterIndex}}</span>
+    of
+    <span>{{searchCounterTotal}}</span>
+  </div>
+  <div class="search-actions">
+    <i class="ri-arrow-up-s-line" (click)="onClickUp()"></i>
+    <i class="ri-arrow-down-s-line" (click)="onClickDown()"></i>
+  </div>
+</div>

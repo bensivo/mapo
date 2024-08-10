@@ -7,7 +7,7 @@ import { TextNode } from '../models/textnode.interface';
  * The default behavior for TAB in fabric is to exit editing mode, but we want
  * it to push lines forward and backward, like a text editor.
  *
- * See the function comment for itext.keysMap. 
+ * See the function comment for itext.keysMap.
  */
 (fabric.IText.prototype as any).onTabKeyDown = function(e: any) {
   const selectionStart = this.selectionStart;
@@ -215,7 +215,7 @@ export class FabricUtils {
 
     // Skip drawing the arrow if the objects are intersecting
     // The arrows will have 0 length, which causes fabric.js to get stuck in an infinite loop, freezing the app
-    // 
+    //
     // See: https://github.com/bensivo/mapo/issues/49
     if (src.intersectsWithObject(dest, true, true)) {
       return null;
@@ -415,5 +415,21 @@ export class FabricUtils {
     return canvas.getObjects().find((object) => object.data?.id === id) as
       | T
       | undefined;
+  }
+
+  static panToObject(canvas: fabric.Canvas, object: fabric.Object) {
+
+    if (!canvas.width || !canvas.height || !object.left || !object.top || !object.width || !object.height) {
+      return;
+    }
+
+    const zoom = canvas.getZoom();
+
+    const objLeft = object.left + object.width / 2;
+    const objTop = object.top + object.height / 2;
+    const left = (-objLeft * zoom) + (canvas.width  / 2);
+    const top = (-objTop * zoom) + (canvas.height / 2);
+
+    canvas.setViewportTransform([zoom, 0, 0, zoom, left, top]);
   }
 }

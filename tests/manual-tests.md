@@ -336,3 +336,21 @@ Tab to decrement (multi-line):
     W: I click and drag to select many lines, then press Shift+tab
     T: All lines in selection should move back 4 spaces
     T: My cursor should still be highligting the previously-selected text (look for slight errors in the position)
+
+
+## Search
+
+Search for text:
+    G: I have some text nodes
+    W: I type anything in search
+    T: The canvas pans to the text I searched (found node in center)
+
+Next Item with Enter:
+    G: I have searched
+    W: I press Enter
+    T: The canvas switches to the next item
+
+Next / Prev Item:
+    G: I have searched
+    W: I press the up and down arrorws
+    T: The canvas moves between the items
