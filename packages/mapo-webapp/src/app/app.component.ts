@@ -18,7 +18,13 @@ import { ToastComponent } from './components/toast/toast.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CanvasComponent, ToolbarComponent, HelpComponent, ToastComponent],
+  imports: [
+    RouterOutlet,
+    CanvasComponent,
+    ToolbarComponent,
+    HelpComponent,
+    ToastComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less',
 })
