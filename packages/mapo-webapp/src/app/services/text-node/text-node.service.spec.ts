@@ -10,7 +10,8 @@ import { TextNodeService } from './text-node.service';
 
 describe('TextNodeService', () => {
   const mockCanvasService = jasmine.createSpyObj('CanvasService', [], {
-    canvas$: new Subject<fabric.Canvas>(),
+    canvasInitialized$: new Subject<fabric.Canvas>(),
+    canvasDestroyed$: new Subject<fabric.Canvas>(),
   });
   const mockTextNodeStore = jasmine.createSpyObj('TextNodeStore', ['insert'], {
     textNodes$: new Subject<TextNode[]>(),
@@ -49,7 +50,7 @@ describe('TextNodeService', () => {
       ]);
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // Given there is an existing text node
       spyOn(FabricUtils, 'getTextNodes').and.returnValue([textnodeObj]);
@@ -79,7 +80,7 @@ describe('TextNodeService', () => {
       };
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call render
       service.renderTextNodes([textnode1, textnode2]);
@@ -104,7 +105,7 @@ describe('TextNodeService', () => {
       const canvas = new fabric.Canvas('');
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call addPendingTextNode
       service.addPendingTextNode(0, 0);
@@ -128,7 +129,7 @@ describe('TextNodeService', () => {
       const canvas = jasmine.createSpyObj('fabric.Canvas', ['remove']);
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call finalizeTextNode
       service.finalizeTextNode(
@@ -146,7 +147,7 @@ describe('TextNodeService', () => {
       const canvas = jasmine.createSpyObj('fabric.Canvas', ['remove']);
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call finalizeTextNode
       service.finalizeTextNode(
@@ -171,7 +172,7 @@ describe('TextNodeService', () => {
       const canvas = jasmine.createSpyObj('fabric.Canvas', ['remove']);
 
       // Given there is a canvas
-      mockCanvasService.canvas$.next(canvas);
+      mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call finalizeTextNode
       service.finalizeTextNode(
