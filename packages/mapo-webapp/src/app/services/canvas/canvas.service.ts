@@ -13,11 +13,16 @@ export class CanvasService {
   canvasInitialized$ = new Subject<fabric.Canvas>();
   canvasDestroyed$ = new Subject<fabric.Canvas>();
 
+  constructor(
+    private document: Document = window.document,
+    private fontFaceObserver: FontFaceObserver = new FontFaceObserver('Roboto'),
+  ) {}
+
   async initializeCanvas(): Promise<DestroyCanvasCallback> {
     // Make sure the Roboto font is loaded before we initialize the canvas. http://fabricjs.com/loadfonts
-    await new FontFaceObserver('Roboto').load();
+    await this.fontFaceObserver.load();
 
-    const htmlCanvas = document.getElementById('fabric-canvas');
+    const htmlCanvas = this.document.getElementById('fabric-canvas');
     if (htmlCanvas == null) {
       throw new Error('Canvas not found');
     }
@@ -54,7 +59,7 @@ export class CanvasService {
 
     const htmlCanvas = document.getElementById(
       'canvas-container',
-    ) as HTMLDivElement; // TODO: remove this hardcoding
+    ) as HTMLDivElement;
     this.canvas.setWidth(htmlCanvas.offsetWidth);
     this.canvas.setHeight(htmlCanvas.offsetHeight);
     this.canvas.requestRenderAll();

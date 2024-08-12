@@ -40,16 +40,6 @@ export class AuthService {
     });
   }
 
-  async signInWithOTP(email: string) {
-    const { data, error } = await this.supabase.auth.signInWithOtp({
-      email: email,
-    });
-
-    if (!error) {
-      this.authStore.setState('otp-sent');
-    }
-  }
-
   async signInWithGoogle(): Promise<OAuthResponse> {
     const res = await this.supabase.auth.signInWithOAuth({
       // Configuring google oauth from supabase: https://supabase.com/docs/guides/auth/social-login/auth-google
@@ -59,20 +49,6 @@ export class AuthService {
       },
     });
     return res;
-  }
-
-  async verifyOTP(email: string, otp: string) {
-    const { data, error } = await this.supabase.auth.verifyOtp({
-      token: otp,
-      email: email,
-      type: 'email',
-    });
-
-    if (!error) {
-      this.authStore.setState('signed-in');
-      this.router.navigate(['/files']);
-      return;
-    }
   }
 
   async signOut() {
