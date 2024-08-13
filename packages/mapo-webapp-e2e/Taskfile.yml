@@ -1,0 +1,11 @@
+version: 3.4
+
+tasks:
+  run:
+    cmds:
+      - npx playwright test
+
+  dev:
+    cmds:
+      - npx playwright test --ui
+    

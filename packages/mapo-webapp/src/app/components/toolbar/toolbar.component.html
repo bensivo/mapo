@@ -1,5 +1,6 @@
 <div class="toolbar-container" *ngIf="tool$ | async; let tool">
   <div
+    data-testid="toolbar-pointer"
     class="tool"
     [ngClass]="{ enabled: tool === 'pointer' }"
     (click)="selectTool('pointer')"
@@ -8,6 +9,7 @@
     <span class="subtext">Esc</span>
   </div>
   <div
+    data-testid="toolbar-text-node"
     class="tool create-text-node"
     [ngClass]="{ enabled: tool === 'create-text-node' }"
     (click)="selectTool('create-text-node')"
@@ -16,6 +18,7 @@
     <span class="subtext">t</span>
   </div>
   <div
+    data-testid="toolbar-edge"
     class="tool create-edge"
     [ngClass]="{ enabled: tool === 'create-edge' }"
     (click)="selectTool('create-edge')"

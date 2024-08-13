@@ -7,7 +7,7 @@
       <span class="subtitle">Mind maps made easy</span>
       <span class="author">by bensivo</span>
       <div class="btn-container">
-        <button class="start-mapping-btn" (click)="onClickStartMapping()">
+        <button data-testid="start-mapping-btn" class="start-mapping-btn" (click)="onClickStartMapping()">
           Start mapping
         </button>
         <button class="signup-signin-btn" (click)="onClickSignUpSignIn()">
@@ -41,5 +41,5 @@
     </div>
   </div>
 
-  <div class="app-version">v{{ appVersion }}</div>
+  <div data-testid="app-version" class="app-version">v{{ appVersion }}</div>
 </div>

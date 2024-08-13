@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { fabric } from 'fabric';
 import FontFaceObserver from 'fontfaceobserver';
 import { Subject } from 'rxjs';
@@ -14,9 +14,16 @@ export class CanvasService {
   canvasDestroyed$ = new Subject<fabric.Canvas>();
 
   constructor(
-    private document: Document = window.document,
-    private fontFaceObserver: FontFaceObserver = new FontFaceObserver('Roboto'),
-  ) {}
+    @Optional() private document: Document,
+    @Optional() private fontFaceObserver: FontFaceObserver,
+  ) {
+      if (!this.document) {
+        this.document = window.document;
+      }
+      if (!this.fontFaceObserver) {
+        this.fontFaceObserver = new FontFaceObserver('Roboto');
+      }
+  }
 
   async initializeCanvas(): Promise<DestroyCanvasCallback> {
     // Make sure the Roboto font is loaded before we initialize the canvas. http://fabricjs.com/loadfonts
@@ -27,6 +34,8 @@ export class CanvasService {
       throw new Error('Canvas not found');
     }
 
+      console.log(htmlCanvas.offsetWidth);
+      console.log(htmlCanvas.offsetHeight);
     const canvas = new fabric.Canvas('fabric-canvas', {
       width: htmlCanvas.offsetWidth,
       height: htmlCanvas.offsetHeight,
@@ -37,6 +46,7 @@ export class CanvasService {
 
     this.canvas = canvas;
     this.canvasInitialized$.next(canvas);
+    console.log('Canvas initialized');
 
     return () => {
       this.canvasDestroyed$.next(canvas);

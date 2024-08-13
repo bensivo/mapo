@@ -14,6 +14,7 @@ import { CanvasResizeController } from './services/canvas/canvas-resize.controll
 import { PersistenceController } from './services/persistence/persistence.controller';
 import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.controller';
 import { ToastComponent } from './components/toast/toast.component';
+import { DebugController } from './services/debug/debug.controller';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,8 @@ export class AppComponent {
     private textNodeController: TextNodeController,
     private toolbarController: ToolbarController,
     // private zoomCanvasController: ZoomCanvasController,
+    //
+    private debugController: DebugController,
   ) {
     // debugController.run();
   }
