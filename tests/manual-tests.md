@@ -5,14 +5,14 @@ Test cases are written in cucumber syntax. Given When Then. These are abbreviate
 
 ## Version
 ```
-Version number
+(Automated) Version number
     G: I go to the homepage
     T: I should see the app version in teh bottom left
 ```
 
 ## Login
 ```
-Skip login:
+(Automated) Skip login:
     G: I am on the homepage, not logged in
     W: I click "Start Mapping"
     T: I go directly to the canvas
@@ -34,52 +34,52 @@ My Files:
 
 ## Text Nodes
 ```
-Enter edit mode:
+(Automated) Enter edit mode:
     W: I double-click on an empty space
     T: I enter "edit-text" mode
 
-Exit exit-mode(esc):
+(Automated) Exit exit-mode(esc):
     G: I'm in "edit-text" mode
     W: I hit "Esc"
     T: I leave "edit-text" mode
 
-Exit edit-mode(click):
+(Automated) Exit edit-mode(click):
     G: I'm in "edit-text" mode
     W: I click anywhere outside the node
     T: I leave "edit-text" mode
 
-Create text node:
+(Automated) Create text node:
     G: I'm in "edit-text" mode, and I've typed in some text
     W: I exit edit-mode (via esc or clicking)
     T: The input is converted to a text node. Text with a rectangle around it.
 
-Move text nodes:
+(Automated) Move text nodes:
     G: There's a text node
     W: I click and drag it
     T: It moves
 
-Edit text node:
+(Automated) Edit text node:
     G: There's a text node
     W: I double-click it
     T: I enter edit-mode on that text node
 
-Remove empty nodes:
+(Automated) Remove empty nodes:
     G: I started editing a new node
     W: I end editing, with no text left in the node
     T: the node is not added, it is removed
 
-Delete node (Backspace):
+(Automated) Delete node (Backspace):
     G: I have a node
     W: I select the node and press "Backspace"
     
     T: the node is deleted
 
-Delete node (Delete):
+(Automated) Delete node (Delete):
     G: I have a node
     W: I select the node and press "Delete"
     T: the node is deleted
 
-Delete node (d):
+(Automated) Delete node (d):
     G: I have a node
     W: I select the node and press "d"
     T: the node is deleted
@@ -92,22 +92,22 @@ Delete node - connected edges:
 
 ## Edges
 ```
-Start drawing edge:
+(Automated) Start drawing edge:
     G: There is a node
     W: I press "e" and click on that node
     T: A line is drawn between that node and my mouse. It should follow my mouse
 
-Cancel Edge:
+(Automated) Cancel Edge:
     G: I am drawing an edge (above)
     W: I press "e" or "Escape"
     T: The line I'm drawing should be cancelled
 
-Cancel Edge (click):
+(Automated) Cancel Edge (click):
     G: I am drawing an edge (above)
     W: I click on empty space
     T: The line I'm drawing should be cancelled
 
-Finish drawing edge:
+(Automated) Finish drawing edge:
     G: I am drawing an edge (above)
     W: I left-click on any other node
     T: An edge should be drawn between the start and end nodes. The line should no longer follow my mouse
