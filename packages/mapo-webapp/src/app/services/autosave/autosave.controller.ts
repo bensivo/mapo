@@ -42,7 +42,7 @@ export class AutoSaveController {
       this.titleStore.title$,
     ])
       .pipe(
-        debounce(() => interval(5000)),
+        debounce(() => interval(15000)),
       )
       .subscribe(([user, currentFileId, edges, textNodes, title]) => {
         if (!user) {

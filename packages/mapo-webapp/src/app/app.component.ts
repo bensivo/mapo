@@ -15,6 +15,7 @@ import { PersistenceController } from './services/persistence/persistence.contro
 import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.controller';
 import { ToastComponent } from './components/toast/toast.component';
 import { DebugController } from './services/debug/debug.controller';
+import { AutoSaveController } from './services/autosave/autosave.controller';
 
 @Component({
   selector: 'app-root',
@@ -44,9 +45,8 @@ export class AppComponent {
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
     private toolbarController: ToolbarController,
-    // private zoomCanvasController: ZoomCanvasController,
-    //
     private debugController: DebugController,
+    private autosaveController: AutoSaveController,
   ) {
     // debugController.run();
   }
