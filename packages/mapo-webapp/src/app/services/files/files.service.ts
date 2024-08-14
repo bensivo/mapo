@@ -142,32 +142,4 @@ export class FilesService {
       this.toastService.showToast('Error', `Failed to delete file: ${(error as any).message}`, 5000);
     }
   }
-
-  /**
-   * Update all the appropriate stores to get the canvas to show the given file's content
-   *
-   * TODO: should this be here? Or in the canvas service?
-   *
-   * @param content
-   */
-  loadFile(content: FileContent) {
-    // TODO: Add a 'version' attribute to data, so that we can add more features in the future
-    // without breaking old saves
-    const edges = content.edges;
-    const textNodes = content.textNodes;
-    const title = content.name ?? content.title;
-    const id = content.id ?? null;
-
-    // Set all stores to empty
-    this.edgeStore.set([]);
-    this.textNodeStore.set([]);
-    this.titleStore.set('');
-    this.filesStore.setCurrentFileId(null);
-
-    // Set new values
-    this.textNodeStore.set(textNodes);
-    this.edgeStore.set(edges);
-    this.titleStore.set(title);
-    this.filesStore.setCurrentFileId(id);
-  }
 }

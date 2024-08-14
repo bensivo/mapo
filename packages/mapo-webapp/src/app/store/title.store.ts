@@ -8,18 +8,6 @@ export class TitleStore {
   title = new BehaviorSubject<string>('Untitled');
   title$ = this.title.asObservable();
 
-  constructor() {
-    const persisted = localStorage.getItem('mapo-state-title');
-    if (persisted) {
-      this.set(persisted);
-    }
-
-    this.title$.subscribe((title) => {
-      // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
-      localStorage.setItem('mapo-state-title', title);
-    });
-  }
-
   set(title: string) {
     if (title) {
       this.title.next(title);

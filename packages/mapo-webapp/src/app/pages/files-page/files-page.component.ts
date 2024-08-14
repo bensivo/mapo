@@ -2,10 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FilesService } from '../../services/files/files.service';
-import { AuthStore } from '../../store/auth.store';
 import { FilesStore } from '../../store/files.store';
-import { File, FileContent } from '../../models/file.interface';
+import { File } from '../../models/file.interface';
 import base64 from 'base-64';
+import { PersistenceService } from '../../services/persistence/persistence.service';
+import { EdgeStore } from '../../store/edge.store';
+import { TextNodeStore } from '../../store/text-node.store';
+import { TitleStore } from '../../store/title.store';
 
 @Component({
   selector: 'app-files-page',
@@ -19,32 +22,26 @@ export class FilesPageComponent {
     private router: Router,
     private filesService: FilesService,
     private filesStore: FilesStore,
+    private persistenceService: PersistenceService,
+    private edgeStore: EdgeStore,
+    private textNodeStore: TextNodeStore,
+    private titleStore: TitleStore,
   ) {
     this.filesService.fetchFiles();
   }
 
   files$ = this.filesStore.files$;
 
-  data = [
-    { title: 'Lecture 1.2.3 - Overview', updatedAt: new Date() },
-    {
-      title:
-        'Lecture 1.2.3 - Overview alskdj falskdj flaksjd flkasj dflkajsd flkasd',
-      updatedAt: new Date(),
-    },
-  ];
-
   onClickBackArrow() {
     this.router.navigate(['/']);
   }
 
   onClickNewMindMap() {
-    this.filesService.loadFile({
-      id: null,
-      name: 'Untitled',
-      textNodes: [],
-      edges: [],
-    });
+    this.edgeStore.set([]);
+    this.textNodeStore.set([]);
+    this.titleStore.set('Untitled');
+    this.filesStore.setCurrentFileId(null);
+
     this.router.navigate(['canvas']);
   }
 
@@ -54,16 +51,15 @@ export class FilesPageComponent {
 
   onClickOpenFile(file: File) {
     const contentJSON = base64.decode(file.contentBase64);
-    const content = JSON.parse(contentJSON);
+    this.persistenceService.loadCanvasState(contentJSON);
 
-    const fileContent: FileContent = {
-      id: file.id,
-      name: file.name,
-      textNodes: content.textNodes,
-      edges: content.edges,
-    };
+    // If a user exports a drawing to a file, then imports it again and hits save, the persisted contentJSON
+    // will not include a fileId. This means the fileId is missing if we load it directly from the database, so here we just
+    // ignore it and use the id on the file object, not the serialized JSON.
+    //
+    // TODO: Don't even save the id field in the JSON (when saving to the db)
+    this.filesStore.setCurrentFileId(file.id);
 
-    this.filesService.loadFile(fileContent);
     this.router.navigate(['canvas']);
   }
 }
