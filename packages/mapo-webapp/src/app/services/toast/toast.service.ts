@@ -17,7 +17,7 @@ export class ToastService {
 
   toasts$ = this.toasts.asObservable();
 
-  showToast(title: string, message: string, durationMs?: number): ToastData {
+  showToast(title: string, message: string, durationMs: number = 5000): ToastData {
     const id = uuid.v4();
     const toastData = {
       id,

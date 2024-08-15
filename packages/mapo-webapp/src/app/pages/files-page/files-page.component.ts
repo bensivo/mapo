@@ -9,6 +9,7 @@ import { PersistenceService } from '../../services/persistence/persistence.servi
 import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TitleStore } from '../../store/title.store';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-files-page',
@@ -26,6 +27,7 @@ export class FilesPageComponent {
     private edgeStore: EdgeStore,
     private textNodeStore: TextNodeStore,
     private titleStore: TitleStore,
+    private toastService: ToastService,
   ) {
     this.filesService.fetchFiles();
   }
@@ -46,7 +48,14 @@ export class FilesPageComponent {
   }
 
   onClickDeleteFile(file: File) {
-    this.filesService.deleteFile(file.id);
+    this.filesService.deleteFile(file.id)
+      .then(() => {
+        this.toastService.showToast('File Deleted', 'File deleted successfully');
+      })
+      .catch((error) => {
+        console.error(error);
+        this.toastService.showToast('Error', `Failed to delete file: ${(error as any).message}`);
+      });
   }
 
   onClickOpenFile(file: File) {

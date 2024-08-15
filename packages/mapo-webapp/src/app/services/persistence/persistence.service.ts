@@ -67,7 +67,7 @@ export class PersistenceService {
     this.filesStore.setCurrentFileId(id);
   }
 
-  saveCanvasState() {
+  async saveCanvasState(): Promise<any> {
     const user = this.authStore.user.value;
     if (!user) {
       console.warn('Cannot save canvas state, user not logged in');
@@ -81,13 +81,13 @@ export class PersistenceService {
     const contentBase64 = base64.encode(content);
 
     if (id) {
-      this.filesService.updateFile({
+      await this.filesService.updateFile({
         id: id,
         name: title,
         contentBase64: contentBase64,
       });
     } else {
-      this.filesService.saveFile({
+      await this.filesService.saveFile({
         name: title,
         contentBase64: contentBase64,
       });

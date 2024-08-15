@@ -5,6 +5,8 @@ import { AuthStore } from '../../store/auth.store';
 import { TitleComponent } from '../title/title.component';
 import { PersistenceService } from '../../services/persistence/persistence.service';
 import { TitleStore } from '../../store/title.store';
+import { ToastService } from '../../services/toast/toast.service';
+import { AutoSaveStore } from '../../services/autosave/autosave.store';
 
 @Component({
   selector: 'app-iconbar',
@@ -20,12 +22,15 @@ export class IconbarComponent {
     private authStore: AuthStore,
     private persistenceService: PersistenceService,
     private titleStore: TitleStore,
+    private toastService: ToastService,
+    private autoSaveStore: AutoSaveStore,
   ) { }
+
+  autoSaveStatus$ = this.autoSaveStore.autoSaveStatus$;
 
   get isLoggedIn(): boolean {
     return this.authStore.user.value !== null;
   }
-
 
   onClickHome() {
     this.router.navigate(['/']);
@@ -33,10 +38,6 @@ export class IconbarComponent {
 
   onClickFiles() {
     this.router.navigate(['/files']);
-  }
-
-  onClickSave() {
-    this.persistenceService.saveCanvasState();
   }
 
   onClickImport() {

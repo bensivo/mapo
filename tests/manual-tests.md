@@ -258,35 +258,40 @@ Create new file:
     W: I click on "New MindMap"
     T: I see a blank canvas
 
-    W: I click save
-    T: My browser makes a POST request, and creates a new file
-
-Update file:
-    G: I have openned an existing file
-    W: I click save
-    T: My browser makes a PATCH request, to update the existing file
-
-Update brand new file:
-    G: I have clicked on "New Mindmap"
-    W: I click save the first time
-    T: My browser makes a POST request
-    W: I click save the second time
-    T: My browser makes a PATCH request
-
 Delete file:
     G: I am logged in, on the "My files" page
     W: I click on the trashcan button
     T: My brwoser makes a DELETE request
     T: THe file dissapears
 
-Rename a file (failing):
+Rename a file:
     G: I am logged in, and have openned an existing file
-    W: I rename the file, and click "save"
+    W: I rename the file, and wait for it to save
     T: My browser makes a PATCH request and updates the name of the existing file
 
     W: I go back to "My files"
     T: I should see the file has been renamed, not adding a new file
 
+
+Autosave:
+    G: I am logged in, and have openned a file
+    W: I make changes to the nodes or edges
+    T: I see the "saving" text, which turns to "saved" after I pause for a few seconds
+
+Autosave - title:
+    G: I am logged in, and have openned a file
+    W: I make changes to the title
+    T: I see the "saving" text, which turns to "saved" after I pause for a few seconds
+    
+Autosave - logged out:
+    G: I am logged out, and have openned a file
+    W: I make changes
+    T: I don't see the "saving" text
+
+Autosave - new file:
+    G: I am logged out, and have used "new mindmap" to create a new file
+    W: I make changes
+    T: I see the "saving" text, which turns to "saved" after I pause for a few seconds
 
 ## Bugs
 

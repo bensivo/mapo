@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { TitleStore } from '../../store/title.store';
-import { CommonModule } from '@angular/common';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
 @Component({
@@ -13,16 +13,30 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 export class TitleComponent {
   title$ = this.titleStore.title$;
 
+  // Used to store the title value while editing;
+  inputLength = 12;
+
   constructor(
     private titleStore: TitleStore,
     private toolbarStore: ToolbarStore,
-  ) {}
+  ) {
+
+    this.title$.subscribe((title) => {
+      this.inputLength = (title.length > 8) ? title.length : 8;
+    });
+  }
 
   onFocus() {
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
   }
+
   onBlur() {
     this.toolbarStore.setTool(Tool.POINTER);
+  }
+
+  onInput(e: any) {
+    const title = e.target.value;
+    this.inputLength = (title.length > 8) ? title.length : 8;
   }
 
   onChange(e: any) {
