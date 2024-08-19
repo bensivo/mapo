@@ -1,0 +1,109 @@
+.textnode-options {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+
+  border: 2px solid black;
+  border-radius: 0.5rem;
+  padding: .5rem;
+}
+
+.label {
+  display: block;
+
+  margin-bottom: .5rem;
+  &:not(:first-of-type) {
+    margin-top: .5rem;
+  }
+}
+
+.font-size-button-container {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
+.font-size-button {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: solid 2px black;
+  border-radius: 4px;
+  font-size: .8rem;
+  font-weight: 700;
+
+  background-color: #fff;
+
+  &.enabled {
+    background-color: #dadada;
+  }
+
+  &:hover {
+    background-color: #dadada;
+    cursor: pointer;
+  }
+}
+
+.color-button-container {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.color-button {
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border: solid 2px black;
+  border-radius: 4px;
+
+  background-color: #fff;
+
+  &.enabled::before {
+    content: 'X';
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+
+  &:hover::before {
+    content: 'X';
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.white {
+  background-color: #fff;
+}
+.grey {
+  background-color: #d7d7d7;
+}
+.red {
+  background-color: #fdbfbf;
+}
+.orange {
+  background-color: #ffd8b8;
+}
+.yellow {
+  background-color: #f5ffb7;
+}
+.green {
+  background-color: #d2ffae;
+}
+.blue {
+  background-color: #aeecff;
+}
+.purple {
+  background-color: #ffd7f4;
+}

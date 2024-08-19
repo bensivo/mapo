@@ -5,6 +5,7 @@ import { IconbarComponent } from '../../components/iconbar/iconbar.component';
 import { TitleComponent } from '../../components/title/title.component';
 import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { SearchComponent } from '../../components/search/search.component';
+import { TextNodeOptionsComponent } from '../../components/textnode-options/textnode-options.component';
 
 @Component({
   selector: 'app-canvaspage',
@@ -16,6 +17,7 @@ import { SearchComponent } from '../../components/search/search.component';
     TitleComponent,
     IconbarComponent,
     SearchComponent,
+    TextNodeOptionsComponent,
   ],
   templateUrl: './canvaspage.component.html',
   styleUrl: './canvaspage.component.less',
