@@ -27,7 +27,7 @@ export class PersistenceService {
   ) {
   }
 
-  serializeCanvasState(): string {
+  serializeCanvasState(): FileContent {
     const edges = this.edgeStore.edges.value;
     const textNodes = this.textNodeStore.textNodes.value;
     const title = this.titleStore.title.value;
@@ -39,7 +39,7 @@ export class PersistenceService {
       edges: edges,
       textNodes: textNodes,
     };
-    return JSON.stringify(content);
+    return content;
   }
 
 
@@ -77,7 +77,7 @@ export class PersistenceService {
     const title = this.titleStore.title.value;
     const id = this.filesStore.currentFileId.value;
 
-    const content: string = this.serializeCanvasState();
+    const content: string = JSON.stringify(this.serializeCanvasState());
     const contentBase64 = base64.encode(content);
 
     if (id) {

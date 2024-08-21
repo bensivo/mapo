@@ -70,7 +70,10 @@ export class IconbarComponent {
     const title = this.titleStore.title.value;
 
     const data = this.persistenceService.serializeCanvasState();
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data);
+    data.id = null; // Null out the fileId, because the user who imports this file might not have access to the original file
+    const dataStr = JSON.stringify(data);
+
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
 
     const link = document.createElement('a');
     link.setAttribute('href', dataUri);
