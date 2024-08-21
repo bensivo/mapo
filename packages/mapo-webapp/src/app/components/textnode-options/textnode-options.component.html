@@ -1,13 +1,21 @@
 <div class="textnode-options">
+  <!--
   <span class="label">Font Size</span>
   <div class="font-size-button-container">
     <button class="font-size-button enabled">S</button>
     <button class="font-size-button">M</button>
     <button class="font-size-button">L</button>
   </div>
+  -->
 
   <span class="label">Background Color</span>
-  <div class="color-button-container">
-    <button *ngFor="let color of colors" class="color-button" [style.background-color]="color" (click)="onClickColor(color)"></button>
+  <div *ngIf="color$ | async as selectedColor" class="color-button-container">
+    <button
+      *ngFor="let color of colors"
+      [ngClass]="{ 'enabled': color === selectedColor }"
+      class="color-button"
+      [style.background-color]="color"
+      (click)="onClickColor(color)"
+    ></button>
   </div>
 </div>

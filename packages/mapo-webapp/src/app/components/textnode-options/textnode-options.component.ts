@@ -2,6 +2,7 @@ import { fabric } from 'fabric';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CanvasService } from '../../services/canvas/canvas.service';
+import { TextNodeOptionsStore } from '../../store/textnode-options.store';
 
 @Component({
   selector: 'app-textnode-options',
@@ -14,22 +15,23 @@ export class TextNodeOptionsComponent {
 
   canvas: fabric.Canvas | null = null;
 
+  color$ = this.textNodeOptionsStore.color$;
+
   constructor(
     private canvasService: CanvasService,
+    private textNodeOptionsStore: TextNodeOptionsStore,
   ) {
-
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
     });
     this.canvasService.canvasDestroyed$.subscribe((canvas) => {
       this.canvas = null;
     });
-
   }
 
   colors: string[] = [
     '#FFFFFF', // white
-    '#D9D9D9', // grey
+    '#E9E9E9', // grey
     '#FFD6D6', // red
     '#FFE8CD', // orange
     '#FFF8D6', // yellow
@@ -43,21 +45,7 @@ export class TextNodeOptionsComponent {
       return;
     }
 
-    const objects = this.canvas.getActiveObjects();
-    if (!objects) {
-      return;
-    }
-
-    for(const object of objects) {
-      console.log(object);
-      if(object instanceof fabric.Group && object?.data?.type === 'text-node') {
-        const rect = object.getObjects()[0] as fabric.Rect;
-        rect.set('fill', color);
-      }
-    }
-
-    this.canvas.requestRenderAll();
-    console.log(color);
-
+    this.textNodeOptionsStore.setColor(color);
   }
 }
+

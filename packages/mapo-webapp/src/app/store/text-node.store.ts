@@ -12,6 +12,10 @@ export class TextNodeStore {
 
   constructor(private edgeStore: EdgeStore) { }
 
+  get(id: string): TextNode | undefined {
+    return this.textNodes.value.find((node) => node.id === id);
+  }
+
   set(textNodes: TextNode[]) {
     this.textNodes.next(textNodes);
   }

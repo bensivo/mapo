@@ -5,6 +5,7 @@ import { CanvasService } from '../canvas/canvas.service';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import * as uuid from 'uuid';
+import { TextNodeOptionsStore } from '../../store/textnode-options.store';
 
 /**
  * Renders Text Nodes on the canvas, and manages their creation and editing
@@ -19,6 +20,7 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
+    private textNodeOptionsStore: TextNodeOptionsStore
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -79,6 +81,7 @@ export class TextNodeService {
       text: text,
       x: x,
       y: y,
+      color: this.textNodeOptionsStore.getColor(),
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

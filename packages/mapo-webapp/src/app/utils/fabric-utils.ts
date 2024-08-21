@@ -163,7 +163,7 @@ export class FabricUtils {
       left: rectLeft,
       width,
       height,
-      fill: 'white',
+      fill: textnode.color ?? '#FFFFFF',
       rx: 10,
       ry: 10,
       stroke: 'black',

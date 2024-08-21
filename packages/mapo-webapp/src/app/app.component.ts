@@ -16,6 +16,7 @@ import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.contro
 import { ToastComponent } from './components/toast/toast.component';
 import { DebugController } from './services/debug/debug.controller';
 import { AutoSaveController } from './services/autosave/autosave.controller';
+import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +48,7 @@ export class AppComponent {
     private toolbarController: ToolbarController,
     private debugController: DebugController,
     private autosaveController: AutoSaveController,
+    private textNodeOptionsController: TextNodeOptionsController,
   ) {
-    // debugController.run();
   }
 }

@@ -359,3 +359,22 @@ Next / Prev Item:
     G: I have searched
     W: I press the up and down arrorws
     T: The canvas moves between the items
+
+
+## Colors
+Create colored nodes:
+    G: I am on the canvas
+    W: I click on a color, then create a node
+    T: That node is created with my selected color
+
+Update color of a node:
+    G: I am on the canvas
+    G: I have a node selected 
+    W: I click on a color
+    T: That node is updated to my selected color
+
+Update color of many nodes:
+    G: I am on the canvas
+    G: I have a node selected 
+    W: I click on a color
+    T: That node is updated to my selected color

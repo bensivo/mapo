@@ -3,4 +3,6 @@ export interface TextNode {
   text: string;
   x: number;
   y: number;
+
+  color?: string;
 }
