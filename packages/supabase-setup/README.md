@@ -9,8 +9,7 @@ Project setup and database credentials
 4. Copy the project url and save it in infisical in SUPABASE_PROJECT_URL
 5. Click on "connect" and copy the database connection string.
 6. Url-encode your db password, then paste it into the connection string, and save it in Infisical in POSTGRES_CONNECTION_STRING
-
-7. Go to "Project SEttings" -> "Api" -> "JWT Secret" and copy it to infisical in JWT_SECRET. Also set JWT_ISSUER and JWT_AUDIENCE
+7. Go to "Project Settings" -> "Api" -> "JWT Secret" and copy it to infisical in JWT_SECRET. Also set JWT_ISSUER and JWT_AUDIENCE
 
 
 Google oauth setup.

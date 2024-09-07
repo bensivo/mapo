@@ -44,7 +44,6 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
     docker rm -f mapo-webapp || true;
 "
 
-
 # Run the new docker image
 ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
     set -x;

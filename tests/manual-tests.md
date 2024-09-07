@@ -155,9 +155,24 @@ Update label edge:
 
 ## Pan
 ```
-Panning:
+Panning(mouse):
     W: I right-click and drag 
     T: The canvas should pan
+
+Zoom(mouse):
+    W: I hold command (alt) and scroll
+    T: The canvas should zoom
+    
+Panning (trackpad):
+    G: I am using a trackpad
+    W: I drag with 2 fingers
+    T: The canvas should pan
+
+Zoom (trackpad):
+    G: I am using a trackpad
+    W: I pinch with 2 fingers
+    T: The canvas should zoom
+
 
 ```
 ## Help
