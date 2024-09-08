@@ -261,6 +261,11 @@ Load files from profile:
     W: I go to my files
     T: I see my files
 
+Search files:
+    G: I have logged in, and I am on the files page
+    W: I type in the searchbar
+    T: The files list is filtered by name
+
 Open files from profile:
     G: I am logged in, on my files page
     W: I click on one file

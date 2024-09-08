@@ -7,17 +7,24 @@
       ></i>
       My Files
     </h1>
+
+    <div class="file-search-container">
+      <i class="ri-search-line"></i>
+      <input placeholder="Search" (keyup)="onSearchKeyUp($event)">
+    </div>
+
     <button class="create-mindmap-button" (click)="onClickNewMindMap()">
       New Mind Map
     </button>
   </div>
 
-  <div *ngIf="files$ | async as files" class="row-container">
+  <div *ngIf="visibleFiles$ | async as files" class="row-container">
     <div *ngIf="files.length == 0">
       <p class="no-files">
         No files found. Click on "New Mind Map" to start drawing.
       </p>
     </div>
+
     <div class="row" *ngFor="let file of files">
       <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
       <i

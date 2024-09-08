@@ -10,6 +10,7 @@ import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TitleStore } from '../../store/title.store';
 import { ToastService } from '../../services/toast/toast.service';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 
 @Component({
   selector: 'app-files-page',
@@ -31,11 +32,31 @@ export class FilesPageComponent {
   ) {
     this.filesService.fetchFiles();
   }
+  searchText = new BehaviorSubject<string>('');
+  searchText$ = this.searchText.asObservable();
 
   files$ = this.filesStore.files$;
+  visibleFiles$ = combineLatest([this.files$, this.searchText$])
+    .pipe(
+      map(([files, searchText]) => {
+        files.sort((a, b) => a.name.localeCompare(b.name));
+
+        if (searchText === '') {
+          return files;
+        }
+
+        return files.filter((file) => file.name.toLowerCase().includes(searchText.toLowerCase()));
+    }
+  ));
 
   onClickBackArrow() {
     this.router.navigate(['/']);
+  }
+
+  onSearchKeyUp(event: KeyboardEvent) {
+    console.log('search key up', (event.target as HTMLInputElement).value);
+    this.searchText.next((event.target as HTMLInputElement).value);
+ 
   }
 
   onClickNewMindMap() {
