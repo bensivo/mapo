@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const baseUrl = 'https://mapo.dev.bensivo.com/';
-const expectedVersion = '0.0.13';
+const expectedVersion = '0.0.15';
 
 test.describe('Home Page', () => {
 
