@@ -9,6 +9,7 @@ import (
 	"github.com/bensivo/mapo/packages/mapo-api/config"
 	"github.com/bensivo/mapo/packages/mapo-api/db"
 	"github.com/bensivo/mapo/packages/mapo-api/files"
+	"github.com/bensivo/mapo/packages/mapo-api/folders"
 	"github.com/bensivo/mapo/packages/mapo-api/health"
 	"github.com/bensivo/mapo/packages/mapo-api/jwt"
 	"github.com/bensivo/mapo/packages/mapo-api/users"
@@ -34,13 +35,16 @@ func main() {
 	userSvc := users.NewUserService(conn)
 	fileSvc := files.NewFileService(conn)
 	jwtSvc := jwt.NewJwtService(userSvc)
+	folderSvc := folders.NewFolderService()
 
 	httpFileController := files.NewHttpFileController(fileSvc, jwtSvc)
 	httpHealthController := health.NewHttpHealthController()
+	httpFolderController := folders.NewHttpFolderController(folderSvc)
 
 	mux := &http.ServeMux{}
 	httpFileController.Register(mux)
 	httpHealthController.Register(mux)
+	httpFolderController.Register(mux)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:4200"},
