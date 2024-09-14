@@ -6,11 +6,8 @@ package files
 // Anything specific to HTTP is performed here (parsing request bodies, HTTP request paths, writing responses in JSON format, etc.)
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"strconv"
 
 	"github.com/bensivo/mapo/packages/mapo-api/jwt"
 	"github.com/bensivo/mapo/packages/mapo-api/users"
@@ -50,26 +47,19 @@ func (c *HTTPFileController) Register(mux *http.ServeMux) {
 
 func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
-	var data struct {
+	var requestBody struct {
 		Name          string `json:"name"`
 		ContextBase64 string `json:"contentBase64"`
 	}
-	bytes, err := io.ReadAll(r.Body)
+	err := util.ReadJSONRequestBody(r, &requestBody)
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, "Failed to read request body", http.StatusBadRequest)
-		return
-	}
-
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Failed to parse JSON request body", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Call service
-	file, err := c.svc.InsertFile(user.ID, data.Name, data.ContextBase64)
+	file, err := c.svc.InsertFile(user.ID, requestBody.Name, requestBody.ContextBase64)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Failed to insert file", http.StatusInternalServerError)
@@ -77,31 +67,35 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, 
 	}
 
 	// Return response
-	// TODO, define a struct for the JSON response
 	util.WriteJSON(w, file)
 }
 
 func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request, user *users.User) {
+	// Call service
 	files, err := c.svc.GetFiles(user.ID)
+
+	// Translate errors to HTTP error codes
 	if err != nil {
 		http.Error(w, "Failed to get files", http.StatusInternalServerError)
 		return
 	}
 
-	// TODO, define a struct for the JSON response
+	// Define a struct for the JSON response
 	util.WriteJSON(w, files)
 }
 
 func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, user *users.User) {
-
-	fileIDStr := r.PathValue("fileid")
-	fileID, err := strconv.Atoi(fileIDStr)
+	// Get File ID from path
+	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
 	}
 
+	// Call service
 	file, err := c.svc.GetFile(user.ID, fileID)
+
+	// Translate errors to HTTP error codes
 	if err == ErrFileNotFound {
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
@@ -116,32 +110,26 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 }
 func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Parse the request body
-	var data struct {
+	var requestBody struct {
 		Name          string `json:"name"`
 		ContextBase64 string `json:"contentBase64"`
 	}
-	bytes, err := io.ReadAll(r.Body)
+	err := util.ReadJSONRequestBody(r, &requestBody)
 	if err != nil {
-		http.Error(w, "Failed to read request body", http.StatusBadRequest)
-		return
-	}
-
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		http.Error(w, "Failed to parse JSON request body", http.StatusBadRequest)
+		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Get fileid from path
-	idStr := r.PathValue("fileid")
-	fileID, err := strconv.Atoi(idStr)
+	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
 	}
 
 	// Call service
-	err = c.svc.UpdateFile(fileID, user.ID, data.Name, data.ContextBase64)
+	err = c.svc.UpdateFile(fileID, user.ID, requestBody.Name, requestBody.ContextBase64)
 	if err == ErrFileNotFound {
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
@@ -157,8 +145,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 }
 func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request, user *users.User) {
 	// Get fileid from path
-	idStr := r.PathValue("fileid")
-	fileID, err := strconv.Atoi(idStr)
+	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
