@@ -6,3 +6,10 @@ docs/media/Homepage[[:space:]](login).png filter=lfs diff=lfs merge=lfs -text
 docs/media/Homepage.png filter=lfs diff=lfs merge=lfs -text
 docs/media/demo-screenshot.png filter=lfs diff=lfs merge=lfs -text
 packages/mapo-webapp/public/example-mind-map.png filter=lfs diff=lfs merge=lfs -text
+docs/media/canvas-logged-out.png filter=lfs diff=lfs merge=lfs -text
+docs/media/mapo-demo-basic.gif filter=lfs diff=lfs merge=lfs -text
+docs/media/mapo-example-homepage.png filter=lfs diff=lfs merge=lfs -text
+docs/media/my-files.png filter=lfs diff=lfs merge=lfs -text
+docs/media/canvas-logged-in.png filter=lfs diff=lfs merge=lfs -text
+docs/media/mapo-example-mindmap.png filter=lfs diff=lfs merge=lfs -text
+docs/media/mapo-example-my-files.png filter=lfs diff=lfs merge=lfs -text

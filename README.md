@@ -1,6 +1,20 @@
 # Mapo
-NOTE: Mapo is still in active development. Expect breaking changes, outages, etc. 
+Mapo is a browser-based mind mapping tool. 
 
-A web-based mind mapping tool, made to be minimal, fast, and intuitive.
+It's made to be super simple and intuitive, so you can spend your time thinking, not fidgeting with your canvas.
 
-![Demo](./docs/media/demo-screenshot.png)
+
+Check it out: https://mapo.bensivo.com
+
+
+## Demos, Screenshots
+
+Demo Video:
+![Demo Video](./docs/media/mapo-demo-basic.gif)
+
+Screenshots:
+![Homepage](./docs/media/mapo-example-homepage.png)
+
+![Example MindMap](./docs/media/mapo-example-mindmap.png)
+
+![Example My Files](./docs/media/mapo-example-my-files.png)
