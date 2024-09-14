@@ -1,0 +1,13 @@
+<div class="modal-bg-overlay" (click)="onClickBackground($event)"></div>
+
+<div class="modal">
+    <h3>New Folder</h3>
+
+    <label for="input">Name</label>
+    <input type="text" id="input" placeholder="Folder Name" [(ngModel)]="name"/>
+
+    <div class="button-row">
+        <button (click)="onClickCancel()">Cancel</button>
+        <button (click)="onClickCreateFolder()">Create Folder</button>
+    </div>
+</div>

@@ -16,6 +16,10 @@
     <button class="create-mindmap-button" (click)="onClickNewMindMap()">
       New Mind Map
     </button>
+
+    <button class="create-folder-button" (click)="onClickNewFolder()">
+      New Folder
+    </button>
   </div>
 
   <div *ngIf="visibleFiles$ | async as files" class="row-container">
@@ -33,4 +37,10 @@
       ></i>
     </div>
   </div>
+
+  <app-new-folder-modal 
+    *ngIf="isNewFolderModalVisible"
+    (close)="onCloseNewFolderModal()"
+    (submit)="onSubmitNewFolderModal($event)"
+  ></app-new-folder-modal>
 </div>

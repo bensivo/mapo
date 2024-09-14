@@ -11,11 +11,12 @@ import { TextNodeStore } from '../../store/text-node.store';
 import { TitleStore } from '../../store/title.store';
 import { ToastService } from '../../services/toast/toast.service';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 
 @Component({
   selector: 'app-files-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NewFolderModalComponent],
   templateUrl: './files-page.component.html',
   styleUrl: './files-page.component.less',
 })
@@ -32,6 +33,9 @@ export class FilesPageComponent {
   ) {
     this.filesService.fetchFiles();
   }
+
+  isNewFolderModalVisible = false;
+
   searchText = new BehaviorSubject<string>('');
   searchText$ = this.searchText.asObservable();
 
@@ -57,6 +61,10 @@ export class FilesPageComponent {
     console.log('search key up', (event.target as HTMLInputElement).value);
     this.searchText.next((event.target as HTMLInputElement).value);
  
+  }
+
+  onClickNewFolder() {
+    this.isNewFolderModalVisible = true; 
   }
 
   onClickNewMindMap() {
@@ -91,5 +99,15 @@ export class FilesPageComponent {
     this.filesStore.setCurrentFileId(file.id);
 
     this.router.navigate(['canvas']);
+  }
+
+
+  onCloseNewFolderModal() {
+    console.log('close');
+    this.isNewFolderModalVisible = false;
+  }
+  onSubmitNewFolderModal(data: NewFolderModalSubmit) {
+    console.log(data);
+
   }
 }
