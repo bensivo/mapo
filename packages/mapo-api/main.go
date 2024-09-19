@@ -35,11 +35,11 @@ func main() {
 	userSvc := users.NewUserService(conn)
 	fileSvc := files.NewFileService(conn)
 	jwtSvc := jwt.NewJwtService(userSvc)
-	folderSvc := folders.NewFolderService()
+	folderSvc := folders.NewFolderService(conn)
 
 	httpFileController := files.NewHttpFileController(fileSvc, jwtSvc)
 	httpHealthController := health.NewHttpHealthController()
-	httpFolderController := folders.NewHttpFolderController(folderSvc)
+	httpFolderController := folders.NewHttpFolderController(folderSvc, jwtSvc)
 
 	mux := &http.ServeMux{}
 	httpFileController.Register(mux)
