@@ -76,6 +76,7 @@ func (c *HTTPFileController) onGetFiles(w http.ResponseWriter, r *http.Request, 
 
 	// Translate errors to HTTP error codes
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to get files", http.StatusInternalServerError)
 		return
 	}
@@ -88,6 +89,7 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 	// Get File ID from path
 	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
 	}
@@ -97,10 +99,12 @@ func (c *HTTPFileController) onGetFile(w http.ResponseWriter, r *http.Request, u
 
 	// Translate errors to HTTP error codes
 	if err == ErrFileNotFound {
+		fmt.Println(err)
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to get file", http.StatusInternalServerError)
 		return
 	}
@@ -124,6 +128,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 	// Get fileid from path
 	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
 	}
@@ -131,10 +136,12 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 	// Call service
 	err = c.svc.UpdateFile(fileID, user.ID, requestBody.Name, requestBody.ContextBase64)
 	if err == ErrFileNotFound {
+		fmt.Println(err)
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to update file", http.StatusInternalServerError)
 		return
 	}
@@ -147,6 +154,7 @@ func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request
 	// Get fileid from path
 	fileID, err := util.GetIntPathParam(r, "fileid")
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to parse file ID", http.StatusBadRequest)
 		return
 	}
@@ -154,10 +162,12 @@ func (c *HTTPFileController) onDeleteFile(w http.ResponseWriter, r *http.Request
 	// Call service
 	err = c.svc.DeleteFile(user.ID, fileID)
 	if err == ErrFileNotFound {
+		fmt.Println(err)
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to delete file", http.StatusInternalServerError)
 		return
 	}

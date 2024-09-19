@@ -3,6 +3,7 @@ import axios from 'axios';
 import { CONFIG, Config } from '../../app.config';
 import { AuthStore } from '../../store/auth.store';
 import { File, FileContent } from '../../models/file.interface';
+import { Folder } from '../../models/folder.interface';
 import { FilesStore } from '../../store/files.store';
 import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
@@ -38,8 +39,26 @@ export class FilesService {
     this.authStore.accessToken$.subscribe((token) => {
       if (token) {
         this.fetchFiles();
+        this.fetchFolders();
       }
     });
+  }
+
+  async fetchFolders(): Promise<void> {
+    const token = this.authStore.accessToken.getValue();
+    if (!token) {
+      throw Error('No access token available');
+    }
+
+    const res = await axios.get(`${this.config.MAPO_API_BASE_URL}/folders`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const folders = res.data as Folder[];
+    this.filesStore.setFolders(folders);
   }
 
   async fetchFiles(): Promise<void> {

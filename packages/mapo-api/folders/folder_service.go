@@ -66,22 +66,20 @@ func (s *FolderService) GetFolder() ([]Folder, error) {
 
 // Get all folders from the database
 func (s *FolderService) GetFolders(userID string) ([]Folder, error) {
-	//use a SQL Query like insert that SELECTS all folders with the ID given
-	rows, err := s.db.Query(`SELECT id, user_id, name, parent_id FROM folders WHERE user_id=$1;`, userID)
-
+	rows, err := s.db.Query(`
+		SELECT id, user_id, name, parent_id FROM folders WHERE user_id=$1;
+	`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get folders: %w", err)
 	}
 	defer rows.Close()
 
-	//create a slice to hold retrieved folders
 	folders := []Folder{}
-	//create a temp struct to hold data for the current row -> for loop
 	for rows.Next() {
 		var id int
 		var user_id string
 		var name string
-		var parent_id sql.NullInt16
+		var parent_id sql.NullInt64
 
 		err := rows.Scan(&id, &user_id, &name, &parent_id)
 		if err != nil {
@@ -89,9 +87,8 @@ func (s *FolderService) GetFolders(userID string) ([]Folder, error) {
 		}
 
 		var pid int
-
 		if parent_id.Valid {
-			pid = int(parent_id.Int16)
+			pid = int(parent_id.Int64)
 		} else {
 			pid = 0
 		}

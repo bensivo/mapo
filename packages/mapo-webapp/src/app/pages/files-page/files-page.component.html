@@ -29,6 +29,16 @@
       </p>
     </div>
 
+    <ng-container *ngIf="folders$ | async as folders" >
+      <div class="row" *ngFor="let folder of folders">
+        <i class="ri-folder-3-line"></i>
+        <p class="card-title">{{ folder.name }}</p>
+        <i
+          class="card-options ri-delete-bin-line"
+        ></i>
+      </div>
+    </ng-container>
+
     <div class="row" *ngFor="let file of files">
       <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
       <i

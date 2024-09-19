@@ -32,6 +32,7 @@ export class FilesPageComponent {
     private toastService: ToastService,
   ) {
     this.filesService.fetchFiles();
+    this.filesService.fetchFolders();
   }
 
   isNewFolderModalVisible = false;
@@ -40,6 +41,8 @@ export class FilesPageComponent {
   searchText$ = this.searchText.asObservable();
 
   files$ = this.filesStore.files$;
+  folders$ = this.filesStore.folders$;
+
   visibleFiles$ = combineLatest([this.files$, this.searchText$])
     .pipe(
       map(([files, searchText]) => {

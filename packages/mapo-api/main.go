@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/rs/cors"
-
 	"github.com/bensivo/mapo/packages/mapo-api/config"
 	"github.com/bensivo/mapo/packages/mapo-api/db"
 	"github.com/bensivo/mapo/packages/mapo-api/files"
@@ -13,6 +11,7 @@ import (
 	"github.com/bensivo/mapo/packages/mapo-api/health"
 	"github.com/bensivo/mapo/packages/mapo-api/jwt"
 	"github.com/bensivo/mapo/packages/mapo-api/users"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -22,20 +21,20 @@ func main() {
 	}
 
 	fmt.Println("Connecting to database...")
-	conn, err := db.ConnectPostgres()
+	database, err := db.ConnectPostgres()
 	if err != nil {
 		panic(err)
 	}
 
-	err = db.RunMigrations(conn)
+	err = db.RunMigrations(database)
 	if err != nil {
 		panic(err)
 	}
 
-	userSvc := users.NewUserService(conn)
-	fileSvc := files.NewFileService(conn)
+	userSvc := users.NewUserService(database)
+	fileSvc := files.NewFileService(database)
 	jwtSvc := jwt.NewJwtService(userSvc)
-	folderSvc := folders.NewFolderService(conn)
+	folderSvc := folders.NewFolderService(database)
 
 	httpFileController := files.NewHttpFileController(fileSvc, jwtSvc)
 	httpHealthController := health.NewHttpHealthController()
