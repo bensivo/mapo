@@ -99,7 +99,7 @@
   }
 }
 
-.card-title {
+.folder-name, .file-name {
   font-size: 16px;
 
   &:hover {
@@ -115,4 +115,25 @@
   i:hover {
     background-color: white;
   }
+}
+
+.breadcrumbs {
+  margin-left: 32px;
+  margin-right: 32px;
+  display: flex;  
+  flex-direction: row;
+}
+
+.breadcrumb {
+  font-size: 16px;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+.breadcrumb-separator {
+  margin: 0 .5rem;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { File } from '../models/file.interface';
 import { Folder } from '../models/folder.interface';
 
@@ -16,15 +16,31 @@ export class FilesStore {
   public currentFileId = new BehaviorSubject<number | null>(null);
   public currentFileId$ = this.currentFileId.asObservable();
 
+  // When navigating around the "my-files" page, we need to keep track of the current folder path.
+  public currentFolderId = new BehaviorSubject<number>(0);
+  public currentFolderId$ = this.currentFolderId.asObservable();
+
   setFiles(files: File[]) {
     this.files.next(files);
   }
-  
+
   setFolders(folders: Folder[]) {
-    this.folders.next(folders);
+    // this.folders.next(folders);
+
+    this.folders.next([
+      { id: 1, userId: '1', name: 'documents', parentId: 0, },
+      { id: 2, userId: '1', name: 'downloads', parentId: 0, },
+      { id: 3, userId: '1', name: 'pictures', parentId: 0, },
+      { id: 4, userId: '1', name: 'cs441', parentId: 1, },
+    ])
+    this.setCurrentFolderId(0);
   }
 
   setCurrentFileId(id: number | null) {
     this.currentFileId.next(id);
+  }
+
+  setCurrentFolderId(id: number) {
+    this.currentFolderId.next(id);
   }
 }

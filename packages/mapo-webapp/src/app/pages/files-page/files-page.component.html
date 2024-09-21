@@ -22,6 +22,15 @@
     </button>
   </div>
 
+  <div class="breadcrumbs" *ngIf="breadcrumbs$ | async as breadcrumbs">
+    <ng-container *ngFor="let breadcrumb of breadcrumbs">
+      <span class="breadcrumb" (click)="onClickBreadcrumb(breadcrumb)">
+        {{ breadcrumb.name }}
+      </span>
+      <span class="breadcrumb-separator">/</span>
+    </ng-container>
+  </div>
+
   <div *ngIf="visibleFiles$ | async as files" class="row-container">
     <div *ngIf="files.length == 0">
       <p class="no-files">
@@ -29,20 +38,20 @@
       </p>
     </div>
 
-    <ng-container *ngIf="folders$ | async as folders" >
-      <div class="row" *ngFor="let folder of folders">
+    <ng-container *ngIf="visibleFolders$ | async as folders" >
+      <div class="row" *ngFor="let folder of folders" (click)="onClickFolder(folder)">
         <i class="ri-folder-3-line"></i>
-        <p class="card-title">{{ folder.name }}</p>
+        <p class="folder-name">{{ folder.name }}</p>
         <i
-          class="card-options ri-delete-bin-line"
+          class="ri-delete-bin-line"
         ></i>
       </div>
     </ng-container>
 
     <div class="row" *ngFor="let file of files">
-      <p class="card-title" (click)="onClickOpenFile(file)">{{ file.name }}</p>
+      <p class="file-name" (click)="onClickOpenFile(file)">{{ file.name }}</p>
       <i
-        class="card-options ri-delete-bin-line"
+        class="ri-delete-bin-line"
         (click)="onClickDeleteFile(file)"
       ></i>
     </div>

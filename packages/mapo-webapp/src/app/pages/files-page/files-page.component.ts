@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import { TitleStore } from '../../store/title.store';
 import { ToastService } from '../../services/toast/toast.service';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
+import { Folder } from '../../models/folder.interface';
 
 @Component({
   selector: 'app-files-page',
@@ -31,8 +33,7 @@ export class FilesPageComponent {
     private titleStore: TitleStore,
     private toastService: ToastService,
   ) {
-    this.filesService.fetchFiles();
-    this.filesService.fetchFolders();
+    this.filesService.fetch();
   }
 
   isNewFolderModalVisible = false;
@@ -41,7 +42,60 @@ export class FilesPageComponent {
   searchText$ = this.searchText.asObservable();
 
   files$ = this.filesStore.files$;
-  folders$ = this.filesStore.folders$;
+
+  breadcrumbs$: Observable<Folder[]> = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$])
+  .pipe(
+    map(([folders, currentFolderId]) => {
+
+      const foldersMap = Object.fromEntries(folders.map((folder) => [folder.id, folder]));
+      const breadcrumbs: Folder[] = [];
+
+      let id = currentFolderId;
+      while(id !== 0) {
+        console.log(id);
+        const current = foldersMap[id];
+        breadcrumbs.push(current);
+
+
+        if (current.parentId === 0) {
+          break;
+        } 
+
+        const parent = foldersMap[current.parentId];
+        if (!parent) {
+          console.error('Parent not found for folder', current);
+          break;
+        }
+        id = parent.id;
+      }
+
+      breadcrumbs.push({
+        id: 0,
+        userId: '',
+        name: 'My Files',
+        parentId: -1,
+      })
+
+      breadcrumbs.reverse();
+      return breadcrumbs;
+    })
+  )
+
+  visibleFolders$ = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$, this.searchText$])
+  .pipe(
+    map(([folders, currentFolderId, searchText]) => {
+        let visibleFolders = folders;
+        visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
+
+        visibleFolders = visibleFolders.filter((folder) => folder.parentId === currentFolderId);
+
+        if (searchText !== '') {
+          visibleFolders = visibleFolders.filter((folder) => folder.name.toLowerCase().includes(searchText.toLowerCase()));
+        }
+
+        return visibleFolders;
+    })
+  );
 
   visibleFiles$ = combineLatest([this.files$, this.searchText$])
     .pipe(
@@ -106,11 +160,17 @@ export class FilesPageComponent {
 
 
   onCloseNewFolderModal() {
-    console.log('close');
     this.isNewFolderModalVisible = false;
   }
   onSubmitNewFolderModal(data: NewFolderModalSubmit) {
-    console.log(data);
+    // TODO: Call POST /folders
+  }
 
+  onClickFolder(folder: Folder) {
+    this.filesStore.setCurrentFolderId(folder.id);
+  }
+
+  onClickBreadcrumb(folder: Folder) {
+    this.filesStore.setCurrentFolderId(folder.id);
   }
 }

@@ -38,44 +38,40 @@ export class FilesService {
   ) {
     this.authStore.accessToken$.subscribe((token) => {
       if (token) {
-        this.fetchFiles();
-        this.fetchFolders();
+        this.fetch();
       }
     });
   }
 
-  async fetchFolders(): Promise<void> {
+  /**
+   * Fetches this user's files and folders from the API.
+   */
+  async fetch(): Promise<void> {
     const token = this.authStore.accessToken.getValue();
     if (!token) {
       throw Error('No access token available');
     }
 
-    const res = await axios.get(`${this.config.MAPO_API_BASE_URL}/folders`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const [filesRes, foldersRes] = await Promise.all([
+      axios.get(`${this.config.MAPO_API_BASE_URL}/files`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+      axios.get(`${this.config.MAPO_API_BASE_URL}/folders`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    ]);
 
-    const folders = res.data as Folder[];
-    this.filesStore.setFolders(folders);
-  }
+    const files = filesRes.data as File[];
+    const folders = foldersRes.data as Folder[];
 
-  async fetchFiles(): Promise<void> {
-    const token = this.authStore.accessToken.getValue();
-    if (!token) {
-      throw Error('No access token available');
-    }
-
-    const res = await axios.get(`${this.config.MAPO_API_BASE_URL}/files`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const files = res.data as File[];
     this.filesStore.setFiles(files);
+    this.filesStore.setFolders(folders);
   }
 
   async saveFile(dto: SaveFileDto): Promise<void> {
@@ -135,6 +131,6 @@ export class FilesService {
       },
     });
 
-    await this.fetchFiles();
+    await this.fetch();
   }
 }
