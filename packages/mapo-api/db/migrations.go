@@ -63,6 +63,12 @@ func RunMigrations(db *sql.DB) error {
 			);
 			`,
 		},
+		{
+			Name: "add_folder_id_to_files",
+			SQL: `
+				ALTER TABLE files ADD COLUMN folder_id INTEGER REFERENCES folders(id);
+			`,
+		},
 	}
 
 	for _, migration := range migrations {

@@ -80,9 +80,8 @@ func (c *HTTPFolderController) onGetFolder(w http.ResponseWriter, r *http.Reques
 // POST /folders
 func (c *HTTPFolderController) onPostFolders(w http.ResponseWriter, r *http.Request) {
 	var requestBody struct {
-		ID       int    `json:"id"` // In reality, the DB would generate the Id, so it wouldn't be here
-		UserID   string `json:"userId"`
 		Name     string `json:"name"`
+		UserID   string `json:"userId"`
 		ParentID int    `json:"parentId"`
 	}
 
@@ -98,7 +97,7 @@ func (c *HTTPFolderController) onPostFolders(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	folder, err := c.svc.InsertFolder(requestBody.ID, requestBody.UserID, requestBody.Name, requestBody.ParentID)
+	folder, err := c.svc.InsertFolder(requestBody.UserID, requestBody.Name, requestBody.ParentID)
 	if err != nil {
 		http.Error(w, "Failed to insert folder into database", http.StatusBadRequest)
 		return

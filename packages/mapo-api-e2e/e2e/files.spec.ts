@@ -20,39 +20,95 @@ describe('Files API', () => {
         });
     });
 
-    it('create file', async () => {
-        const file = {
+    it('create file root folder', async () => {
+        const body = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // When I insert a file
         const res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: body
         });
 
         // Then it should be returned in the response
         expect(res.data).toEqual({
             id: expect.any(Number),
             userId: jwtSubject,
-            name: file.name,
-            contentBase64: file.contentBase64,
+            name: body.name,
+            contentBase64: body.contentBase64,
+            folderId: body.folderId
         })
+    });
+
+    it('create file in folder', async () => {
+        // Given a folder exists
+        let res = await client.request({
+            method: 'POST',
+            url: '/folders',
+            data: {
+                name: 'e2e-' + chance.word(),
+                userId: jwtSubject,
+                parentId: 0,
+            }
+        });
+        const folderId = res.data.id;
+
+        const body = {
+            name: 'testy testy test',
+            contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: folderId,
+        };
+
+        // When I insert a file
+        res = await client.request({
+            method: 'POST',
+            url: '/files',
+            data: body
+        });
+
+        // Then it should be returned in the response
+        expect(res.data).toEqual({
+            id: expect.any(Number),
+            userId: jwtSubject,
+            name: body.name,
+            contentBase64: body.contentBase64,
+            folderId: body.folderId
+        })
+    });
+
+    it('create file in nonexistent folder (should fail)', async () => {
+        // When I insert a file, in a folder that doesn't exist
+        const res = await client.request({
+            method: 'POST',
+            url: '/files',
+            data: {
+                name: chance.word(),
+                contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+                folderId: -1,
+            },
+            validateStatus: () => true,
+        });
+
+        // Then I should get an error
+        expect(res.status).toEqual(500)
     });
 
     it('list files', async () => {
         const file = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // Given I have inserted a file
         let res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: file
         });
 
         // Then it should appear in the GET /files response
@@ -69,13 +125,14 @@ describe('Files API', () => {
         const file = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // Given I have inserted a file
         let res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: file
         });
         const fileId = res.data.id;
 
@@ -93,13 +150,14 @@ describe('Files API', () => {
         const file = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // Given I have inserted a file
         let res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: file
         });
         const fileId = res.data.id;
 
@@ -122,13 +180,14 @@ describe('Files API', () => {
         const file = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // Given I have inserted a file
         let res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: file
         });
         const fileId = res.data.id;
 
@@ -157,13 +216,14 @@ describe('Files API', () => {
         const file = {
             name: chance.word(),
             contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
         };
 
         // Given I have inserted a file
         let res = await client.request({
             method: 'POST',
             url: '/files',
-            data: file 
+            data: file
         });
         const fileId = res.data.id;
 
@@ -173,7 +233,7 @@ describe('Files API', () => {
             method: 'PATCH',
             url: `/files/${fileId}`,
             data: {
-                contentBase64: Buffer.from(JSON.stringify({new: 'content'})).toString('base64'),
+                contentBase64: Buffer.from(JSON.stringify({ new: 'content' })).toString('base64'),
             }
         });
 
@@ -182,11 +242,15 @@ describe('Files API', () => {
             method: 'GET',
             url: `/files/${fileId}`,
         });
-        expect(res.data.contentBase64).toBe(Buffer.from(JSON.stringify({new: 'content'})).toString('base64'));
+        expect(res.data.contentBase64).toBe(Buffer.from(JSON.stringify({ new: 'content' })).toString('base64'));
 
         // Then other fields should be unaffected
         expect(res.data.name).toBe(file.name);
     });
+
+    it.todo('update file folder_id (to root)')
+
+    it.todo('update file folder_id (to another folder)')
 
 
     it('only returns my files', async () => {
@@ -205,6 +269,7 @@ describe('Files API', () => {
             data: {
                 name: 'file from user A',
                 contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+                folderId: 0,
             }
         });
         const fileId = res.data.id;
@@ -239,6 +304,7 @@ describe('Files API', () => {
             data: {
                 name: 'file from user A',
                 contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+                folderId: 0,
             }
         });
         const fileId = res.data.id;
@@ -273,6 +339,7 @@ describe('Files API', () => {
             data: {
                 name: 'file from user A',
                 contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+                folderId: 0,
             }
         });
         const fileId = res.data.id;
@@ -307,6 +374,7 @@ describe('Files API', () => {
             data: {
                 name: 'file from user A',
                 contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+                folderId: 0,
             }
         });
         const fileId = res.data.id;

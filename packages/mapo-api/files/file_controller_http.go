@@ -50,6 +50,7 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, 
 	var requestBody struct {
 		Name          string `json:"name"`
 		ContextBase64 string `json:"contentBase64"`
+		FolderID      int    `json:"folderId"`
 	}
 	err := util.ReadJSONRequestBody(r, &requestBody)
 	if err != nil {
@@ -59,7 +60,7 @@ func (c *HTTPFileController) onPostFile(w http.ResponseWriter, r *http.Request, 
 	}
 
 	// Call service
-	file, err := c.svc.InsertFile(user.ID, requestBody.Name, requestBody.ContextBase64)
+	file, err := c.svc.InsertFile(user.ID, requestBody.Name, requestBody.ContextBase64, requestBody.FolderID)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Failed to insert file", http.StatusInternalServerError)
@@ -117,6 +118,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 	var requestBody struct {
 		Name          string `json:"name"`
 		ContextBase64 string `json:"contentBase64"`
+		FolderID      int    `json:"folderId"`
 	}
 	err := util.ReadJSONRequestBody(r, &requestBody)
 	if err != nil {
@@ -134,7 +136,7 @@ func (c *HTTPFileController) onUpdateFile(w http.ResponseWriter, r *http.Request
 	}
 
 	// Call service
-	err = c.svc.UpdateFile(fileID, user.ID, requestBody.Name, requestBody.ContextBase64)
+	err = c.svc.UpdateFile(fileID, user.ID, requestBody.Name, requestBody.ContextBase64, requestBody.FolderID)
 	if err == ErrFileNotFound {
 		fmt.Println(err)
 		http.Error(w, "File not found", http.StatusNotFound)

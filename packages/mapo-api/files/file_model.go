@@ -7,6 +7,7 @@ type File struct {
 	UserID        string `json:"userId"`
 	Name          string `json:"name"`
 	ContentBase64 string `json:"contentBase64"`
+	FolderID      int    `json:"folderId"` // NOTE: We use -1 to represent the root folder, but there's no real entry with that id
 }
 
 func (f File) String() string {

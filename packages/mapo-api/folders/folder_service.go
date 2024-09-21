@@ -4,6 +4,8 @@ package folders
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/bensivo/mapo/packages/mapo-api/db"
 )
 
 var folders = []Folder{
@@ -25,25 +27,32 @@ func NewFolderService(db *sql.DB) *FolderService {
 }
 
 // Insert a folder into the database
-func (s *FolderService) InsertFolder(id int, userId string, name string, parentId int) (*Folder, error) {
-	//this needs to be connecting to the SQL database instead of Folder
-	//row := s.db.QueryRow (`SQL Instructions`, userID, name)
-	folder := Folder{
-		ID:       id,
-		UserID:   userId,
-		Name:     name,
-		ParentID: parentId,
+func (s *FolderService) InsertFolder(userId string, name string, parentId int) (*Folder, error) {
+	row := s.db.QueryRow(`
+		INSERT INTO folders (user_id, name, parent_id)
+		VALUES ($1, $2, NULLIF($3, 0))
+		RETURNING id, user_id, name, parent_id;
+	`, userId, name, parentId)
+
+	var data struct {
+		ID       int
+		UserID   string
+		Name     string
+		ParentID sql.NullInt64
 	}
-	folders = append(folders, folder)
 
-	//create a struct to hold data after we retrieve it
+	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ParentID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to scan insert response: %w", err)
+	}
 
-	//return a single row that contains the results of the SQL command earlier
-	//err := row.Scan(& what values we want returned)
-	//error message if scan fails
+	return &Folder{
+		ID:       data.ID,
+		UserID:   data.UserID,
+		Name:     data.Name,
+		ParentID: db.WithDefaultInt64(data.ParentID, 0),
+	}, nil
 
-	//return a pointer to new folder instance populated with data
-	return &folder, nil
 }
 
 // Get a single folder from the database
