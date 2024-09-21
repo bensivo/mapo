@@ -398,3 +398,35 @@ Update color of many nodes:
     G: I have a node selected 
     W: I click on a color
     T: That node is updated to my selected color
+
+
+## Folders
+Create folder (in root):
+    G: I am on the files page
+    W: I click "Create Folder" and submit the form
+    T: The folder appears
+
+Create folder (nested):
+    G: I am on the files page, and in a folder
+    W: I click "Create Folder" and submit the form
+    T: The folder appears
+
+Navigate into Folder:
+    G: I am on the files page, and there's a folder there
+    W: I click on the folder
+    T: I go into that folder, and see the files in it instead
+
+Breadcrumbs:
+    G: I am on the files page
+    W: I navigate into a folder
+    T: The breadcrumbs update to show my current folder location
+
+breadcrumb navigation:
+    G: I am on the files page, in a folder, and there are breadcrumbs
+    W: I click on one of the breadcrumbs
+    T: I move to that folder corresponding to the breadcrumb
+
+Create file in folder:
+    G: I am in a folder
+    W: I click "Create mindmap"
+    T: It is created in that folder, not in the root
