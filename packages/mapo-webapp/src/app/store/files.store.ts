@@ -25,15 +25,7 @@ export class FilesStore {
   }
 
   setFolders(folders: Folder[]) {
-    // this.folders.next(folders);
-
-    this.folders.next([
-      { id: 1, userId: '1', name: 'documents', parentId: 0, },
-      { id: 2, userId: '1', name: 'downloads', parentId: 0, },
-      { id: 3, userId: '1', name: 'pictures', parentId: 0, },
-      { id: 4, userId: '1', name: 'cs441', parentId: 1, },
-    ])
-    this.setCurrentFolderId(0);
+    this.folders.next(folders);
   }
 
   setCurrentFileId(id: number | null) {

@@ -32,7 +32,7 @@
   </div>
 
   <div *ngIf="visibleFiles$ | async as files" class="row-container">
-    <div *ngIf="files.length == 0">
+    <div *ngIf="isEmpty$ | async">
       <p class="no-files">
         No files found. Click on "New Mind Map" to start drawing.
       </p>

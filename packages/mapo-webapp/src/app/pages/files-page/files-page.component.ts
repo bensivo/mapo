@@ -44,46 +44,46 @@ export class FilesPageComponent {
   files$ = this.filesStore.files$;
 
   breadcrumbs$: Observable<Folder[]> = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$])
-  .pipe(
-    map(([folders, currentFolderId]) => {
+    .pipe(
+      map(([folders, currentFolderId]) => {
 
-      const foldersMap = Object.fromEntries(folders.map((folder) => [folder.id, folder]));
-      const breadcrumbs: Folder[] = [];
+        const foldersMap = Object.fromEntries(folders.map((folder) => [folder.id, folder]));
+        const breadcrumbs: Folder[] = [];
 
-      let id = currentFolderId;
-      while(id !== 0) {
-        console.log(id);
-        const current = foldersMap[id];
-        breadcrumbs.push(current);
+        let id = currentFolderId;
+        while (id !== 0) {
+          console.log(id);
+          const current = foldersMap[id];
+          breadcrumbs.push(current);
 
 
-        if (current.parentId === 0) {
-          break;
-        } 
+          if (current.parentId === 0) {
+            break;
+          }
 
-        const parent = foldersMap[current.parentId];
-        if (!parent) {
-          console.error('Parent not found for folder', current);
-          break;
+          const parent = foldersMap[current.parentId];
+          if (!parent) {
+            console.error('Parent not found for folder', current);
+            break;
+          }
+          id = parent.id;
         }
-        id = parent.id;
-      }
 
-      breadcrumbs.push({
-        id: 0,
-        userId: '',
-        name: 'My Files',
-        parentId: -1,
+        breadcrumbs.push({
+          id: 0,
+          userId: '',
+          name: 'My Files',
+          parentId: -1,
+        })
+
+        breadcrumbs.reverse();
+        return breadcrumbs;
       })
-
-      breadcrumbs.reverse();
-      return breadcrumbs;
-    })
-  )
+    )
 
   visibleFolders$ = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$, this.searchText$])
-  .pipe(
-    map(([folders, currentFolderId, searchText]) => {
+    .pipe(
+      map(([folders, currentFolderId, searchText]) => {
         let visibleFolders = folders;
         visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -94,8 +94,8 @@ export class FilesPageComponent {
         }
 
         return visibleFolders;
-    })
-  );
+      })
+    );
 
   visibleFiles$ = combineLatest([this.files$, this.searchText$])
     .pipe(
@@ -107,8 +107,15 @@ export class FilesPageComponent {
         }
 
         return files.filter((file) => file.name.toLowerCase().includes(searchText.toLowerCase()));
-    }
-  ));
+      }
+      ));
+    
+  isEmpty$ = combineLatest([this.visibleFolders$, this.visibleFiles$])
+  .pipe(
+    map(([folders, files]) => {
+      return folders.length === 0 && files.length === 0;
+    })
+  )
 
   onClickBackArrow() {
     this.router.navigate(['/']);
@@ -117,11 +124,11 @@ export class FilesPageComponent {
   onSearchKeyUp(event: KeyboardEvent) {
     console.log('search key up', (event.target as HTMLInputElement).value);
     this.searchText.next((event.target as HTMLInputElement).value);
- 
+
   }
 
   onClickNewFolder() {
-    this.isNewFolderModalVisible = true; 
+    this.isNewFolderModalVisible = true;
   }
 
   onClickNewMindMap() {
@@ -163,7 +170,17 @@ export class FilesPageComponent {
     this.isNewFolderModalVisible = false;
   }
   onSubmitNewFolderModal(data: NewFolderModalSubmit) {
-    // TODO: Call POST /folders
+    this.filesService.createFolder(data.name, this.filesStore.currentFolderId.getValue())
+      .then(() => {
+        this.toastService.showToast('Folder Created',  `Folder "${data.name}" created successfully`);
+      })
+      .catch((error) => {
+        console.error(error);
+        this.toastService.showToast('Error', `Failed to create folder: ${(error as any).message}`);
+      })
+      .finally(() => {
+        this.isNewFolderModalVisible = false;
+      });
   }
 
   onClickFolder(folder: Folder) {

@@ -9,6 +9,7 @@ export interface File {
   userId: string;
   name: string;
   contentBase64: string;
+  folderId: number; // ID of the parent folder, where 0 is the root folder.
 }
 
 /**

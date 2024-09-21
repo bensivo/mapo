@@ -33,7 +33,7 @@ func (c *HTTPFolderController) Register(mux *http.ServeMux) {
 
 	//need to add users to post
 	fmt.Println("Registering route POST /folders")
-	mux.HandleFunc("POST /folders", util.WithLogger(c.onPostFolders))
+	mux.HandleFunc("POST /folders", util.WithLogger(c.jwt.WithJWTAuth(c.onPostFolders)))
 }
 
 // GET all /folders
@@ -78,10 +78,9 @@ func (c *HTTPFolderController) onGetFolder(w http.ResponseWriter, r *http.Reques
 }
 
 // POST /folders
-func (c *HTTPFolderController) onPostFolders(w http.ResponseWriter, r *http.Request) {
+func (c *HTTPFolderController) onPostFolders(w http.ResponseWriter, r *http.Request, user *users.User) {
 	var requestBody struct {
 		Name     string `json:"name"`
-		UserID   string `json:"userId"`
 		ParentID int    `json:"parentId"`
 	}
 
@@ -97,7 +96,7 @@ func (c *HTTPFolderController) onPostFolders(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	folder, err := c.svc.InsertFolder(requestBody.UserID, requestBody.Name, requestBody.ParentID)
+	folder, err := c.svc.InsertFolder(user.ID, requestBody.Name, requestBody.ParentID)
 	if err != nil {
 		http.Error(w, "Failed to insert folder into database", http.StatusBadRequest)
 		return

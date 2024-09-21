@@ -133,4 +133,27 @@ export class FilesService {
 
     await this.fetch();
   }
+
+  async createFolder(name: string, parentId: number): Promise<void> {
+    const token = this.authStore.accessToken.getValue();
+    if (!token) {
+      throw Error('No access token available');
+    }
+
+    await axios.post(
+      `${this.config.MAPO_API_BASE_URL}/folders`,
+      {
+        name,
+        parentId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    await this.fetch();
+  }
 }

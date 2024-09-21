@@ -28,6 +28,9 @@ func NewFolderService(db *sql.DB) *FolderService {
 
 // Insert a folder into the database
 func (s *FolderService) InsertFolder(userId string, name string, parentId int) (*Folder, error) {
+
+	// TODO: should we check that the parent_folder also belongs to this user?
+
 	row := s.db.QueryRow(`
 		INSERT INTO folders (user_id, name, parent_id)
 		VALUES ($1, $2, NULLIF($3, 0))
@@ -43,6 +46,7 @@ func (s *FolderService) InsertFolder(userId string, name string, parentId int) (
 
 	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ParentID)
 	if err != nil {
+		fmt.Println(err)
 		return nil, fmt.Errorf("failed to scan insert response: %w", err)
 	}
 
