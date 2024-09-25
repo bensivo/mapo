@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -14,6 +13,7 @@ import { ToastService } from '../../services/toast/toast.service';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 import { Folder } from '../../models/folder.interface';
+import { FilesSelectors } from '../../selectors/file.selectors';
 
 @Component({
   selector: 'app-files-page',
@@ -26,6 +26,7 @@ export class FilesPageComponent {
   constructor(
     private router: Router,
     private filesService: FilesService,
+    private filesSelectors: FilesSelectors,
     private filesStore: FilesStore,
     private persistenceService: PersistenceService,
     private edgeStore: EdgeStore,
@@ -41,47 +42,11 @@ export class FilesPageComponent {
   searchText = new BehaviorSubject<string>('');
   searchText$ = this.searchText.asObservable();
 
-  files$ = this.filesStore.files$;
-
-  breadcrumbs$: Observable<Folder[]> = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$])
-    .pipe(
-      map(([folders, currentFolderId]) => {
-
-        const foldersMap = Object.fromEntries(folders.map((folder) => [folder.id, folder]));
-        const breadcrumbs: Folder[] = [];
-
-        let id = currentFolderId;
-        while (id !== 0) {
-          console.log(id);
-          const current = foldersMap[id];
-          breadcrumbs.push(current);
+  files$ = this.filesSelectors.files$
+  breadcrumbs$ = this.filesSelectors.breadcrumbs$;
 
 
-          if (current.parentId === 0) {
-            break;
-          }
-
-          const parent = foldersMap[current.parentId];
-          if (!parent) {
-            console.error('Parent not found for folder', current);
-            break;
-          }
-          id = parent.id;
-        }
-
-        breadcrumbs.push({
-          id: 0,
-          userId: '',
-          name: 'My Files',
-          parentId: -1,
-        })
-
-        breadcrumbs.reverse();
-        return breadcrumbs;
-      })
-    )
-
-  visibleFolders$ = combineLatest([this.filesStore.folders$, this.filesStore.currentFolderId$, this.searchText$])
+  visibleFolders$ = combineLatest([this.filesSelectors.folders$, this.filesSelectors.currentFolderId$, this.searchText$])
     .pipe(
       map(([folders, currentFolderId, searchText]) => {
         let visibleFolders = folders;
@@ -109,7 +74,7 @@ export class FilesPageComponent {
         return files.filter((file) => file.name.toLowerCase().includes(searchText.toLowerCase()));
       }
       ));
-    
+
   isEmpty$ = combineLatest([this.visibleFolders$, this.visibleFiles$])
   .pipe(
     map(([folders, files]) => {
