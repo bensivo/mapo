@@ -44,6 +44,7 @@
         <p class="folder-name">{{ folder.name }}</p>
         <i
           class="ri-delete-bin-line"
+          (click)="onClickDeleteFolder(folder, $event)"
         ></i>
       </div>
     </ng-container>

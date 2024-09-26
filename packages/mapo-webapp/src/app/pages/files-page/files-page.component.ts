@@ -152,6 +152,11 @@ export class FilesPageComponent {
     this.filesStore.setCurrentFolderId(folder.id);
   }
 
+  onClickDeleteFolder(folder: Folder, e: MouseEvent) {
+    e.stopPropagation(); 
+    this.filesService.deleteFolder(folder.id);
+  }
+
   onClickBreadcrumb(folder: Folder) {
     this.filesStore.setCurrentFolderId(folder.id);
   }

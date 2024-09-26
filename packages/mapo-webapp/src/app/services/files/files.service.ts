@@ -156,4 +156,22 @@ export class FilesService {
 
     await this.fetch();
   }
+
+  async deleteFolder(id: number): Promise<void> {
+    const token = this.authStore.accessToken.getValue();
+    if (!token) {
+      throw Error('No access token available');
+    }
+
+    await axios.delete(`${this.config.MAPO_API_BASE_URL}/folders/${id}`, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    await this.fetch();
+  }
 }
