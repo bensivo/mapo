@@ -93,6 +93,7 @@ export class FilesPageComponent {
     //
     // TODO: Don't even save the id field in the JSON (when saving to the db)
     this.filesStore.setCurrentFileId(file.id);
+    this.filesStore.setCurrentFolderId(file.folderId);
 
     this.router.navigate(['canvas']);
   }
@@ -121,7 +122,14 @@ export class FilesPageComponent {
 
   onClickDeleteFolder(folder: Folder, e: MouseEvent) {
     e.stopPropagation();
-    this.filesService.deleteFolder(folder.id);
+    this.filesService.deleteFolder(folder.id)
+      .then(() => {
+        this.toastService.showToast('Folder Deleted',  `Folder "${folder.name}" deleted successfully`);
+      })
+      .catch((error) => {
+        console.error(error);
+        this.toastService.showToast('Error', `Failed to delete folder: ${(error as any).message}`);
+      })
   }
 
   onClickBreadcrumb(folder: Folder) {

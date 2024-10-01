@@ -1,15 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
 import axios from 'axios';
+
 import { CONFIG, Config } from '../../app.config';
 import { AuthStore } from '../../store/auth.store';
-import { File, FileContent } from '../../models/file.interface';
+import { File } from '../../models/file.interface';
 import { Folder } from '../../models/folder.interface';
 import { FilesStore } from '../../store/files.store';
-import { EdgeStore } from '../../store/edge.store';
-import { TextNodeStore } from '../../store/text-node.store';
-import { TitleStore } from '../../store/title.store';
 
 export interface SaveFileDto {
+  folderId: number;
   name: string;
   contentBase64: string;
 }
@@ -18,6 +17,7 @@ export interface UpdateFileDto {
   id: number;
   name: string;
   contentBase64: string;
+  folderId?: number;
 }
 
 /**
@@ -32,9 +32,6 @@ export class FilesService {
     private config: Config,
     private authStore: AuthStore,
     private filesStore: FilesStore,
-    private edgeStore: EdgeStore,
-    private textNodeStore: TextNodeStore,
-    private titleStore: TitleStore,
   ) {
     this.authStore.accessToken$.subscribe((token) => {
       if (token) {
@@ -85,6 +82,7 @@ export class FilesService {
       {
         name: dto.name,
         contentBase64: dto.contentBase64,
+        folderId: dto.folderId,
       },
       {
         headers: {
@@ -108,6 +106,7 @@ export class FilesService {
       {
         name: dto.name,
         contentBase64: dto.contentBase64,
+        folderId: dto.folderId,
       },
       {
         headers: {
@@ -163,7 +162,7 @@ export class FilesService {
       throw Error('No access token available');
     }
 
-    await axios.delete(`${this.config.MAPO_API_BASE_URL}/folders/${id}`, 
+    await axios.delete(`${this.config.MAPO_API_BASE_URL}/folders/${id}`,
       {
         headers: {
           'Content-Type': 'application/json',
