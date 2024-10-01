@@ -43,53 +43,20 @@ export class FilesPageComponent {
   searchText$ = this.searchText.asObservable();
 
   files$ = this.filesSelectors.files$
+
   breadcrumbs$ = this.filesSelectors.breadcrumbs$;
+  visibleFolders$ = this.filesSelectors.visibleFolders$;
+  visibleFiles$ = this.filesSelectors.visibleFiles$;
+  isEmpty$ = this.filesSelectors.isEmpty$;
 
-
-  visibleFolders$ = combineLatest([this.filesSelectors.folders$, this.filesSelectors.currentFolderId$, this.searchText$])
-    .pipe(
-      map(([folders, currentFolderId, searchText]) => {
-        let visibleFolders = folders;
-        visibleFolders.sort((a, b) => a.name.localeCompare(b.name));
-
-        visibleFolders = visibleFolders.filter((folder) => folder.parentId === currentFolderId);
-
-        if (searchText !== '') {
-          visibleFolders = visibleFolders.filter((folder) => folder.name.toLowerCase().includes(searchText.toLowerCase()));
-        }
-
-        return visibleFolders;
-      })
-    );
-
-  visibleFiles$ = combineLatest([this.files$, this.searchText$])
-    .pipe(
-      map(([files, searchText]) => {
-        files.sort((a, b) => a.name.localeCompare(b.name));
-
-        if (searchText === '') {
-          return files;
-        }
-
-        return files.filter((file) => file.name.toLowerCase().includes(searchText.toLowerCase()));
-      }
-      ));
-
-  isEmpty$ = combineLatest([this.visibleFolders$, this.visibleFiles$])
-  .pipe(
-    map(([folders, files]) => {
-      return folders.length === 0 && files.length === 0;
-    })
-  )
 
   onClickBackArrow() {
     this.router.navigate(['/']);
   }
 
   onSearchKeyUp(event: KeyboardEvent) {
-    console.log('search key up', (event.target as HTMLInputElement).value);
     this.searchText.next((event.target as HTMLInputElement).value);
-
+    this.filesStore.setSearchText((event.target as HTMLInputElement).value);
   }
 
   onClickNewFolder() {
@@ -153,7 +120,7 @@ export class FilesPageComponent {
   }
 
   onClickDeleteFolder(folder: Folder, e: MouseEvent) {
-    e.stopPropagation(); 
+    e.stopPropagation();
     this.filesService.deleteFolder(folder.id);
   }
 

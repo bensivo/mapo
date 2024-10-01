@@ -7,18 +7,25 @@ import { Folder } from '../models/folder.interface';
   providedIn: 'root',
 })
 export class FilesStore {
+  // All files that belong to the current user
   public files = new BehaviorSubject<File[]>([]);
   public files$ = this.files.asObservable();
 
+  // All folders that belong to the current user
   public folders = new BehaviorSubject<Folder[]>([]);
   public folders$ = this.folders.asObservable();
 
+  // The currently-selected file, if on the canvas
   public currentFileId = new BehaviorSubject<number | null>(null);
   public currentFileId$ = this.currentFileId.asObservable();
 
-  // When navigating around the "my-files" page, we need to keep track of the current folder path.
+  // The currently-selected folder, used when navigating around in the my-files page
   public currentFolderId = new BehaviorSubject<number>(0);
   public currentFolderId$ = this.currentFolderId.asObservable();
+
+  // The contents of the files searchbar, used for filtering files and filders
+  public searchText = new BehaviorSubject<string>('');
+  public searchText$ = this.searchText.asObservable();
 
   setFiles(files: File[]) {
     this.files.next(files);
@@ -34,5 +41,9 @@ export class FilesStore {
 
   setCurrentFolderId(id: number) {
     this.currentFolderId.next(id);
+  }
+
+  setSearchText(text: string) {
+    this.searchText.next(text);
   }
 }
