@@ -63,4 +63,11 @@
     (close)="onCloseNewFolderModal()"
     (submit)="onSubmitNewFolderModal($event)"
   ></app-new-folder-modal>
+
+  <app-new-file-modal 
+  *ngIf="isNewFileModalVisible"
+  (close)="onCloseNewFileModal()"
+  (submit)="onSubmitNewFileModal($event)"
+  ></app-new-file-modal>
+
 </div>

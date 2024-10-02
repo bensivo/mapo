@@ -14,6 +14,7 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 import { Folder } from '../../models/folder.interface';
 import { FilesSelectors } from '../../selectors/file.selectors';
+import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-file-modal/new-file-modal.component';
 
 @Component({
   selector: 'app-files-page',
@@ -37,6 +38,9 @@ export class FilesPageComponent {
     this.filesService.fetch();
   }
 
+  //is this all i need to do? 
+  //or do i need to create functions similar to the ones below?
+  isNewFileModalVisible = true;
   isNewFolderModalVisible = false;
 
   searchText = new BehaviorSubject<string>('');
