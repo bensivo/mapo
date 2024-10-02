@@ -19,7 +19,7 @@ import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-
 @Component({
   selector: 'app-files-page',
   standalone: true,
-  imports: [CommonModule, NewFolderModalComponent],
+  imports: [CommonModule, NewFolderModalComponent, NewFileModalComponent],
   templateUrl: './files-page.component.html',
   styleUrl: './files-page.component.less',
 })
@@ -38,9 +38,7 @@ export class FilesPageComponent {
     this.filesService.fetch();
   }
 
-  //is this all i need to do? 
-  //or do i need to create functions similar to the ones below?
-  isNewFileModalVisible = true;
+  isNewFileModalVisible = false;
   isNewFolderModalVisible = false;
 
   searchText = new BehaviorSubject<string>('');
@@ -100,6 +98,10 @@ export class FilesPageComponent {
     this.isNewFolderModalVisible = true;
   }
 
+  onClickNewFile() {
+    this.isNewFileModalVisible = true;
+  }
+
   onClickNewMindMap() {
     this.edgeStore.set([]);
     this.textNodeStore.set([]);
@@ -138,6 +140,11 @@ export class FilesPageComponent {
   onCloseNewFolderModal() {
     this.isNewFolderModalVisible = false;
   }
+
+  onCloseNewFileModal() {
+    this.isNewFileModalVisible = false;
+  }
+
   onSubmitNewFolderModal(data: NewFolderModalSubmit) {
     this.filesService.createFolder(data.name, this.filesStore.currentFolderId.getValue())
       .then(() => {
@@ -152,8 +159,18 @@ export class FilesPageComponent {
       });
   }
 
+  onSubmitNewFileModal(data: NewFileModalSubmit) {
+    //not really sure what to do here.
+    //do i need to create a createFile service?
+    this.isNewFileModalVisible = false;
+  }
+
   onClickFolder(folder: Folder) {
     this.filesStore.setCurrentFolderId(folder.id);
+  }
+
+  onClickFile(file: File) {
+    this.filesStore.setCurrentFileId(file.id);
   }
 
   onClickDeleteFolder(folder: Folder, e: MouseEvent) {
