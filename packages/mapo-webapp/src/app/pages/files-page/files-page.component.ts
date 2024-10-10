@@ -14,11 +14,12 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 import { Folder } from '../../models/folder.interface';
 import { FilesSelectors } from '../../selectors/file.selectors';
+import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-file-modal/new-file-modal.component';
 
 @Component({
   selector: 'app-files-page',
   standalone: true,
-  imports: [CommonModule, NewFolderModalComponent],
+  imports: [CommonModule, NewFolderModalComponent, NewFileModalComponent],
   templateUrl: './files-page.component.html',
   styleUrl: './files-page.component.less',
 })
@@ -37,6 +38,7 @@ export class FilesPageComponent {
     this.filesService.fetch();
   }
 
+  isNewFileModalVisible = false;
   isNewFolderModalVisible = false;
 
   searchText = new BehaviorSubject<string>('');
@@ -64,12 +66,13 @@ export class FilesPageComponent {
   }
 
   onClickNewMindMap() {
-    this.edgeStore.set([]);
-    this.textNodeStore.set([]);
-    this.titleStore.set('Untitled');
-    this.filesStore.setCurrentFileId(null);
+    this.isNewFileModalVisible = true;
+    // this.edgeStore.set([]);
+    // this.textNodeStore.set([]);
+    // this.titleStore.set('Untitled');
+    // this.filesStore.setCurrentFileId(null);
 
-    this.router.navigate(['canvas']);
+    // this.router.navigate(['canvas']);
   }
 
   onClickDeleteFile(file: File) {
@@ -102,6 +105,11 @@ export class FilesPageComponent {
   onCloseNewFolderModal() {
     this.isNewFolderModalVisible = false;
   }
+
+  onCloseNewFileModal() {
+    this.isNewFileModalVisible = false;
+  }
+
   onSubmitNewFolderModal(data: NewFolderModalSubmit) {
     this.filesService.createFolder(data.name, this.filesStore.currentFolderId.getValue())
       .then(() => {
@@ -116,8 +124,18 @@ export class FilesPageComponent {
       });
   }
 
+  onSubmitNewFileModal(data: NewFileModalSubmit) {
+    //not really sure what to do here.
+    //do i need to create a createFile service?
+    this.isNewFileModalVisible = false;
+  }
+
   onClickFolder(folder: Folder) {
     this.filesStore.setCurrentFolderId(folder.id);
+  }
+
+  onClickFile(file: File) {
+    this.filesStore.setCurrentFileId(file.id);
   }
 
   onClickDeleteFolder(folder: Folder, e: MouseEvent) {

@@ -1,0 +1,13 @@
+<div class="modal-bg-overlay" (click)="onClickBackground($event)"></div>
+
+<div class="modal">
+    <h3>New File</h3>
+
+    <label for="input">Name</label>
+    <input type="text" id="input" placeholder="File Name" [(ngModel)]="name"/>
+
+    <div class="button-row">
+        <button (click)="onClickCancel()">Cancel</button>
+        <button (click)="onClickCreateFile()">Create File</button>
+    </div>
+</div>
