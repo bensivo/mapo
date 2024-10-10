@@ -98,17 +98,14 @@ export class FilesPageComponent {
     this.isNewFolderModalVisible = true;
   }
 
-  onClickNewFile() {
-    this.isNewFileModalVisible = true;
-  }
-
   onClickNewMindMap() {
-    this.edgeStore.set([]);
-    this.textNodeStore.set([]);
-    this.titleStore.set('Untitled');
-    this.filesStore.setCurrentFileId(null);
+    this.isNewFileModalVisible = true;
+    // this.edgeStore.set([]);
+    // this.textNodeStore.set([]);
+    // this.titleStore.set('Untitled');
+    // this.filesStore.setCurrentFileId(null);
 
-    this.router.navigate(['canvas']);
+    // this.router.navigate(['canvas']);
   }
 
   onClickDeleteFile(file: File) {
