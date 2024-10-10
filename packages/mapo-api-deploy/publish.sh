@@ -27,4 +27,5 @@ echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USERNAME --password-stdin
 
 # Build and push the docker image using buildx
 echo "Building and pushing docker image"
-docker buildx build --platform=linux/amd64,linux/arm64 -t ghcr.io/bensivo/mapo-api:$DOCKER_IMAGE_TAG --push  ../mapo-api
+docker build --platform=linux/amd64 -t ghcr.io/bensivo/mapo-api:$DOCKER_IMAGE_TAG ../mapo-api
+docker push ghcr.io/bensivo/mapo-api:$DOCKER_IMAGE_TAG

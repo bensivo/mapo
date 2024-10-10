@@ -34,6 +34,17 @@ export class PersistenceController {
             }
         }
 
+        const persistedFolderId = localStorage.getItem('mapo-state-folder-id');
+        if (persistedFolderId) {
+            try {
+                const folderId: number | null = persistedFolderId === 'null' ? null : parseInt(persistedFolderId, 10);
+                console.log('Hydrating folder id from storage', folderId);
+                this.fileStore.setCurrentFolderId(folderId ?? 0);
+            } catch (e) {
+                console.error('Failed to load text-nodes from local storage', e);
+            }
+        }
+
         const persistedNodes = localStorage.getItem('mapo-state-text-nodes');
         if (persistedNodes) {
             try {
@@ -74,6 +85,11 @@ export class PersistenceController {
         this.fileStore.currentFileId$.subscribe((currentFileId) => {
             // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
             localStorage.setItem('mapo-state-file-id', ''+currentFileId);
+        });
+
+        this.fileStore.currentFolderId$.subscribe((currentFolderId) => {
+            // TODO: add an app version to the persisted data, so that we don't fail on breaking changes
+            localStorage.setItem('mapo-state-folder-id', ''+currentFolderId);
         });
 
         this.titleStore.title$.subscribe((title) => {
