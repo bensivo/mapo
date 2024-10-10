@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FilesService } from '../../services/files/files.service';
+import { FilesService, SaveFileDto } from '../../services/files/files.service';
 import { FilesStore } from '../../store/files.store';
 import { File } from '../../models/file.interface';
 import base64 from 'base-64';
@@ -123,11 +123,33 @@ export class FilesPageComponent {
         this.isNewFolderModalVisible = false;
       });
   }
-
+  
   onSubmitNewFileModal(data: NewFileModalSubmit) {
-    //not really sure what to do here.
-    //do i need to create a createFile service?
-    this.isNewFileModalVisible = false;
+    const content : string = JSON.stringify({
+      id: null,
+      name: data.name,
+      edges: [],
+      textNodes: [],
+    })
+    const contentBase64 = base64.encode(content);
+
+    const dto: SaveFileDto = {
+      folderId: this.filesStore.currentFolderId.getValue(),
+      name: data.name,
+      contentBase64: contentBase64,
+    }
+    this.filesService.createFile(dto)
+    .then(() => {
+      this.toastService.showToast('File Created',  `File "${data.name}" created successfully`);
+      this.filesService.fetch();
+    })
+    .catch((error) => {
+      console.error(error);
+      this.toastService.showToast('Error', `Failed to create file: ${(error as any).message}`);
+    })
+    .finally(() => {
+      this.isNewFileModalVisible = false;
+    });
   }
 
   onClickFolder(folder: Folder) {

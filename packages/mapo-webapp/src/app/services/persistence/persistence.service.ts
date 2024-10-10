@@ -90,7 +90,7 @@ export class PersistenceService {
         folderId: folderId,
       });
     } else {
-      await this.filesService.saveFile({
+      await this.filesService.createFile({
         name: title,
         contentBase64: contentBase64,
         folderId: folderId,

@@ -71,7 +71,7 @@ export class FilesService {
     this.filesStore.setFolders(folders);
   }
 
-  async saveFile(dto: SaveFileDto): Promise<void> {
+  async createFile(dto: SaveFileDto): Promise<void> {
     const token = this.authStore.accessToken.getValue();
     if (!token) {
       throw Error('No access token available');
