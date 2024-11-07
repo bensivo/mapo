@@ -2,6 +2,7 @@ import { Injectable, Optional } from '@angular/core';
 import { fabric } from 'fabric';
 import FontFaceObserver from 'fontfaceobserver';
 import { Subject } from 'rxjs';
+import interact from 'interactjs';
 
 export type DestroyCanvasCallback = () => void;
 
@@ -26,6 +27,25 @@ export class CanvasService {
   }
 
   async initializeCanvas(): Promise<DestroyCanvasCallback> {
+
+    interact('#fabric-canvas').gesturable({
+      onmove: function (event) {
+        console.log(event);
+        const c = document.getElementById('fabric-canvas');
+        if (c) {
+          const num = Math.random()
+          if (num > 0.5) {
+            c.style.backgroundColor = 'black';
+          } else {
+            c.style.backgroundColor = 'white';
+          }
+
+        }
+        
+      }
+    })
+
+
     // Make sure the Roboto font is loaded before we initialize the canvas. http://fabricjs.com/loadfonts
     await this.fontFaceObserver.load();
 
