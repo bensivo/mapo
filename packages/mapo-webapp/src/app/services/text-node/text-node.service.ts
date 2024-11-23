@@ -81,7 +81,7 @@ export class TextNodeService {
       text: text,
       x: x,
       y: y,
-      color: this.textNodeOptionsStore.getColor(),
+      color: '#FFFFFF'
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

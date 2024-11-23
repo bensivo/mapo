@@ -80,7 +80,6 @@ export class PersistenceService {
     const content: string = JSON.stringify(this.serializeCanvasState());
     const contentBase64 = base64.encode(content);
     const folderId = this.filesStore.currentFolderId.value;
-    console.log('folderId', folderId);
 
     if (id) {
       await this.filesService.updateFile({

@@ -68,6 +68,10 @@ export class ToolbarController {
           this.edgeStore.remove(object.data.id);
         }
       });
+
+      // If there was a group-selection, it will sometimes remain after deleting the nodes under it.
+      // This makes sure to remove the group-selection as well.
+      this.canvas.discardActiveObject().renderAll();
     }
   };
 }
