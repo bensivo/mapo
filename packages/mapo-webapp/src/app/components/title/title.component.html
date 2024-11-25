@@ -1,11 +1,10 @@
 <div class="title-container" *ngIf="title$ | async; let title">
   <input 
   type="text"
-  [style.width.ch]="inputLength" 
   [value]="title" 
   (change)="onChange($event)"     
-  (input)="onInput($event)"
   (focus)="onFocus()"
   (blur)="onBlur()"
   />
 </div>
+

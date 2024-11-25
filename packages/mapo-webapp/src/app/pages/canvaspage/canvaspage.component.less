@@ -2,3 +2,69 @@
   height: 100%;
   width: 100%;
 }
+
+.top-content {
+  .iconbar-container {
+    grid-area: iconbar;
+    margin: 1rem;
+  }
+  .toolbar-container {
+    grid-area: toolbar;
+  }
+  .search-container {
+    grid-area: search;
+  }
+}
+
+
+// Laptop and up
+@media(min-width: 769px) {
+  // Here, we use a flexbox. The toolbar is in the center, and the iconbar and search are on the sides,
+  // able to grow to fill up any space available
+  .top-content {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .iconbar-container {
+    flex: 1;
+  }
+  .search-container {
+    flex: 1;
+  }
+}
+
+// Tablet
+@media(min-width: 500px) and (max-width: 768px) {
+  // As the screen gets smaller, we move the toolbar into another row
+  .top-content {
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: 
+      'iconbar search'
+      'toolbar toolbar' ;
+  }
+
+  .toolbar-container {
+    width: 100vw;
+  }
+}
+
+// Phone
+@media(min-width: 0px) and (max-width: 499px) {
+  // As the screen gets smaller, we move the toolbar into another row
+  .top-content {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      'iconbar' 
+      'toolbar' ;
+  }
+
+  .toolbar-container {
+    width: 100vw;
+  }
+
+  // TODO: figure out how to handle the searchbar on tablets and phones
+  .search-container {
+    display: none;
+  }
+}
