@@ -3,7 +3,7 @@ version: 3.4
 tasks:
   run:
     cmds:
-      - npx ng serve -o
+      - npx ng serve -o --host 0.0.0.0
 
   fmt:
     cmds:

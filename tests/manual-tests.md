@@ -428,5 +428,23 @@ breadcrumb navigation:
 
 Create file in folder:
     G: I am in a folder
-    W: I click "Create mindmap"
+    W: I click "Create mindmap" and enter a name
     T: It is created in that folder, not in the root
+
+Create a file with a name:
+    G: I am logged in
+    G: Files page
+    W: I click "New mindmap" and enter a name
+    T: A new file is added to the page with the name I entered
+
+## Touch Screen
+Pan: 
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on the empty space
+    T: The canvas pans
+    T: The blue group selection box does not show up
+
+Move Object:
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on an object
+    T: The object moves but the canvas does not

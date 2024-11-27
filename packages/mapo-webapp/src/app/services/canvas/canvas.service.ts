@@ -1,7 +1,8 @@
 import { Injectable, Optional } from '@angular/core';
 import { fabric } from 'fabric';
 import FontFaceObserver from 'fontfaceobserver';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { isTouchScreen } from '../../utils/browser-utils';
 
 export type DestroyCanvasCallback = () => void;
 
@@ -41,6 +42,7 @@ export class CanvasService {
       fireRightClick: true,
       stopContextMenu: true,
       targetFindTolerance: 10, // Makes it easier to select objects with "per-pixel-target-find" enabled, adding a padding
+      selection: isTouchScreen() ? false : true,
     });
 
     this.canvas = canvas;
