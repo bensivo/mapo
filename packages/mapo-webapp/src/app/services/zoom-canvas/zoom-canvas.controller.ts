@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
 import { CanvasService } from '../canvas/canvas.service';
 import { ZoomCanvasService } from './zoom-canvas.service';
+import Hammer from 'hammerjs';
 
 /**
  * When the canvas is active, listens for mouse-scroll events, and zooms the canvas in or out.
@@ -20,6 +21,10 @@ export class ZoomCanvasController {
     this.canvasService.canvasDestroyed$.subscribe((canvas) => {
       canvas.off('mouse:wheel', this.onMouseWheel as any);
     });
+
+    //initialize hammer.js
+    const hammer = new Hammer(canvasService.canvas?.getElement());
+
   }
 
   onMouseWheel = (event: fabric.IEvent<WheelEvent>) => {
