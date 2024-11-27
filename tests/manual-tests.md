@@ -436,3 +436,15 @@ Create a file with a name:
     G: Files page
     W: I click "New mindmap" and enter a name
     T: A new file is added to the page with the name I entered
+
+## Touch Screen
+Pan: 
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on the empty space
+    T: The canvas pans
+    T: The blue group selection box does not show up
+
+Move Object:
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on an object
+    T: The object moves but the canvas does not

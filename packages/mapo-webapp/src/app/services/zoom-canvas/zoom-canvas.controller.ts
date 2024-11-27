@@ -19,10 +19,12 @@ export class ZoomCanvasController {
       canvas.on('mouse:wheel', this.onMouseWheel);
 
       //initialize hammer.js
+       // We use hammer.js to detect touch events for touch devices, note it only works if you 
+      // // add hammer to the div around the canvas, not the canvas itself.
       const hammer = new Hammer(canvas.getElement());
-      hammer.get('pinch').set({ enable: true });
+      hammer.get('pan').set({ enable: true });
 
-      hammer.on('pinch', (event) => {
+      hammer.on('pan', (event) => {
         //console.log p tag
         console.log('Pinch detected!', event.scale);
         //p tag on the canvas
