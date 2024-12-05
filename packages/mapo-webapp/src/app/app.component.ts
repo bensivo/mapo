@@ -6,6 +6,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DrawEdgeController } from './services/edge/draw-edge.controller';
 import { EdgeController } from './services/edge/edge.controller';
 import { PanCanvasController } from './services/pan-canvas/pan-canvas.controller';
+import { PinchController } from './controllers/pinch.controller';
 import { TextNodeController } from './services/text-node/text-node.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
@@ -42,6 +43,7 @@ export class AppComponent {
     private edgeController: EdgeController,
     private fileService: FilesService,
     private panCanvasController: PanCanvasController,
+    private pinchController: PinchController,
     private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,

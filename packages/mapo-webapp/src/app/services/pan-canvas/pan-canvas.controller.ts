@@ -10,6 +10,7 @@ export class PanCanvasController {
     private canvasService: CanvasService,
     private panCnavsService: PanCanvasService,
   ) {
+    console.log("PanCanvasController initialized"); // delete later
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       if (isTouchScreen()) {
         canvas.on('mouse:down', this.onMouseDownTouch);
@@ -33,6 +34,7 @@ export class PanCanvasController {
 
   onMouseMoveTouch = (event: fabric.IEvent<MouseEvent>): void => {
     if (this.panCnavsService.isPanning()) {
+      console.log("Touch Panning"); // delete later
       this.panCnavsService.updatePan(event.e.layerX, event.e.layerY);
     }
   }

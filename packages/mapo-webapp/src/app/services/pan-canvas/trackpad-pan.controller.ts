@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanvasService } from '../canvas/canvas.service';
 import { PanCanvasService } from './pan-canvas.service';
-import { ZoomCanvasService } from '../zoom-canvas/zoom-canvas.service';
+import { ZoomCanvasService } from '../mouse-wheel/zoom-canvas.service';
 
 @Injectable({
     providedIn: 'root',
