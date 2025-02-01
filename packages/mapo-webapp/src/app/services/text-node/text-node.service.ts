@@ -20,7 +20,6 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
-    private textNodeOptionsStore: TextNodeOptionsStore
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;

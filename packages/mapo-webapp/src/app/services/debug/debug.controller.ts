@@ -16,9 +16,6 @@ export class DebugController {
 
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
-
-      document.addEventListener('copy', this.onCopy.bind(this));
-      document.addEventListener('paste', this.onPaste.bind(this));
     });
 
     // Add functions to the window object, so they can be executed by an e2e test suite
@@ -37,32 +34,5 @@ export class DebugController {
     const pending = this.textNodeService.addPendingTextNode(x, y);
     pending.text = text;
     this.textNodeService.finalizeTextNode(pending);
-  }
-
-  onCopy() {
-    if (!this.canvas) {
-      return;
-    }
-
-    const objects = this.canvas.getActiveObjects();
-    console.log('Copying', objects);
-    navigator.clipboard.writeText(JSON.stringify([
-      objects.map(o => ({
-        x: o.left, 
-        y: o.top, 
-        w: o.width, 
-        h: o.height, 
-      }))
-    ]))
-  }
-
-  onPaste(e: any) {
-    navigator.clipboard
-      .readText()
-      .then(
-        (clipText) => {
-          console.log('Pasting', clipText)
-        },
-      );
   }
 }
