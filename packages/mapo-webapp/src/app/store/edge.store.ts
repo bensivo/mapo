@@ -9,6 +9,10 @@ export class EdgeStore {
   edges = new BehaviorSubject<Edge[]>([]);
   edges$ = this.edges.asObservable();
 
+  get(id: string): Edge | undefined {
+    return this.edges.value.find((edge) => edge.id === id);
+  }
+
   set(edges: Edge[]) {
     this.edges.next(edges);
   }

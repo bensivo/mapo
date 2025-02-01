@@ -1,9 +1,12 @@
 import { Injectable } from "@angular/core";
-import { TextNode } from "../../models/textnode.interface";
-import { TextNodeStore } from "../../store/text-node.store";
-import { CanvasService } from "../canvas/canvas.service";
 import { fabric } from "fabric";
 import * as uuid from 'uuid';
+import { Edge } from "../../models/edge.interface";
+import { TextNode } from "../../models/textnode.interface";
+import { EdgeStore } from "../../store/edge.store";
+import { TextNodeStore } from "../../store/text-node.store";
+import { CanvasService } from "../canvas/canvas.service";
+import { ClipboardData } from "./clipboard-data.interface";
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +17,7 @@ export class ClipboardService {
   constructor(
     private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
+    private edgeStore: EdgeStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -26,13 +30,15 @@ export class ClipboardService {
     const objects = this.canvas.getActiveObjects();
     console.log('Copying', objects);
 
-    const copiedNodes: TextNode[] = [];
+
+    const nodes: Record<string, TextNode> = {};
+    const edges: Record<string, Edge> = {};
 
     for (const object of objects) {
-      if (object instanceof fabric.Group && object?.data?.type === 'text-node') {
+      if (object?.data?.type === 'text-node') {
         const id = object?.data?.id;
         if (!id) {
-          console.warn('Object has no data.id attribute', object);
+          console.warn('Text Node object has no data.id attribute', object);
           continue;
         }
 
@@ -42,13 +48,30 @@ export class ClipboardService {
           continue;
         }
 
-        copiedNodes.push(node);
+        nodes[id]=node;
+      }
+
+      if (object?.data?.type === 'edge') {
+        const id = object?.data?.id;
+        if (!id) {
+          console.warn('Edge object has no data.id attribute', object);
+          continue;
+        }
+
+        const edge = this.edgeStore.get(id);
+        if (!edge) {
+          console.warn('Edge not found in store', id);
+          continue;
+        }
+
+        edges[id]=edge;
       }
     }
 
-    if (copiedNodes.length > 0) {
-      navigator.clipboard.writeText(JSON.stringify(copiedNodes));
-    }
+    navigator.clipboard.writeText(JSON.stringify({
+      nodes: Object.values(nodes),
+      edges: Object.values(edges),
+    }));
   }
 
   async pasteNodes(): Promise<void> {
@@ -56,21 +79,39 @@ export class ClipboardService {
 
     try {
       const clipText = await navigator.clipboard.readText();
-      const nodes = JSON.parse(clipText);
-      console.log('Cloning nodes', nodes);
+      const clipboardData: ClipboardData = JSON.parse(clipText);
 
       const newNodeIds: string[] = [];
+      const oldToNewNodeId: Record<string, string> = {};
 
       // Add new nodes to the canvas, by inserting them into the store
-      for (const node of nodes) {
+      for (const node of clipboardData.nodes) {
+        const oldId = node.id;
         const newId = uuid.v4();
         newNodeIds.push(newId);
+
+        oldToNewNodeId[oldId] = newId;
 
         this.textNodeStore.insert({
           ...node,
           id: newId,
           x: node.x + 20,
           y: node.y + 20,
+        })
+      }
+
+      for (const edge of clipboardData.edges) {
+        const startNodeId = edge.startNodeId;
+        const endNodeId = edge.endNodeId;
+
+        const newStartNodeId = oldToNewNodeId[startNodeId] ?? startNodeId;
+        const newEndNodeId = oldToNewNodeId[endNodeId] ?? endNodeId;
+
+        this.edgeStore.insert({
+          ...edge,
+          id: uuid.v4(),
+          startNodeId: newStartNodeId,
+          endNodeId: newEndNodeId,
         })
       }
       this.canvas.renderAll();
@@ -81,13 +122,11 @@ export class ClipboardService {
 
         // Go find all the newly added nodes, and select them all
         const allObjects = this.canvas.getObjects();
-        console.log('All objects', allObjects);
         const newNodes = allObjects.filter(obj => {
           return obj instanceof fabric.Group &&
             obj.data?.type === 'text-node' &&
             newNodeIds.includes(obj.data.id);
         });
-        console.log('New Nodes', newNodes);
 
         if (newNodes.length > 0) {
           const selection = new fabric.ActiveSelection(newNodes, { canvas: this.canvas });

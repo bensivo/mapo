@@ -6,6 +6,9 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';
 import { CanvasService } from '../canvas/canvas.service';
 
+/**
+ * Service used for rendering edges on the canvas
+ */
 @Injectable({
   providedIn: 'root',
 })
