@@ -1,6 +1,14 @@
 import { Injectable } from "@angular/core";
 import { CanvasService } from "../canvas/canvas.service";
 import { ClipboardService } from "./clipboard.service";
+/**
+ * TODO
+ * 
+ * Copy the edges between the nodes too
+ * Add buttons in the popup toolbar for copy-paste
+ * a FUCK ton of testing. I don't trust myself with this code.
+ * Find a better way to wait for the nodes to be rendered.
+ */
 
 @Injectable({
   providedIn: 'root',
