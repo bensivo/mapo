@@ -5,31 +5,23 @@ import { Edge } from "../../models/edge.interface";
 import { TextNode } from "../../models/textnode.interface";
 import { EdgeStore } from "../../store/edge.store";
 import { TextNodeStore } from "../../store/text-node.store";
-import { CanvasService } from "../canvas/canvas.service";
 import { ClipboardData } from "./clipboard-data.interface";
+import { FabricUtils } from "../../utils/fabric-utils";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClipboardService {
-  private canvas: fabric.Canvas | null = null;
-
   constructor(
-    private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
-  ) {
-    this.canvasService.canvasInitialized$.subscribe((canvas) => {
-      this.canvas = canvas;
-    });
-  }
+  ) { }
 
-  copySelectedNodes(): void {
-    if (!this.canvas) return;
-
-    const objects = this.canvas.getActiveObjects();
-    console.log('Copying', objects);
-
+  /**
+   * Serialize the active objects into a ClipboardData object
+   */
+  serializeActiveObjects(canvas: fabric.Canvas): ClipboardData {
+    const objects = canvas.getActiveObjects();
 
     const nodes: Record<string, TextNode> = {};
     const edges: Record<string, Edge> = {};
@@ -48,7 +40,7 @@ export class ClipboardService {
           continue;
         }
 
-        nodes[id]=node;
+        nodes[id] = node;
       }
 
       if (object?.data?.type === 'edge') {
@@ -64,79 +56,59 @@ export class ClipboardService {
           continue;
         }
 
-        edges[id]=edge;
+        edges[id] = edge;
       }
     }
 
-    navigator.clipboard.writeText(JSON.stringify({
+    return {
       nodes: Object.values(nodes),
       edges: Object.values(edges),
-    }));
+    };
   }
 
-  async pasteNodes(): Promise<void> {
-    if (!this.canvas) return;
+  async cloneObjects(clipboardData: ClipboardData, canvas: fabric.Canvas): Promise<void> {
+    const newNodeIds: string[] = [];
+    const newEdgeIds: string[] = [];
+    const oldToNewNodeId: Record<string, string> = {};
 
-    try {
-      const clipText = await navigator.clipboard.readText();
-      const clipboardData: ClipboardData = JSON.parse(clipText);
+    // Add new nodes to the canvas, by inserting them into the store
+    for (const node of clipboardData.nodes) {
+      const oldId = node.id;
+      const newId = uuid.v4();
+      newNodeIds.push(newId);
 
-      const newNodeIds: string[] = [];
-      const oldToNewNodeId: Record<string, string> = {};
+      oldToNewNodeId[oldId] = newId;
 
-      // Add new nodes to the canvas, by inserting them into the store
-      for (const node of clipboardData.nodes) {
-        const oldId = node.id;
-        const newId = uuid.v4();
-        newNodeIds.push(newId);
-
-        oldToNewNodeId[oldId] = newId;
-
-        this.textNodeStore.insert({
-          ...node,
-          id: newId,
-          x: node.x + 20,
-          y: node.y + 20,
-        })
-      }
-
-      for (const edge of clipboardData.edges) {
-        const startNodeId = edge.startNodeId;
-        const endNodeId = edge.endNodeId;
-
-        const newStartNodeId = oldToNewNodeId[startNodeId] ?? startNodeId;
-        const newEndNodeId = oldToNewNodeId[endNodeId] ?? endNodeId;
-
-        this.edgeStore.insert({
-          ...edge,
-          id: uuid.v4(),
-          startNodeId: newStartNodeId,
-          endNodeId: newEndNodeId,
-        })
-      }
-      this.canvas.renderAll();
-
-      // TODO: how to wait for the new nodes to be rendered?
-      setTimeout(() => {
-        if (!this.canvas) return;
-
-        // Go find all the newly added nodes, and select them all
-        const allObjects = this.canvas.getObjects();
-        const newNodes = allObjects.filter(obj => {
-          return obj instanceof fabric.Group &&
-            obj.data?.type === 'text-node' &&
-            newNodeIds.includes(obj.data.id);
-        });
-
-        if (newNodes.length > 0) {
-          const selection = new fabric.ActiveSelection(newNodes, { canvas: this.canvas });
-          this.canvas.setActiveObject(selection);
-          this.canvas.requestRenderAll();
-        }
-      }, 100);
-
-    } catch (e) {
-      console.log('Failed to paste. Maybe this content isnt from mapo?', e);
+      this.textNodeStore.insert({
+        ...node,
+        id: newId,
+        x: node.x + 20,
+        y: node.y + 20,
+      })
     }
+
+    for (const edge of clipboardData.edges) {
+      const startNodeId = edge.startNodeId;
+      const endNodeId = edge.endNodeId;
+
+      const newStartNodeId = oldToNewNodeId[startNodeId] ?? startNodeId;
+      const newEndNodeId = oldToNewNodeId[endNodeId] ?? endNodeId;
+
+      const newEdgeId = uuid.v4();
+      newEdgeIds.push(newEdgeId);
+      this.edgeStore.insert({
+        ...edge,
+        id: newEdgeId,
+        startNodeId: newStartNodeId,
+        endNodeId: newEndNodeId,
+      })
+    }
+    canvas.renderAll();
+
+    // TODO: Find a better way to wait for the new nodes to be rendered. A wait of 200ms could be too short
+    // especially if there are lots of objects, or a slow computer
+    setTimeout(() => {
+      FabricUtils.createSelection(canvas, newNodeIds, newEdgeIds);
+    }, 100);
   }
 }
