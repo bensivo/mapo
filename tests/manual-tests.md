@@ -448,3 +448,18 @@ Move Object:
     G: Im on the canvas page, using a ipad or phone
     W: Touch and drag on an object
     T: The object moves but the canvas does not
+
+## Copy Paste
+Copy Paste Node:
+    G: I'm on the canvas page, using a laptop
+    G: I have a node selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The selected node is clones, just below and right of where the original was
+    T: The new node is selected
+
+Copy Paste Nodes and edges:
+    G: I'm on the canvas page, using a laptop
+    G: I have a group of nodes and edges selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The group is cloned, just below and right of where the original was
+    T: The new group is selected
