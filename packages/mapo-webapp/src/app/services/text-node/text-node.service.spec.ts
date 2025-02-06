@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { fabric } from 'fabric';
 import { Subject } from 'rxjs';
-import { TextNode } from '../../models/textnode.interface';
+import { TextNode } from '../../models/textnode.model';
 import { TextNodeStore } from '../../store/text-node.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { fabric } from "fabric";
 import * as uuid from 'uuid';
-import { Edge } from "../../models/edge.interface";
-import { TextNode } from "../../models/textnode.interface";
+import { Edge } from "../../models/edge.model";
+import { TextNode } from "../../models/textnode.model";
 import { EdgeStore } from "../../store/edge.store";
 import { TextNodeStore } from "../../store/text-node.store";
-import { ClipboardData } from "./clipboard-data.interface";
+import { ClipboardData} from "./clipboard-data.model";
 import { FabricUtils } from "../../utils/fabric-utils";
 
 @Injectable({

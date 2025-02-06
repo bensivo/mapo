@@ -58,7 +58,10 @@ export class AuthService {
 
         const expDate = new Date(exp * 1000);
         if (Date.now() > expDate.getTime()) {
-          this.toastService.showToast('Login Expired', 'Your login session has expired. Please log in again, or your changes may not be saved.');
+          this.toastService.showToastV2({
+            title: 'Login Expired',
+            message: 'Your login session has expired. Please log in again, or your changes may not be saved.'
+          });
         }
       }
 

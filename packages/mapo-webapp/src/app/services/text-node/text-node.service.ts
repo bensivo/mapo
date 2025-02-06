@@ -1,6 +1,6 @@
 import { FabricUtils } from '../../utils/fabric-utils';
 import { Injectable } from '@angular/core';
-import { TextNode } from '../../models/textnode.interface';
+import { TextNode } from '../../models/textnode.model';
 import { CanvasService } from '../canvas/canvas.service';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';

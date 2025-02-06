@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { Edge } from '../../models/edge.interface';
+import { Edge } from '../../models/edge.model';
 import { EdgeStore } from '../../store/edge.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';

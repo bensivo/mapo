@@ -1,5 +1,5 @@
 import { fabric } from 'fabric';
-import { TextNode } from '../models/textnode.interface';
+import { TextNode } from '../models/textnode.model';
 
 
 /**

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { EdgeStore } from "../../store/edge.store";
 import { TextNodeStore } from "../../store/text-node.store";
-import { TextNode } from "../../models/textnode.interface";
-import { Edge } from "../../models/edge.interface";
+import { TextNode } from "../../models/textnode.model";
+import { Edge } from "../../models/edge.model";
 import { FilesStore } from "../../store/files.store";
 import { TitleStore } from "../../store/title.store";
 
