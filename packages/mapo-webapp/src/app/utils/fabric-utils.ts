@@ -1,5 +1,5 @@
 import { fabric } from 'fabric';
-import { TextNode } from '../models/textnode.interface';
+import { TextNode } from '../models/textnode.model';
 
 
 /**
@@ -431,5 +431,26 @@ export class FabricUtils {
     const top = (-objTop * zoom) + (canvas.height / 2);
 
     canvas.setViewportTransform([zoom, 0, 0, zoom, left, top]);
+  }
+
+
+  static createSelection(canvas: fabric.Canvas, nodeIds: string[], edgeIds: string[]) {
+    const allObjects = canvas.getObjects();
+    const newObjects = allObjects.filter(obj => {
+      if (obj instanceof fabric.Group && obj.data?.type === 'text-node' && nodeIds.includes(obj.data.id)) {
+        return true;
+      }
+
+      if (obj instanceof fabric.Polyline && edgeIds.includes(obj.data.id)) {
+        return true;
+      }
+      return false;
+    });
+
+    if (newObjects.length > 0) {
+      const selection = new fabric.ActiveSelection(newObjects, { canvas: canvas });
+      canvas.setActiveObject(selection);
+      canvas.requestRenderAll();
+    }
   }
 }

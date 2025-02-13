@@ -448,3 +448,34 @@ Move Object:
     G: Im on the canvas page, using a ipad or phone
     W: Touch and drag on an object
     T: The object moves but the canvas does not
+
+## Copy Paste
+Copy Paste Node:
+    G: I'm on the canvas page, using a laptop
+    G: I have a node selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The selected node is clones, just below and right of where the original was
+    T: The new node is selected
+
+Copy Paste Nodes and edges:
+    G: I'm on the canvas page, using a laptop
+    G: I have a group of nodes and edges selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The group is cloned, just below and right of where the original was
+    T: The new group is selected
+
+Paste non-mapo content
+    G: I have some random stuff on my clipboard (non-mapo)
+    When: I paste on the canvas
+    T: nothing happens. The app keeps working
+
+    BUG FOUND: if you copy some 'mostly mapo' content, like the JSON structure of a node, but not 100% correct,
+    (e.g. remove the "text" field from the node JSON), then pasting it will break the app. AND the broken node
+    JSON will get saved into localstorage, so the app will stay broken even after a refresh.
+
+    {"nodes":[{"x":911.3130392398702,"y":96.65513842110678,"color":"#FFFFFF"}],"edges":[]}
+
+    The only way to fix this would be to clear all your localstorage. 
+
+
+    Workaround, anytime node data is being loaded in from storage or clipboard, we need to fully validate it. 

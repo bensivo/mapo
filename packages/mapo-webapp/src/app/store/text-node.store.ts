@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { TextNode } from '../models/textnode.interface';
+import { TextNode } from '../models/textnode.model';
 import { EdgeStore } from './edge.store';
 
 @Injectable({

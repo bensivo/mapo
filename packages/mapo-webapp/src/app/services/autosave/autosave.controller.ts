@@ -63,7 +63,10 @@ export class AutoSaveController {
           }, 1000);
         })
         .catch((error) => {
-          this.toastService.showToast('Error', `Failed to save file: ${(error as any).message}`);
+          this.toastService.showToastV2({ 
+            title: 'Error', 
+            message: `Failed to save file: ${(error as any).message}` 
+          });
         });
       });
   }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FilesStore } from '../store/files.store';
 import { combineLatest, map } from 'rxjs';
-import { Folder } from '../models/folder.interface';
+import { Folder } from '../models/folder.model';
 
 /**
   * Selectors for the files store

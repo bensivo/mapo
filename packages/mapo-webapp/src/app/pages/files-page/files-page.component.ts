@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FilesService, SaveFileDto } from '../../services/files/files.service';
 import { FilesStore } from '../../store/files.store';
-import { File } from '../../models/file.interface';
+import { File } from '../../models/file.model';
 import base64 from 'base-64';
 import { PersistenceService } from '../../services/persistence/persistence.service';
 import { EdgeStore } from '../../store/edge.store';
@@ -12,7 +12,7 @@ import { TitleStore } from '../../store/title.store';
 import { ToastService } from '../../services/toast/toast.service';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
-import { Folder } from '../../models/folder.interface';
+import { Folder } from '../../models/folder.model';
 import { FilesSelectors } from '../../selectors/file.selectors';
 import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-file-modal/new-file-modal.component';
 
@@ -78,11 +78,17 @@ export class FilesPageComponent {
   onClickDeleteFile(file: File) {
     this.filesService.deleteFile(file.id)
       .then(() => {
-        this.toastService.showToast('File Deleted', 'File deleted successfully');
+        this.toastService.showToastV2({
+          title: 'File Deleted',
+          message: 'File deleted successfully'
+        });
       })
       .catch((error) => {
         console.error(error);
-        this.toastService.showToast('Error', `Failed to delete file: ${(error as any).message}`);
+        this.toastService.showToastV2({
+          title: 'Error',
+          message: `Failed to delete file: ${(error as any).message}`
+        });
       });
   }
 
@@ -113,19 +119,25 @@ export class FilesPageComponent {
   onSubmitNewFolderModal(data: NewFolderModalSubmit) {
     this.filesService.createFolder(data.name, this.filesStore.currentFolderId.getValue())
       .then(() => {
-        this.toastService.showToast('Folder Created',  `Folder "${data.name}" created successfully`);
+        this.toastService.showToastV2({
+          title: 'Folder Created',
+          message: `Folder "${data.name}" created successfully`
+        });
       })
       .catch((error) => {
         console.error(error);
-        this.toastService.showToast('Error', `Failed to create folder: ${(error as any).message}`);
+        this.toastService.showToastV2({
+          title: 'Error',
+          message: `Failed to create folder: ${(error as any).message}`
+        });
       })
       .finally(() => {
         this.isNewFolderModalVisible = false;
       });
   }
-  
+
   onSubmitNewFileModal(data: NewFileModalSubmit) {
-    const content : string = JSON.stringify({
+    const content: string = JSON.stringify({
       id: null,
       name: data.name,
       edges: [],
@@ -139,17 +151,23 @@ export class FilesPageComponent {
       contentBase64: contentBase64,
     }
     this.filesService.createFile(dto)
-    .then(() => {
-      this.toastService.showToast('File Created',  `File "${data.name}" created successfully`);
-      this.filesService.fetch();
-    })
-    .catch((error) => {
-      console.error(error);
-      this.toastService.showToast('Error', `Failed to create file: ${(error as any).message}`);
-    })
-    .finally(() => {
-      this.isNewFileModalVisible = false;
-    });
+      .then(() => {
+        this.toastService.showToastV2({
+          title: 'File Created',
+          message: `File "${data.name}" created successfully`
+        });
+        this.filesService.fetch();
+      })
+      .catch((error) => {
+        console.error(error);
+        this.toastService.showToastV2({
+          title: 'Error',
+          message: `Failed to create file: ${(error as any).message}`
+        });
+      })
+      .finally(() => {
+        this.isNewFileModalVisible = false;
+      });
   }
 
   onClickFolder(folder: Folder) {
@@ -164,11 +182,17 @@ export class FilesPageComponent {
     e.stopPropagation();
     this.filesService.deleteFolder(folder.id)
       .then(() => {
-        this.toastService.showToast('Folder Deleted',  `Folder "${folder.name}" deleted successfully`);
+        this.toastService.showToastV2({
+          title: 'Folder Deleted',
+          message: `Folder "${folder.name}" deleted successfully`
+        });
       })
       .catch((error) => {
         console.error(error);
-        this.toastService.showToast('Error', `Failed to delete folder: ${(error as any).message}`);
+        this.toastService.showToastV2({
+          title: 'Error',
+          message: `Failed to delete folder: ${(error as any).message}`
+        });
       })
   }
 

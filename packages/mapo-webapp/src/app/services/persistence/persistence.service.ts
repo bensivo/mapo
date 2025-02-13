@@ -5,7 +5,7 @@ import { EdgeStore } from "../../store/edge.store";
 import { TextNodeStore } from "../../store/text-node.store";
 import { FilesStore } from "../../store/files.store";
 import { TitleStore } from "../../store/title.store";
-import { FileContent } from '../../models/file.interface';
+import { FileContent } from '../../models/file.model';
 import { AuthStore } from "../../store/auth.store";
 import { FilesService } from "../files/files.service";
 
