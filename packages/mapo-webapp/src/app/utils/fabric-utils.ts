@@ -218,7 +218,6 @@ export class FabricUtils {
     //
     // See: https://github.com/bensivo/mapo/issues/49
     if (src.intersectsWithObject(dest, true, true)) {
-      console.log('Arrow', id, 'between 2 intersecting nodes. Skipping render');
       return null;
     }
 
@@ -310,7 +309,6 @@ export class FabricUtils {
     const distX = (srcX - destX)*1.0;
     const distY = (srcY - destY)*1.0;
     const dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-    console.log(dist);
     return dist;
   }
 
