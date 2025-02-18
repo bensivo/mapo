@@ -6,7 +6,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DrawEdgeController } from './services/edge/draw-edge.controller';
 import { EdgeController } from './services/edge/edge.controller';
 import { PanCanvasController } from './services/pan-canvas/pan-canvas.controller';
-import { PinchController } from './controllers/pinch.controller';
+import { PinchController } from './services/pinch-canvas/pinch.controller';
 import { TextNodeController } from './services/text-node/text-node.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
