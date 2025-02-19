@@ -6,7 +6,6 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DrawEdgeController } from './services/edge/draw-edge.controller';
 import { EdgeController } from './services/edge/edge.controller';
 import { PanCanvasController } from './services/pan-canvas/pan-canvas.controller';
-import { PinchController } from './services/pinch-canvas/pinch.controller';
 import { TextNodeController } from './services/text-node/text-node.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
@@ -18,6 +17,7 @@ import { ToastComponent } from './components/toast/toast.component';
 import { DebugController } from './services/debug/debug.controller';
 import { AutoSaveController } from './services/autosave/autosave.controller';
 import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
+import { MouseWheelController } from './services/zoom-canvas/zoom-canvas.controller';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +43,7 @@ export class AppComponent {
     private edgeController: EdgeController,
     private fileService: FilesService,
     private panCanvasController: PanCanvasController,
-    private pinchController: PinchController,
+    private mouseWheelController: MouseWheelController,
     private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
