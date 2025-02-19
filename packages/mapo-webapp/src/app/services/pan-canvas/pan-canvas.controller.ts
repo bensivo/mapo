@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanvasService } from '../canvas/canvas.service';
 import { PanCanvasService } from './pan-canvas.service';
 import { isTouchScreen } from '../../utils/browser-utils';
-import { MouseWheelController } from '../zoom-canvas/zoom-canvas.controller';
+import { ZoomCanvasController } from '../zoom-canvas/zoom-canvas.controller';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,14 +12,15 @@ export class PanCanvasController {
   constructor(
     private canvasService: CanvasService,
     private panCnavsService: PanCanvasService,
-    private mouseWheelController: MouseWheelController,
+    private mouseWheelController: ZoomCanvasController,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       if (isTouchScreen()) {
         canvas.on('mouse:down', this.onMouseDownTouch);
         canvas.on('mouse:move', this.onMouseMoveTouch);
         canvas.on('mouse:up', this.onMouseUpTouch);
-      } else {
+      } 
+      else {
         canvas.on('mouse:down', this.onMouseDown);
         canvas.on('mouse:move', this.onMouseMove);
         canvas.on('mouse:up', this.onMouseUp);

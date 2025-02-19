@@ -11,7 +11,7 @@ import Hammer from 'hammerjs';
 @Injectable({
   providedIn: 'root',
 })
-export class MouseWheelController {
+export class ZoomCanvasController {
   public pinchStateChange: EventEmitter<boolean> = new EventEmitter();
   lastScale = 1;
   constructor(
