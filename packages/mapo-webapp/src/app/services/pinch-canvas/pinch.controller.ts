@@ -35,25 +35,9 @@ export class PinchController {
           this.pinchStateChange.emit(isPinching);
         });
 
-        hammertime.on('pinchcancel', () => {
-          console.log('PINCH CANCEL')
-          isPinching = false;
-          this.lastScale = canvas.getZoom();
-          this.pinchStateChange.emit(isPinching); 
-        })
-
         hammertime.on('pinch', (event) => {
           console.log('Pinch detected!', event.scale);
           this.onPinch(event, canvas);
-        });
-
-         // Handle touchend event to reset isPinching flag
-         myElement.addEventListener('touchend', (event) => {
-          console.log('TOUCHED');
-          if (event.touches.length < 2) {
-            isPinching = false;
-            this.pinchStateChange.emit(isPinching);
-          }
         });
       }
     });
