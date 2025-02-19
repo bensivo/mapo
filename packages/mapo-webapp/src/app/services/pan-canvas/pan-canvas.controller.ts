@@ -19,7 +19,7 @@ export class PanCanvasController {
         canvas.on('mouse:down', this.onMouseDownTouch);
         canvas.on('mouse:move', this.onMouseMoveTouch);
         canvas.on('mouse:up', this.onMouseUpTouch);
-      } 
+      }
       else {
         canvas.on('mouse:down', this.onMouseDown);
         canvas.on('mouse:move', this.onMouseMove);
