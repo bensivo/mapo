@@ -43,7 +43,7 @@ export class AppComponent {
     private edgeController: EdgeController,
     private fileService: FilesService,
     private panCanvasController: PanCanvasController,
-    private mouseWheelController: ZoomCanvasController,
+    private zoomCanvasController: ZoomCanvasController,
     private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
