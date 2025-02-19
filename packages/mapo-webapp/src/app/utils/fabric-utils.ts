@@ -223,7 +223,10 @@ export class FabricUtils {
 
     // Iteratively push the start-point of the arrow towards the end, until it is no longer inside the src node
     // Then do 1 more push just for aesthetics
-    while (src.containsPoint(new fabric.Point(srcX, srcY), null, true)) {
+    while (
+      src.containsPoint(new fabric.Point(srcX, srcY), null, true) 
+      && FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
+    ) {
       const point = this.translateTowards(srcX, srcY, destX, destY, 5);
       srcX = point.x;
       srcY = point.y;
@@ -234,7 +237,10 @@ export class FabricUtils {
 
     // Iteratively push the end-point of the arrow towards the start, until it is no longer inside the dest node
     // Then do 1 more push just for aesthetics
-    while (dest.containsPoint(new fabric.Point(destX, destY), null, true)) {
+    while (
+      dest.containsPoint(new fabric.Point(destX, destY), null, true)
+      && FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
+    ) {
       const point = this.translateTowards(destX, destY, srcX, srcY, 5);
       destX = point.x;
       destY = point.y;
@@ -297,6 +303,13 @@ export class FabricUtils {
     canvas.add(poly);
     canvas.sendToBack(poly);
     return poly;
+  }
+
+  public static dist(srcX: number, srcY: number, destX: number, destY: number) {
+    const distX = (srcX - destX)*1.0;
+    const distY = (srcY - destY)*1.0;
+    const dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+    return dist;
   }
 
   public static getCenterPoint(object: fabric.Object): fabric.Point {
