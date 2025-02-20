@@ -14,6 +14,7 @@ import Hammer from 'hammerjs';
 export class ZoomCanvasController {
   public pinchStateChange: EventEmitter<boolean> = new EventEmitter();
   lastScale = 1;
+
   constructor(
     private canvasService: CanvasService,
     private zoomCanvasService: ZoomCanvasService,
@@ -27,16 +28,16 @@ export class ZoomCanvasController {
         var hammertime = new Hammer(myElement, myOptions);
         hammertime.get('pinch').set({ enable: true });
 
-        hammertime.on('pinchstart', () => {
+        hammertime.on('pinchstart', (e) => {
           isPinching = true;
-          this.lastScale = canvas.getZoom();
+          this.lastScale = 1;
           this.pinchStateChange.emit(isPinching);
         });
 
         hammertime.on('pinchend', () => {
           isPinching = false;
-          this.lastScale = canvas.getZoom();
           this.pinchStateChange.emit(isPinching);
+          console.log('pinchend');
         });
 
         hammertime.on('pinch', (event) => {
@@ -62,15 +63,29 @@ export class ZoomCanvasController {
     event.e.stopPropagation();
   };
 
+  // Hammertime pinch
+  //
+  // TODO: figure out how to get this to not fire, whwen the user
+  // drags with 2 fingers. It's firing pinch events even though they're
+  // not pinching
   onPinch = (event: HammerInput, canvas: fabric.Canvas) => {
     const x = event.center.x;
     const y = event.center.y;
 
-    const dampingFactor = 0.05;
-    let zoom = canvas.getZoom();
-    const newZoom = zoom * (1 + (event.scale - 1) * dampingFactor);
-    canvas.zoomToPoint({ x, y }, newZoom);
+    // Scale magnitude is related to how fast the user pinched
+    // Pinching outwwards (zooming in) gives you values of scale > 1, the magnitude
+    // Pinching inwards (zooming out) gives you values of scale between 0 and 1, 1/magnitude
+    //
+    // For example: scale = 5 is a relative fast zoom in, scale = 0.2 is zooming out with the same speed
+    const scale = event.scale;
+    let delta = scale - this.lastScale;
+    delta = -delta; // zoomCanvas uses negative values for zooming in, and positive for zooming out. So we just flip the sign.
+    delta = delta * 1000; // Scaling factor to make the zoom less slow
 
-    this.zoomCanvasService.zoomCanvas(event.scale, x, y);
+    console.log('delta', delta)
+
+    this.zoomCanvasService.zoomCanvas(delta, x, y);
+
+    this.lastScale = scale;
   };
 }
