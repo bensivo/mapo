@@ -320,6 +320,11 @@ Duplicate toolbar event listeners:
     G: I have openned the canvas, then left to "my-file", then went back to the canvsa
     W: I press 't'
     T: the text-node tool is selected
+
+Duplicate copy-paste event listeners:
+    G: I have openned the canvas, then left to the homepage, then went back to the canvsa
+    W: I select some nodes and copy
+    T: I only see 1 copy notification, not several
 ```
 
 

@@ -23,12 +23,17 @@ export class ClipboardController {
     private toastService: ToastService,
   ) {
     this.canvasService.canvasInitialized$.subscribe(() => {
-      document.addEventListener('copy', this.onCopy.bind(this));
-      document.addEventListener('paste', this.onPaste.bind(this));
+      document.addEventListener('copy', this.onCopy);
+      document.addEventListener('paste', this.onPaste);
     });
+
+    this.canvasService.canvasDestroyed$.subscribe(() => {
+      document.removeEventListener('copy', this.onCopy);
+      document.removeEventListener('paste', this.onPaste);
+    })
   }
 
-  onCopy() {
+  onCopy = () => {
     const canvas = this.canvasService.canvas;
     if (!canvas) return;
 
@@ -49,7 +54,7 @@ export class ClipboardController {
     });
   }
 
-  async onPaste() {
+  onPaste = async () => {
     const canvas = this.canvasService.canvas;
     if (!canvas) return;
 
