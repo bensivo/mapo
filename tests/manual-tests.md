@@ -325,6 +325,16 @@ Duplicate copy-paste event listeners:
     G: I have openned the canvas, then left to the homepage, then went back to the canvsa
     W: I select some nodes and copy
     T: I only see 1 copy notification, not several
+
+Overlapping nodes / edges:
+    G: I have 2 nodes, with an edge between them. One is bigger than the other
+    W: I make the nodes overalp
+    T: the app doesn't break
+
+Occluded nodes / edges:
+    G: I have 2 nodes, with an edge between them. One is bigger than the other
+    W: I make the nodes overlap, so that one completely covers the other
+    T: the app doesn't break
 ```
 
 
@@ -472,15 +482,9 @@ Copy Paste Nodes and edges:
 Paste non-mapo content
     G: I have some random stuff on my clipboard (non-mapo)
     When: I paste on the canvas
-    T: nothing happens. The app keeps working
+    T: The app keeps working. I see an error popup
 
-    BUG FOUND: if you copy some 'mostly mapo' content, like the JSON structure of a node, but not 100% correct,
-    (e.g. remove the "text" field from the node JSON), then pasting it will break the app. AND the broken node
-    JSON will get saved into localstorage, so the app will stay broken even after a refresh.
-
-    {"nodes":[{"x":911.3130392398702,"y":96.65513842110678,"color":"#FFFFFF"}],"edges":[]}
-
-    The only way to fix this would be to clear all your localstorage. 
-
-
-    Workaround, anytime node data is being loaded in from storage or clipboard, we need to fully validate it. 
+Paste almost-mapo content
+    G: I have mapo JSON data on my clipboard, but it's manipulated to be missing some fields
+    When: I paste on the canvas
+    T: The app keeps working. I see an error popup
