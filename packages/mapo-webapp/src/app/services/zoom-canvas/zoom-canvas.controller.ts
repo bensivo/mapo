@@ -4,6 +4,7 @@ import { fabric } from 'fabric';
 import { CanvasService } from '../canvas/canvas.service';
 import { ZoomCanvasService } from './zoom-canvas.service';
 import Hammer from 'hammerjs';
+import { last } from 'rxjs';
 
 /**
  * When the canvas is active, listens for mouse-scroll events, and zooms the canvas in or out.
@@ -21,11 +22,10 @@ export class ZoomCanvasController {
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       const myElement = document.getElementById('canvas-container');
-      const myOptions = {};
       let isPinching = false;
 
       if (myElement) {
-        var hammertime = new Hammer(myElement, myOptions);
+        var hammertime = new Hammer(myElement, {});
         hammertime.get('pinch').set({ enable: true });
 
         hammertime.on('pinchstart', (e) => {
@@ -37,11 +37,11 @@ export class ZoomCanvasController {
         hammertime.on('pinchend', () => {
           isPinching = false;
           this.pinchStateChange.emit(isPinching);
-          console.log('pinchend');
+          console.log('----Pinch END----');
         });
 
         hammertime.on('pinch', (event) => {
-          console.log('Pinch detected!', event.scale);
+          console.log('Pinch detected', event.scale);
           this.onPinch(event, canvas);
         });
       }
@@ -82,7 +82,10 @@ export class ZoomCanvasController {
     delta = -delta; // zoomCanvas uses negative values for zooming in, and positive for zooming out. So we just flip the sign.
     delta = delta * 1000; // Scaling factor to make the zoom less slow
 
-    console.log('delta', delta)
+    // console.log('delta', delta);
+    // console.log('scale:', scale);
+    // console.log('last scale:', this.lastScale);
+    //console.log('event details:', event);
 
     this.zoomCanvasService.zoomCanvas(delta, x, y);
 
