@@ -16,24 +16,24 @@ export class PanCanvasController {
     private mouseWheelController: ZoomCanvasController,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
-      let isTwoFingerPanning = false;
       if (isTouchScreen()) {
         canvas.on('mouse:down', this.onMouseDownTouch);
         canvas.on('mouse:move', this.onMouseMoveTouch);
         canvas.on('mouse:up', this.onMouseUpTouch);
 
-        const myElement = document.getElementById('canvas-container');
-        if (myElement) {
-          var hammertime = new Hammer(myElement, {});
+        //Hammer.js for detecting two finger pan
+        const canvasContainer = document.getElementById('canvas-container');
+        if (canvasContainer) {
+          var hammertime = new Hammer(canvasContainer, {});
           hammertime.get('pan').set({ pointers: 2 });
 
-          hammertime.on('pan', () => {
+          hammertime.on('panstart', () => {
             this.isTwoFingerPanning = true;
-            console.log('TwoFinger Pan detected');
           });
           hammertime.on('panend', () => {
-            this.isTwoFingerPanning = false;
-            console.log('----Two Finger Pan END----');
+            setTimeout(() => {
+              this.isTwoFingerPanning = false;
+            }, 100);
           });
         }
       } else {
@@ -42,25 +42,20 @@ export class PanCanvasController {
         canvas.on('mouse:up', this.onMouseUp);
       }
     });
-
     this.mouseWheelController.pinchStateChange.subscribe((isPinching) => {
       this.isPinching = isPinching;
     });
   }
 
   onMouseDownTouch = (event: fabric.IEvent<MouseEvent>): void => {
-    if (event.target || this.isPinching || this.isTwoFingerPanning) {
+    if (event.target) {
       return;
     }
     this.panCnavsService.startPan(event.e.layerX, event.e.layerY);
   };
 
   onMouseMoveTouch = (event: fabric.IEvent<MouseEvent>): void => {
-    if (
-      this.panCnavsService.isPanning() &&
-      !this.isPinching &&
-      !this.isTwoFingerPanning
-    ) {
+    if (this.panCnavsService.isPanning() && !this.isPinching && !this.isTwoFingerPanning) {
       this.panCnavsService.updatePan(event.e.layerX, event.e.layerY);
       console.log('Pan Detected');
     }

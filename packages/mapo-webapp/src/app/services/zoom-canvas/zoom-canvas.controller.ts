@@ -14,6 +14,7 @@ import { last } from 'rxjs';
 })
 export class ZoomCanvasController {
   public pinchStateChange: EventEmitter<boolean> = new EventEmitter();
+  private isPinching = false;
   lastScale = 1;
 
   constructor(
@@ -21,28 +22,28 @@ export class ZoomCanvasController {
     private zoomCanvasService: ZoomCanvasService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
-      const myElement = document.getElementById('canvas-container');
-      let isPinching = false;
-
-      if (myElement) {
-        var hammertime = new Hammer(myElement, {});
+      const canvasContainer = document.getElementById('canvas-container');
+      if (canvasContainer) {
+        var hammertime = new Hammer(canvasContainer, {});
         hammertime.get('pinch').set({ enable: true });
 
         hammertime.on('pinchstart', (e) => {
-          isPinching = true;
           this.lastScale = 1;
-          this.pinchStateChange.emit(isPinching);
-        });
-
-        hammertime.on('pinchend', () => {
-          isPinching = false;
-          this.pinchStateChange.emit(isPinching);
-          console.log('----Pinch END----');
+          this.isPinching = true;
+          this.pinchStateChange.emit(this.isPinching);
         });
 
         hammertime.on('pinch', (event) => {
-          console.log('Pinch detected', event.scale);
+          this.pinchStateChange.emit(this.isPinching);
+          console.log('Pinch Detected', this.isPinching);
           this.onPinch(event, canvas);
+        });
+
+        hammertime.on('pinchend', () => {
+          setTimeout(() => {
+            this.isPinching = false;
+            this.pinchStateChange.emit(this.isPinching);
+          }, 100);
         });
       }
       canvas.on('mouse:wheel', this.onMouseWheel);
@@ -68,6 +69,10 @@ export class ZoomCanvasController {
   // TODO: figure out how to get this to not fire, whwen the user
   // drags with 2 fingers. It's firing pinch events even though they're
   // not pinching
+
+  // my solution: 
+  // disable pan when pinch is detected. 
+  // edge case : disable normal pan when two finger pan was detected. 
   onPinch = (event: HammerInput, canvas: fabric.Canvas) => {
     const x = event.center.x;
     const y = event.center.y;
