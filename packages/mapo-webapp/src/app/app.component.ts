@@ -18,6 +18,7 @@ import { DebugController } from './services/debug/debug.controller';
 import { AutoSaveController } from './services/autosave/autosave.controller';
 import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
 import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
+import { ClipboardController } from './services/clipboard/clipboard.controller';
 
 @Component({
   selector: 'app-root',
@@ -51,6 +52,7 @@ export class AppComponent {
     private debugController: DebugController,
     private autosaveController: AutoSaveController,
     private textNodeOptionsController: TextNodeOptionsController,
+    private clipboardController: ClipboardController,
   ) {
   }
 }

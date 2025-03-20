@@ -20,5 +20,6 @@ axios.get(configPath).then((res) => {
       provideRouter(routes),
       provideConfig(config),
     ],
-  }).catch((err) => console.error(err));
+  })
+  .catch((err) => console.error(err));
 });

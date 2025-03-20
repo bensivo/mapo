@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
-import { File } from '../models/file.interface';
-import { Folder } from '../models/folder.interface';
+import { File } from '../models/file.model';
+import { Folder } from '../models/folder.model';
 
 @Injectable({
   providedIn: 'root',

@@ -1,4 +1,8 @@
-<div class="search-container">
+<div class="search-icon" *ngIf="!isExpanded">
+  <i class="ri-search-line" (click)="onClickSearchIcon()"></i>
+</div>
+
+<div class="search-container" *ngIf="isExpanded">
   <input type="text" placeholder="Search" (focus)="onInputFocus()" (keyup)="onInputKeyup($event)">
 
   <div class="search-counter">
@@ -9,5 +13,6 @@
   <div class="search-actions">
     <i class="ri-arrow-up-s-line" (click)="onClickUp()"></i>
     <i class="ri-arrow-down-s-line" (click)="onClickDown()"></i>
+    <i class="ri-close-line" (click)="onClickClose()"></i>
   </div>
 </div>

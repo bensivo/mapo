@@ -5,6 +5,10 @@ import { CanvasService } from '../canvas/canvas.service';
 import { EdgeStore } from '../../store/edge.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 
+/**
+ * Service used for the draw-edge tool, rendering pending edges
+ * while users are drawing them.
+ */
 @Injectable({
   providedIn: 'root',
 })

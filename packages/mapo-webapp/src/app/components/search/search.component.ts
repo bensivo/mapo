@@ -16,6 +16,8 @@ import { Tool } from '../../store/toolbar.store';
 })
 export class SearchComponent {
 
+  isExpanded: boolean = false;
+
   searchCounterTotal = 0;
   searchCounterIndex = 0;
 
@@ -31,6 +33,13 @@ export class SearchComponent {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
     });
+  }
+
+  onClickSearchIcon() {
+    this.isExpanded = true;
+  }
+  onClickClose() {
+    this.isExpanded = false;
   }
 
   onClickDown() {

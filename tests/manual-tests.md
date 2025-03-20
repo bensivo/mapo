@@ -320,6 +320,21 @@ Duplicate toolbar event listeners:
     G: I have openned the canvas, then left to "my-file", then went back to the canvsa
     W: I press 't'
     T: the text-node tool is selected
+
+Duplicate copy-paste event listeners:
+    G: I have openned the canvas, then left to the homepage, then went back to the canvsa
+    W: I select some nodes and copy
+    T: I only see 1 copy notification, not several
+
+Overlapping nodes / edges:
+    G: I have 2 nodes, with an edge between them. One is bigger than the other
+    W: I make the nodes overalp
+    T: the app doesn't break
+
+Occluded nodes / edges:
+    G: I have 2 nodes, with an edge between them. One is bigger than the other
+    W: I make the nodes overlap, so that one completely covers the other
+    T: the app doesn't break
 ```
 
 
@@ -448,3 +463,28 @@ Move Object:
     G: Im on the canvas page, using a ipad or phone
     W: Touch and drag on an object
     T: The object moves but the canvas does not
+
+## Copy Paste
+Copy Paste Node:
+    G: I'm on the canvas page, using a laptop
+    G: I have a node selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The selected node is clones, just below and right of where the original was
+    T: The new node is selected
+
+Copy Paste Nodes and edges:
+    G: I'm on the canvas page, using a laptop
+    G: I have a group of nodes and edges selected
+    W: I click "cmd+c" (or "ctrl+c"), then "cmd+v" (or "ctrl+v")
+    T: The group is cloned, just below and right of where the original was
+    T: The new group is selected
+
+Paste non-mapo content
+    G: I have some random stuff on my clipboard (non-mapo)
+    When: I paste on the canvas
+    T: The app keeps working. I see an error popup
+
+Paste almost-mapo content
+    G: I have mapo JSON data on my clipboard, but it's manipulated to be missing some fields
+    When: I paste on the canvas
+    T: The app keeps working. I see an error popup

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Edge } from '../models/edge.interface';
+import { Edge } from '../models/edge.model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +8,10 @@ import { Edge } from '../models/edge.interface';
 export class EdgeStore {
   edges = new BehaviorSubject<Edge[]>([]);
   edges$ = this.edges.asObservable();
+
+  get(id: string): Edge | undefined {
+    return this.edges.value.find((edge) => edge.id === id);
+  }
 
   set(edges: Edge[]) {
     this.edges.next(edges);

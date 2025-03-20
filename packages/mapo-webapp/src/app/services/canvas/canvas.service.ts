@@ -11,6 +11,7 @@ export type DestroyCanvasCallback = () => void;
 })
 export class CanvasService {
   canvas: fabric.Canvas | null = null;
+
   canvasInitialized$ = new Subject<fabric.Canvas>();
   canvasDestroyed$ = new Subject<fabric.Canvas>();
 
@@ -35,8 +36,6 @@ export class CanvasService {
       throw new Error('Canvas not found');
     }
 
-      console.log(htmlCanvas.offsetWidth);
-      console.log(htmlCanvas.offsetHeight);
     const canvas = new fabric.Canvas('fabric-canvas', {
       width: htmlCanvas.offsetWidth,
       height: htmlCanvas.offsetHeight,
@@ -48,7 +47,6 @@ export class CanvasService {
 
     this.canvas = canvas;
     this.canvasInitialized$.next(canvas);
-    console.log('Canvas initialized');
 
     return () => {
       this.canvasDestroyed$.next(canvas);

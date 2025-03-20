@@ -1,6 +1,6 @@
 import { FabricUtils } from '../../utils/fabric-utils';
 import { Injectable } from '@angular/core';
-import { TextNode } from '../../models/textnode.interface';
+import { TextNode } from '../../models/textnode.model';
 import { CanvasService } from '../canvas/canvas.service';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';
@@ -20,7 +20,6 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
-    private textNodeOptionsStore: TextNodeOptionsStore
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -81,7 +80,7 @@ export class TextNodeService {
       text: text,
       x: x,
       y: y,
-      color: this.textNodeOptionsStore.getColor(),
+      color: '#FFFFFF'
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

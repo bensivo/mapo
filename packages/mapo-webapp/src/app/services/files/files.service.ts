@@ -3,8 +3,8 @@ import axios from 'axios';
 
 import { CONFIG, Config } from '../../app.config';
 import { AuthStore } from '../../store/auth.store';
-import { File } from '../../models/file.interface';
-import { Folder } from '../../models/folder.interface';
+import { File } from '../../models/file.model';
+import { Folder } from '../../models/folder.model';
 import { FilesStore } from '../../store/files.store';
 
 export interface SaveFileDto {
