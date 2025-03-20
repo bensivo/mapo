@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TextNodeService } from "../text-node/text-node.service";
+import { TextNodeStore } from "../../store/text-node.store";
 import { CanvasService } from "../canvas/canvas.service";
 
 @Injectable({
@@ -12,10 +13,19 @@ export class DebugController {
   constructor(
     private canvasService: CanvasService,
     private textNodeService: TextNodeService,
+    //add textNodeStore
+    private textNodeStore: TextNodeStore,
   ) {
 
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
+      //insert a text node
+      this.textNodeStore.insert({
+        id: "adsf",
+        text: "saljdfhdf",
+        x: 0,
+        y: 0,
+      });
     });
 
     // Add functions to the window object, so they can be executed by an e2e test suite
