@@ -30,7 +30,6 @@ export class DebugController {
   }
 
   addTextNode = (text: string, x: number, y: number) => {
-    console.log('Adding text node', text, x, y);
     const pending = this.textNodeService.addPendingTextNode(x, y);
     pending.text = text;
     this.textNodeService.finalizeTextNode(pending);

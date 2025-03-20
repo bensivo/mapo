@@ -45,7 +45,6 @@ export class PersistenceService {
 
   loadCanvasState(data: string) {
     const content: FileContent = JSON.parse(data);
-    console.log('Loading canvas state', content);
 
     // TODO: Add a 'version' attribute to data, so that we can add more features in the future
     // without breaking old saves

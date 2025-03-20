@@ -4,7 +4,6 @@ import { fabric } from 'fabric';
 import { CanvasService } from '../canvas/canvas.service';
 import { ZoomCanvasService } from './zoom-canvas.service';
 import Hammer from 'hammerjs';
-import { last } from 'rxjs';
 
 /**
  * When the canvas is active, listens for mouse-scroll events, and zooms the canvas in or out.
@@ -35,7 +34,6 @@ export class ZoomCanvasController {
 
         hammertime.on('pinch', (event) => {
           this.pinchStateChange.emit(this.isPinching);
-          console.log('Pinch Detected', this.isPinching);
           this.onPinch(event, canvas);
         });
 
@@ -46,33 +44,9 @@ export class ZoomCanvasController {
           }, 100);
         });
       }
-      canvas.on('mouse:wheel', this.onMouseWheel);
-    });
-    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
-      canvas.off('mouse:wheel', this.onMouseWheel as any);
     });
   }
 
-  onMouseWheel = (event: fabric.IEvent<WheelEvent>) => {
-    const delta = event.e.deltaY;
-    const x = event.e.offsetX;
-    const y = event.e.offsetY;
-
-    this.zoomCanvasService.zoomCanvas(delta, x, y);
-
-    event.e.preventDefault();
-    event.e.stopPropagation();
-  };
-
-  // Hammertime pinch
-  //
-  // TODO: figure out how to get this to not fire, whwen the user
-  // drags with 2 fingers. It's firing pinch events even though they're
-  // not pinching
-
-  // my solution: 
-  // disable pan when pinch is detected. 
-  // edge case : disable normal pan when two finger pan was detected. 
   onPinch = (event: HammerInput, canvas: fabric.Canvas) => {
     const x = event.center.x;
     const y = event.center.y;
@@ -87,10 +61,6 @@ export class ZoomCanvasController {
     delta = -delta; // zoomCanvas uses negative values for zooming in, and positive for zooming out. So we just flip the sign.
     delta = delta * 1000; // Scaling factor to make the zoom less slow
 
-    // console.log('delta', delta);
-    // console.log('scale:', scale);
-    // console.log('last scale:', this.lastScale);
-    //console.log('event details:', event);
 
     this.zoomCanvasService.zoomCanvas(delta, x, y);
 

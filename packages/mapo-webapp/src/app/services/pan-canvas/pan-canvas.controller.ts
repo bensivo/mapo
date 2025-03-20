@@ -57,7 +57,6 @@ export class PanCanvasController {
   onMouseMoveTouch = (event: fabric.IEvent<MouseEvent>): void => {
     if (this.panCnavsService.isPanning() && !this.isPinching && !this.isTwoFingerPanning) {
       this.panCnavsService.updatePan(event.e.layerX, event.e.layerY);
-      console.log('Pan Detected');
     }
   };
 

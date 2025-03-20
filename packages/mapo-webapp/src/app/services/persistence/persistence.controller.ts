@@ -27,7 +27,6 @@ export class PersistenceController {
         if (persistedFileId) {
             try {
                 const fileId: number | null = persistedFileId === 'null' ? null : parseInt(persistedFileId, 10);
-                console.log('Hydrating file id from storage', fileId);
                 this.fileStore.setCurrentFileId(fileId);
             } catch (e) {
                 console.error('Failed to load text-nodes from local storage', e);
@@ -38,7 +37,6 @@ export class PersistenceController {
         if (persistedFolderId) {
             try {
                 const folderId: number | null = persistedFolderId === 'null' ? null : parseInt(persistedFolderId, 10);
-                console.log('Hydrating folder id from storage', folderId);
                 this.fileStore.setCurrentFolderId(folderId ?? 0);
             } catch (e) {
                 console.error('Failed to load text-nodes from local storage', e);
@@ -49,7 +47,6 @@ export class PersistenceController {
         if (persistedNodes) {
             try {
                 const textNodes: TextNode[] = JSON.parse(persistedNodes);
-                console.log('Hydrating text nodes from local storage', textNodes);
                 this.textNodeStore.set(textNodes);
             } catch (e) {
                 console.error('Failed to load text-nodes from local storage', e);
@@ -60,7 +57,6 @@ export class PersistenceController {
         if (persistedEdges) {
             try {
                 const edges: Edge[] = JSON.parse(persistedEdges);
-                console.log('Hydrating edges from local storage', edges);
                 this.edgeStore.set(edges);
             } catch (e) {
                 console.error('Failed to load edges from local storage', e);
