@@ -17,6 +17,7 @@ import { ToastComponent } from './components/toast/toast.component';
 import { DebugController } from './services/debug/debug.controller';
 import { AutoSaveController } from './services/autosave/autosave.controller';
 import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
+import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
 import { ClipboardController } from './services/clipboard/clipboard.controller';
 
 @Component({
@@ -43,6 +44,7 @@ export class AppComponent {
     private edgeController: EdgeController,
     private fileService: FilesService,
     private panCanvasController: PanCanvasController,
+    private zoomCanvasController: ZoomCanvasController,
     private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
