@@ -42,11 +42,6 @@ export class TextNodeService {
     // Render all the text nodes
     for (const textNode of textNodes) {
       FabricUtils.createTextNode(this.canvas, textNode);
-
-      //if isComment = true
-      if (textNode.isComment) {
-        console.log('Rendering a comment node:', textNode);
-      }
     }
 
     this.canvas.requestRenderAll();
@@ -61,7 +56,7 @@ export class TextNodeService {
       throw new Error('No canvas on TextNodeService');
     }
 
-    console.log("Pending Text Node IsComment:", isComment);
+    console.log("Pending IsComment:", isComment);
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
@@ -99,7 +94,7 @@ export class TextNodeService {
 
     //check for comment 
     const isComment = itext.data?.isComment || false;
-    console.log('Finalized itext isComment', isComment);
+    console.log('Finalized isComment:', isComment);
     
     this.canvas.remove(itext);
     this.textNodeStore.insert({
