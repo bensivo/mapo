@@ -17,11 +17,10 @@
     <i class="ri-text-snippet"></i>
     <span class="subtext">t</span>
   </div>
-  <!-- create comment button -->
-  <div 
-  class="tool create-comment"
-  [ngClass]="{ enabled: tool === 'create-comment-node' }"
-  (click)="selectTool('create-comment-node')"
+  <div
+    class="tool create-comment"
+    [ngClass]="{ enabled: tool === 'create-comment-node' }"
+    (click)="selectTool('create-comment-node')"
   >
     <i class="ri-chat-4-line"></i>
     <span class="subtext">c</span>

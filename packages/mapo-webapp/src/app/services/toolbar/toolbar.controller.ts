@@ -50,6 +50,11 @@ export class ToolbarController {
       return;
     }
 
+    if (e.key === 'c') {
+      this.toolbarService.selectOrCancel(Tool.CREATE_COMMENT_NODE);
+      return;
+    }
+
     if (e.key === 'e') {
       this.toolbarService.selectOrCancel(Tool.CREATE_EDGE);
       return;
