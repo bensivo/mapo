@@ -89,7 +89,6 @@ export class TextNodeController {
       this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE ||
       this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE //right now lets just make comment do the same thing
     ) {
-      console.log('CREATE TEXT NODE COMMENT NODE');
 
       if (!e.absolutePointer) {
         console.warn('No absolute pointer on event', e);

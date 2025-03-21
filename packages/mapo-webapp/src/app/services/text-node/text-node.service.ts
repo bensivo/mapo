@@ -80,7 +80,8 @@ export class TextNodeService {
       text: text,
       x: x,
       y: y,
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      isComment: false
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

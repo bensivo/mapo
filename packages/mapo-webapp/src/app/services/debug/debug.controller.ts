@@ -25,6 +25,7 @@ export class DebugController {
         text: "saljdfhdf",
         x: 0,
         y: 0,
+        isComment: false,
       });
     });
 
