@@ -47,10 +47,16 @@ export class TextNodeService {
     this.canvas.requestRenderAll();
   }
 
-  addPendingTextNode(top: number, left: number): fabric.IText {
+  addPendingTextNode(
+    top: number,
+    left: number,
+    isComment: boolean,
+  ): fabric.IText {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
+
+    console.log("Pending Text Node IsComment:", isComment);
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
     FabricUtils.selectIText(this.canvas, itext);
@@ -81,7 +87,7 @@ export class TextNodeService {
       x: x,
       y: y,
       color: '#FFFFFF',
-      isComment: false
+      isComment: false,
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

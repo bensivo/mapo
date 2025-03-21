@@ -56,12 +56,15 @@ export class TextNodeController {
       return;
     }
 
+    const isComment = this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE;
+
     if (!e.target && e.absolutePointer) {
       // double-click on empty space on the canvas
       // Add pending text node, itext
       const itext = this.textNodeService.addPendingTextNode(
         e.absolutePointer.y,
         e.absolutePointer.x,
+        isComment
       );
       itext.on('editing:exited', () => {
         this.onITextExited(itext);
@@ -85,9 +88,11 @@ export class TextNodeController {
       return;
     }
 
+    const isComment = this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE;
+
     if (
       this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE ||
-      this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE //right now lets just make comment do the same thing
+      isComment //right now lets just make comment do the same thing
     ) {
 
       if (!e.absolutePointer) {
@@ -98,6 +103,7 @@ export class TextNodeController {
       const itext = this.textNodeService.addPendingTextNode(
         e.absolutePointer.y,
         e.absolutePointer.x,
+        isComment
       );
       this.canvas.requestRenderAll();
       itext.on('editing:exited', () => {
