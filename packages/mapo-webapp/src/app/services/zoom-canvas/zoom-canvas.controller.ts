@@ -59,8 +59,7 @@ export class ZoomCanvasController {
     const scale = event.scale;
     let delta = scale - this.lastScale;
     delta = -delta; // zoomCanvas uses negative values for zooming in, and positive for zooming out. So we just flip the sign.
-    delta = delta * 1000; // Scaling factor to make the zoom less slow
-
+    delta = delta * 700; // Scaling factor to make the zoom less slow
 
     this.zoomCanvasService.zoomCanvas(delta, x, y);
 

@@ -21,7 +21,6 @@ export class PanCanvasController {
         canvas.on('mouse:move', this.onMouseMoveTouch);
         canvas.on('mouse:up', this.onMouseUpTouch);
 
-        //Hammer.js for detecting two finger pan
         const canvasContainer = document.getElementById('canvas-container');
         if (canvasContainer) {
           var hammertime = new Hammer(canvasContainer, {});
@@ -55,7 +54,11 @@ export class PanCanvasController {
   };
 
   onMouseMoveTouch = (event: fabric.IEvent<MouseEvent>): void => {
-    if (this.panCnavsService.isPanning() && !this.isPinching && !this.isTwoFingerPanning) {
+    if (
+      this.panCnavsService.isPanning() &&
+      !this.isPinching &&
+      !this.isTwoFingerPanning
+    ) {
       this.panCnavsService.updatePan(event.e.layerX, event.e.layerY);
     }
   };
