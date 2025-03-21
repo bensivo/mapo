@@ -42,6 +42,11 @@ export class TextNodeService {
     // Render all the text nodes
     for (const textNode of textNodes) {
       FabricUtils.createTextNode(this.canvas, textNode);
+
+      //if isComment = true
+      if (textNode.isComment) {
+        console.log('Rendering a comment node:', textNode);
+      }
     }
 
     this.canvas.requestRenderAll();
@@ -59,6 +64,18 @@ export class TextNodeService {
     console.log("Pending Text Node IsComment:", isComment);
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
+
+    //set different style for the comment
+    if(isComment) {
+      itext.set({
+        fill: '#FF0000',
+      });
+      itext.data = {
+        type: 'comment-node',
+        isComment: true,
+      };
+    }
+
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
@@ -79,6 +96,10 @@ export class TextNodeService {
       console.warn('Cannot create text node. Invalid data for itext: ', itext);
       return;
     }
+
+    //check for comment 
+    const isComment = itext.data?.isComment || false;
+    console.log('Finalized itext isComment', isComment);
     
     this.canvas.remove(itext);
     this.textNodeStore.insert({
@@ -87,7 +108,7 @@ export class TextNodeService {
       x: x,
       y: y,
       color: '#FFFFFF',
-      isComment: false, //im not sure what to put here
+      isComment: isComment,
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

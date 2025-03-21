@@ -71,12 +71,14 @@ describe('TextNodeService', () => {
         text: 'Hello',
         x: 0,
         y: 0,
+        isComment: false,
       };
       const textnode2: TextNode = {
         id: '2',
         text: 'Hello',
         x: 0,
         y: 0,
+        isComment: false,
       };
 
       // Given there is a canvas
@@ -94,7 +96,7 @@ describe('TextNodeService', () => {
   describe('addPendingTextNode', () => {
     it('should throw an error if there is no canvas', () => {
       expect(() => {
-        service.addPendingTextNode(0, 0);
+        service.addPendingTextNode(0, 0, false);
       }).toThrowError('No canvas on TextNodeService');
     });
 
@@ -108,7 +110,7 @@ describe('TextNodeService', () => {
       mockCanvasService.canvasInitialized$.next(canvas);
 
       // When we call addPendingTextNode
-      service.addPendingTextNode(0, 0);
+      service.addPendingTextNode(0, 0, false);
 
       // Then an itext is created
       expect(createITextSpy).toHaveBeenCalledWith(canvas, '', 0, 0);
