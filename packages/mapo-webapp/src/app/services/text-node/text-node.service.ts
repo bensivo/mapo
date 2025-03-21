@@ -79,7 +79,7 @@ export class TextNodeService {
       console.warn('Cannot create text node. Invalid data for itext: ', itext);
       return;
     }
-
+    
     this.canvas.remove(itext);
     this.textNodeStore.insert({
       id: uuid.v4(),
@@ -87,7 +87,7 @@ export class TextNodeService {
       x: x,
       y: y,
       color: '#FFFFFF',
-      isComment: false,
+      isComment: false, //im not sure what to put here
     });
     this.toolbarStore.setTool(Tool.POINTER);
   }

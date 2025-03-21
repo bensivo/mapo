@@ -88,6 +88,7 @@ export class TextNodeController {
       return;
     }
 
+    //this determines if isComment is true or false
     const isComment = this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE;
 
     if (
