@@ -150,6 +150,8 @@ export class FabricUtils {
       fontFamily: 'Roboto',
     });
 
+    console.log("CREATE TEXT NODE:", textnode.isComment); // todo: delete later
+
     const boundingRect = textObj.getBoundingRect(true);
 
     const padding = 10;
@@ -166,7 +168,7 @@ export class FabricUtils {
       fill: textnode.color ?? '#FFFFFF',
       rx: 10,
       ry: 10,
-      stroke: 'black',
+      stroke: textnode.isComment ? '#FFFFFF' : 'black',
       strokeWidth: 1,
       hasControls: false,
     });

@@ -62,9 +62,9 @@ export class TextNodeService {
 
     //set different style for the comment
     if(isComment) {
-      itext.set({
-        fill: '#FF0000',
-      });
+      // itext.set({
+      //   fill: '#FF0000',
+      // });
       itext.data = {
         type: 'comment-node',
         isComment: true,
@@ -105,6 +105,7 @@ export class TextNodeService {
       color: '#FFFFFF',
       isComment: isComment,
     });
+
     this.toolbarStore.setTool(Tool.POINTER);
   }
 
@@ -155,6 +156,9 @@ export class TextNodeService {
       centerY,
       centerX,
     );
+
+    console.log('EDIT TEXT NODE'); //todo: delete later
+
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
@@ -196,6 +200,8 @@ export class TextNodeService {
       );
       return;
     }
+
+    console.log('UPDATE TEXT NODE'); //todo: delete later
 
     const x = group.left + 10; // Add 10 to account for the padding between the group and the itext itself
     const y = group.top + 10; // Add 10 to account for the padding between the group and the itext itself
