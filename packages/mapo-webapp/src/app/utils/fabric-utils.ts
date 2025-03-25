@@ -165,7 +165,7 @@ export class FabricUtils {
       left: rectLeft,
       width,
       height,
-      fill: textnode.color ?? '#FFFFFF',
+      fill: textnode.isComment ? 'transparent' : textnode.color ?? '#FFFFFF',
       rx: 10,
       ry: 10,
       stroke: textnode.isComment ? '#FFFFFF' : 'black',
