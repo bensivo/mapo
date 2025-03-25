@@ -58,7 +58,6 @@ export class TextNodeService {
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
-    console.log('Pending Text Node, isComment:', isComment);
     if (isComment) {
       itext.data = {
         isComment: true,
@@ -87,7 +86,6 @@ export class TextNodeService {
     }
 
     const isComment = itext.data?.isComment || false;
-    console.log('Finalized Text Node, isComment:', isComment);
 
     this.canvas.remove(itext);
     this.textNodeStore.insert({
