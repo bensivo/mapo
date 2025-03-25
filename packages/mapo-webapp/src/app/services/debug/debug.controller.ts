@@ -13,20 +13,11 @@ export class DebugController {
   constructor(
     private canvasService: CanvasService,
     private textNodeService: TextNodeService,
-    //add textNodeStore
     private textNodeStore: TextNodeStore,
   ) {
 
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
-      //insert a text node
-      this.textNodeStore.insert({
-        id: "adsf",
-        text: "saljdfhdf",
-        x: 0,
-        y: 0,
-        isComment: false,
-      });
     });
 
     // Add functions to the window object, so they can be executed by an e2e test suite
