@@ -20,7 +20,6 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
-    private textNodeOptionsStore: TextNodeOptionsStore, // TODO: ask Ben if its okay to have this service interact with the textnode-options 
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -59,8 +58,8 @@ export class TextNodeService {
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
-    if(isComment) {
-      this.textNodeOptionsStore.setIsComment(true); // TODO: ask Ben if its okay to have this service interact with the textnode-options
+    console.log('Pending Text Node, isComment:', isComment);
+    if (isComment) {
       itext.data = {
         isComment: true,
       };
@@ -88,7 +87,8 @@ export class TextNodeService {
     }
 
     const isComment = itext.data?.isComment || false;
-    
+    console.log('Finalized Text Node, isComment:', isComment);
+
     this.canvas.remove(itext);
     this.textNodeStore.insert({
       id: uuid.v4(),

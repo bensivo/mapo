@@ -53,6 +53,29 @@ export class TextNodeOptionsController {
     if (colorsUnique.length === 1) {
         this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
     }
+
+    //TODO: need to somehow get the isComment state here.
+    //      then set the textnode-options.store to either true or false on selection
+    const isComments = textNodes.map((textNode) => {
+        const nodeId = textNode?.data?.id;
+
+        if (!nodeId) {
+          console.log('No node id found');
+          return null;
+        }
+
+        const node = this.textNodeStore.get(nodeId);
+
+        if (!node) {
+          console.log('No node found in store');
+          return null;
+        }
+        this.textNodeOptionsStore.setIsComment(node.isComment);
+        return node.isComment;
+    })
+    
+    console.log('ON SELECTION isComment: ', isComments);
+
   }
 
   /**

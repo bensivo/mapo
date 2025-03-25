@@ -27,7 +27,7 @@ export class TextNodeOptionsComponent {
       if (tool === Tool.EDIT_TEXT_NODE) {
         return false
       }
-      console.log('TEXT NODE OPTIONS STORE', isComment);
+      console.log('TEXT NODE OPTIONS STORE, isComment =', isComment);
       if (isComment) {
         return false;
       }

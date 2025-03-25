@@ -150,8 +150,6 @@ export class FabricUtils {
       fontFamily: 'Roboto',
     });
 
-    console.log("CREATE TEXT NODE:", textnode.isComment); // todo: delete later
-
     const boundingRect = textObj.getBoundingRect(true);
 
     const padding = 10;
