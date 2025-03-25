@@ -20,11 +20,16 @@ export class TextNodeOptionsComponent {
 
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
-    this.selectionService.selection$
+    this.selectionService.selection$,
+    this.textNodeOptionsStore.isComment$
   ]).pipe(
-    map(([tool, selection]) => {
+    map(([tool, selection, isComment]) => {
       if (tool === Tool.EDIT_TEXT_NODE) {
         return false
+      }
+      console.log('TEXT NODE OPTIONS STORE', isComment);
+      if (isComment) {
+        return false;
       }
 
       if (selection && selection.length !== 0) {

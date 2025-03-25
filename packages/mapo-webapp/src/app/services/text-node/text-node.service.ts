@@ -20,6 +20,7 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
+    private textNodeOptionsStore: TextNodeOptionsStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -56,12 +57,14 @@ export class TextNodeService {
       throw new Error('No canvas on TextNodeService');
     }
 
-    console.log("Pending IsComment:", isComment);
+    console.log("Pending IsComment:", isComment); //todo: del later
+    console.log('Pending Tool', this.toolbarStore);
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
     //set different style for the comment
     if(isComment) {
+      this.textNodeOptionsStore.setIsComment(true); // maybe bad practice???
       // itext.set({
       //   fill: '#FF0000',
       // });
@@ -94,7 +97,8 @@ export class TextNodeService {
 
     //check for comment 
     const isComment = itext.data?.isComment || false;
-    console.log('Finalized isComment:', isComment);
+    console.log('Finalized isComment:', isComment); //todo: del later
+    console.log('Finalized Tool', this.toolbarStore);
     
     this.canvas.remove(itext);
     this.textNodeStore.insert({
@@ -158,6 +162,7 @@ export class TextNodeService {
     );
 
     console.log('EDIT TEXT NODE'); //todo: delete later
+    console.log('Edit Text Node Tool', this.toolbarStore);
 
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
@@ -202,6 +207,7 @@ export class TextNodeService {
     }
 
     console.log('UPDATE TEXT NODE'); //todo: delete later
+    console.log('Update Text Node Tool', this.toolbarStore);
 
     const x = group.left + 10; // Add 10 to account for the padding between the group and the itext itself
     const y = group.top + 10; // Add 10 to account for the padding between the group and the itext itself
