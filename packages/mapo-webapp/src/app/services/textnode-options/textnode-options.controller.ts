@@ -1,15 +1,14 @@
-import { fabric } from "fabric";
-import { Injectable } from "@angular/core";
-import { TextNodeOptionsStore } from "../../store/textnode-options.store";
-import { CanvasService } from "../canvas/canvas.service";
-import { TextNodeStore } from "../../store/text-node.store";
-import { SelectionService } from "../selection/selection.service";
+import { fabric } from 'fabric';
+import { Injectable } from '@angular/core';
+import { TextNodeOptionsStore } from '../../store/textnode-options.store';
+import { CanvasService } from '../canvas/canvas.service';
+import { TextNodeStore } from '../../store/text-node.store';
+import { SelectionService } from '../selection/selection.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TextNodeOptionsController {
-
   canvas: fabric.Canvas | null = null;
 
   constructor(
@@ -42,40 +41,39 @@ export class TextNodeOptionsController {
     if (!objects) {
       return;
     }
-    const textNodes = objects.filter((object) => object instanceof fabric.Group && object?.data?.type === 'text-node');
+    const textNodes = objects.filter(
+      (object) =>
+        object instanceof fabric.Group && object?.data?.type === 'text-node',
+    );
     const colors = textNodes.map((textNode) => {
       return (textNode as fabric.Group).item(0).fill;
-    })
+    });
 
     // Only set the color if all the selected objects are the same, otherwise,
     // setting a new color would switch all objects to that color.
     const colorsUnique = [...new Set(colors)];
     if (colorsUnique.length === 1) {
-        this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
+      this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
     }
 
-    //TODO: need to somehow get the isComment state here.
-    //      then set the textnode-options.store to either true or false on selection
     const isComments = textNodes.map((textNode) => {
-        const nodeId = textNode?.data?.id;
+      const nodeId = textNode?.data?.id;
 
-        if (!nodeId) {
-          console.log('No node id found');
-          return null;
-        }
+      if (!nodeId) {
+        console.log('No node id found');
+        return null;
+      }
 
-        const node = this.textNodeStore.get(nodeId);
+      const node = this.textNodeStore.get(nodeId);
 
-        if (!node) {
-          console.log('No node found in store');
-          return null;
-        }
-        this.textNodeOptionsStore.setIsComment(node.isComment);
-        return node.isComment;
-    })
-    
-    console.log('ON SELECTION isComment: ', isComments);
+      if (!node) {
+        console.log('No node found in store');
+        return null;
+      }
 
+      this.textNodeOptionsStore.setIsComment(node.isComment);
+      return node.isComment;
+    });
   }
 
   /**
@@ -93,8 +91,10 @@ export class TextNodeOptionsController {
 
     let updated = false;
     for (const object of objects) {
-      if (object instanceof fabric.Group && object?.data?.type === 'text-node') {
-
+      if (
+        object instanceof fabric.Group &&
+        object?.data?.type === 'text-node'
+      ) {
         const nodeId = object?.data?.id;
         if (!nodeId) {
           console.warn('No node id found', object);
@@ -116,7 +116,7 @@ export class TextNodeOptionsController {
     }
 
     if (updated) {
-      // Deselect all objects. 
+      // Deselect all objects.
       this.canvas.discardActiveObject().renderAll();
     }
   }
