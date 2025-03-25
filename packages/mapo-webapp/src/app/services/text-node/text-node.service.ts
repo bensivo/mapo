@@ -20,7 +20,7 @@ export class TextNodeService {
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
     private textNodeStore: TextNodeStore,
-    private textNodeOptionsStore: TextNodeOptionsStore,
+    private textNodeOptionsStore: TextNodeOptionsStore, // TODO: ask Ben if its okay to have this service interact with the textnode-options 
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -57,19 +57,11 @@ export class TextNodeService {
       throw new Error('No canvas on TextNodeService');
     }
 
-    console.log("Pending IsComment:", isComment); //todo: del later
-    console.log('Pending Tool', this.toolbarStore);
-
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
-    //set different style for the comment
     if(isComment) {
-      this.textNodeOptionsStore.setIsComment(true); // maybe bad practice???
-      // itext.set({
-      //   fill: '#FF0000',
-      // });
+      this.textNodeOptionsStore.setIsComment(true); // TODO: ask Ben if its okay to have this service interact with the textnode-options
       itext.data = {
-        type: 'comment-node',
         isComment: true,
       };
     }
@@ -95,10 +87,7 @@ export class TextNodeService {
       return;
     }
 
-    //check for comment 
     const isComment = itext.data?.isComment || false;
-    console.log('Finalized isComment:', isComment); //todo: del later
-    console.log('Finalized Tool', this.toolbarStore);
     
     this.canvas.remove(itext);
     this.textNodeStore.insert({
@@ -161,9 +150,6 @@ export class TextNodeService {
       centerX,
     );
 
-    console.log('EDIT TEXT NODE'); //todo: delete later
-    console.log('Edit Text Node Tool', this.toolbarStore);
-
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
@@ -205,9 +191,6 @@ export class TextNodeService {
       );
       return;
     }
-
-    console.log('UPDATE TEXT NODE'); //todo: delete later
-    console.log('Update Text Node Tool', this.toolbarStore);
 
     const x = group.left + 10; // Add 10 to account for the padding between the group and the itext itself
     const y = group.top + 10; // Add 10 to account for the padding between the group and the itext itself

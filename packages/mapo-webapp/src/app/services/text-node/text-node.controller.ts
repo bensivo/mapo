@@ -64,7 +64,7 @@ export class TextNodeController {
       const itext = this.textNodeService.addPendingTextNode(
         e.absolutePointer.y,
         e.absolutePointer.x,
-        isComment
+        isComment,
       );
       itext.on('editing:exited', () => {
         this.onITextExited(itext);
@@ -88,14 +88,10 @@ export class TextNodeController {
       return;
     }
 
-    //this determines if isComment is true or false
+    //this determines if isComment = true or false
     const isComment = this.toolbarStore.tool.value === Tool.CREATE_COMMENT_NODE;
 
-    if (
-      this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE ||
-      isComment //right now lets just make comment do the same thing
-    ) {
-
+    if (this.toolbarStore.tool.value === Tool.CREATE_TEXT_NODE || isComment) {
       if (!e.absolutePointer) {
         console.warn('No absolute pointer on event', e);
         return;
@@ -104,7 +100,7 @@ export class TextNodeController {
       const itext = this.textNodeService.addPendingTextNode(
         e.absolutePointer.y,
         e.absolutePointer.x,
-        isComment
+        isComment,
       );
       this.canvas.requestRenderAll();
       itext.on('editing:exited', () => {
