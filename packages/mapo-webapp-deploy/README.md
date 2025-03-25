@@ -20,5 +20,5 @@ It uses Ansible to install and setup Nginx and LetsEncrypt
 
 5. Deploy to the VM
     ```sh
-    ./deploy.sh 0.0.1
+    ./deploy.sh dev 0.0.1
     ```

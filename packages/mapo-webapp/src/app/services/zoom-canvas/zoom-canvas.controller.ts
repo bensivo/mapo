@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 import { fabric } from 'fabric';
 import { CanvasService } from '../canvas/canvas.service';
 import { ZoomCanvasService } from './zoom-canvas.service';
@@ -11,75 +12,57 @@ import Hammer from 'hammerjs';
   providedIn: 'root',
 })
 export class ZoomCanvasController {
+  public pinchStateChange: EventEmitter<boolean> = new EventEmitter();
+  private isPinching = false;
+  lastScale = 1;
+
   constructor(
     private canvasService: CanvasService,
     private zoomCanvasService: ZoomCanvasService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
-      canvas.on('mouse:wheel', this.onMouseWheel);
+      const canvasContainer = document.getElementById('canvas-container');
+      if (canvasContainer) {
+        var hammertime = new Hammer(canvasContainer, {});
+        hammertime.get('pinch').set({ enable: true });
 
-      //initialize hammer.js
-       // We use hammer.js to detect touch events for touch devices, note it only works if you 
-      // // add hammer to the div around the canvas, not the canvas itself.
-      const hammer = new Hammer(canvas.getElement());
-      hammer.get('pan').set({ enable: true });
+        hammertime.on('pinchstart', (e) => {
+          this.lastScale = 1;
+          this.isPinching = true;
+          this.pinchStateChange.emit(this.isPinching);
+        });
 
-      hammer.on('pan', (event) => {
-        //console.log p tag
-        console.log('Pinch detected!', event.scale);
-        //p tag on the canvas
-        this.onPinch(event, canvas);
-      });
+        hammertime.on('pinch', (event) => {
+          this.pinchStateChange.emit(this.isPinching);
+          this.onPinch(event, canvas);
+        });
 
-    });
-    this.canvasService.canvasDestroyed$.subscribe((canvas) => {
-      canvas.off('mouse:wheel', this.onMouseWheel as any);
+        hammertime.on('pinchend', () => {
+          setTimeout(() => {
+            this.isPinching = false;
+            this.pinchStateChange.emit(this.isPinching);
+          }, 100);
+        });
+      }
     });
   }
 
-  onMouseWheel = (event: fabric.IEvent<WheelEvent>) => {
-    const delta = event.e.deltaY;
-    const x = event.e.offsetX;
-    const y = event.e.offsetY;
-
-    this.zoomCanvasService.zoomCanvas(delta, x, y);
-
-    event.e.preventDefault();
-    event.e.stopPropagation();
-  };
-
   onPinch = (event: HammerInput, canvas: fabric.Canvas) => {
-    //extracts the coordinates
-    const scale = event.scale;
     const x = event.center.x;
     const y = event.center.y;
 
-    //calls the zoomCanvas function to zoom the canvas
-    this.zoomCanvasService.zoomCanvas(scale, x, y);
-    //display the p tags
-    this.displayPinchDetected(event, canvas);
+    // Scale magnitude is related to how fast the user pinched
+    // Pinching outwwards (zooming in) gives you values of scale > 1, the magnitude
+    // Pinching inwards (zooming out) gives you values of scale between 0 and 1, 1/magnitude
+    //
+    // For example: scale = 5 is a relative fast zoom in, scale = 0.2 is zooming out with the same speed
+    const scale = event.scale;
+    let delta = scale - this.lastScale;
+    delta = -delta; // zoomCanvas uses negative values for zooming in, and positive for zooming out. So we just flip the sign.
+    delta = delta * 700; // Scaling factor to make the zoom less slow
+
+    this.zoomCanvasService.zoomCanvas(delta, x, y);
+
+    this.lastScale = scale;
   };
-
-  displayPinchDetected(event: HammerInput, canvas: fabric.Canvas) {
-    // Display a p tag
-    const ptag = document.createElement('p');
-    // Styling for p tag
-    ptag.textContent = 'Pinch detected!';
-    ptag.style.backgroundColor = 'red';
-    ptag.style.position = 'absolute';
-    ptag.style.padding = '10px';
-    ptag.style.left = `${event.center.x}px`;
-    ptag.style.top = `${event.center.y}px`;
-
-    // Append p tag to canvas
-    const canvasContainer = canvas.getElement().parentElement;
-    if (canvasContainer) {
-      canvasContainer.appendChild(ptag);
-
-      // Remove the p tag after a short delay
-      setTimeout(() => {
-        canvasContainer.removeChild(ptag);
-      }, 2000);
-    }
-  }
 }

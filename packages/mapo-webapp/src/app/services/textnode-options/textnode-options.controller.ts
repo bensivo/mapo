@@ -108,7 +108,6 @@ export class TextNodeOptionsController {
         }
 
         if (node.color !== color) {
-          console.log('Updating node', nodeId, 'with color', color);
           this.textNodeStore.update(nodeId, { color });
           updated = true;
         }
