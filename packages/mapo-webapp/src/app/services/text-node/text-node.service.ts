@@ -147,7 +147,6 @@ export class TextNodeService {
       centerY,
       centerX,
     );
-
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
