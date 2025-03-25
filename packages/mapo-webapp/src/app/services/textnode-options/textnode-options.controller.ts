@@ -9,6 +9,7 @@ import { SelectionService } from "../selection/selection.service";
   providedIn: 'root',
 })
 export class TextNodeOptionsController {
+
   canvas: fabric.Canvas | null = null;
 
   constructor(
@@ -89,6 +90,7 @@ export class TextNodeOptionsController {
     let updated = false;
     for (const object of objects) {
       if (object instanceof fabric.Group && object?.data?.type === 'text-node') {
+        
         const nodeId = object?.data?.id;
         if (!nodeId) {
           console.warn('No node id found', object);
