@@ -38,11 +38,18 @@ export class TextNodeOptionsController {
     });
   }
 
+  /**
+   * When a node (or group of nodes) is selected, set the selected color to the color
+   * of the node (or the color of the first node in the group).
+   * 
+   * @param objects 
+   * @returns 
+   */
   onSelection(objects: fabric.Object[] | null) {
     if (!objects) {
       return;
     }
-    const textNodes = objects.filter((object) => object instanceof fabric.Group && object?.data?.type === 'text-node');
+    const textNodes = objects.filter((object) => object instanceof fabric.Group && object?.data?.type === 'text-node',);
     const colors = textNodes.map((textNode) => {
       return (textNode as fabric.Group).item(0).fill;
     })

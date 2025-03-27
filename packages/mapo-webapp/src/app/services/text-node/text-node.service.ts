@@ -47,12 +47,23 @@ export class TextNodeService {
     this.canvas.requestRenderAll();
   }
 
-  addPendingTextNode(top: number, left: number): fabric.IText {
+  addPendingTextNode(
+    top: number,
+    left: number,
+    isComment: boolean,
+  ): fabric.IText {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
 
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
+
+    if (isComment) {
+      itext.data = {
+        isComment: true,
+      };
+    }
+
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
@@ -74,14 +85,18 @@ export class TextNodeService {
       return;
     }
 
+    const isComment = itext.data?.isComment || false;
+
     this.canvas.remove(itext);
     this.textNodeStore.insert({
       id: uuid.v4(),
       text: text,
       x: x,
       y: y,
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      isComment: isComment,
     });
+
     this.toolbarStore.setTool(Tool.POINTER);
   }
 

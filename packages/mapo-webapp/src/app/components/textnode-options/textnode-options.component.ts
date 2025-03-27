@@ -20,14 +20,20 @@ export class TextNodeOptionsComponent {
 
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
-    this.selectionService.selection$
+    this.selectionService.selection$,
   ]).pipe(
     map(([tool, selection]) => {
       if (tool === Tool.EDIT_TEXT_NODE) {
         return false
-      }
+      };
 
-      if (selection && selection.length !== 0) {
+      // Return true (make the options visible) only if there is at least 1
+      // text node in the selection
+      const hasTextNode = selection?.some((object) => {
+        return object.data?.type === 'text-node' && object.data?.isComment == false;
+      })
+
+      if (hasTextNode) {
         return true;
       }
 
