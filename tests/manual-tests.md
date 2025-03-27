@@ -32,6 +32,14 @@ My Files:
     T: I see the button "Go to My Files"
 ```
 
+## Comments
+```
+Create comment:
+    W: I click on the comment tool and then click on the canvas
+    T: I can create a comment
+    T: The comment has no background or border
+```
+
 ## Text Nodes
 ```
 (Automated) Enter edit mode:
@@ -170,6 +178,16 @@ Panning (trackpad):
 
 Zoom (trackpad):
     G: I am using a trackpad
+    W: I pinch with 2 fingers
+    T: The canvas should zoom
+
+Panning (phone):
+    G: I am using a phone
+    W: I drag with 1 finger
+    T: The canvas should pan
+
+Zoom (phone):
+    G: I am using a phone
     W: I pinch with 2 fingers
     T: The canvas should zoom
 
@@ -407,6 +425,11 @@ Update color of a node:
     G: I have a node selected 
     W: I click on a color
     T: That node is updated to my selected color
+
+Update color of a comment:
+    G: I am on the canvas
+    G: I have a comment selected
+    T: the color options don't show up
 
 Update color of many nodes:
     G: I am on the canvas

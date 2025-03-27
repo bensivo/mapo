@@ -38,6 +38,13 @@ export class TextNodeOptionsController {
     });
   }
 
+  /**
+   * When a node (or group of nodes) is selected, set the selected color to the color
+   * of the node (or the color of the first node in the group).
+   * 
+   * @param objects 
+   * @returns 
+   */
   onSelection(objects: fabric.Object[] | null) {
     if (!objects) {
       return;
@@ -53,25 +60,6 @@ export class TextNodeOptionsController {
     if (colorsUnique.length === 1) {
         this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
     }
-
-    const isComments = textNodes.map((textNode) => {
-      const nodeId = textNode?.data?.id;
-
-      if (!nodeId) {
-        console.log('No node id found');
-        return null;
-      }
-
-      const node = this.textNodeStore.get(nodeId);
-
-      if (!node) {
-        console.log('No node found in store');
-        return null;
-      }
-
-      this.textNodeOptionsStore.setIsComment(node.isComment);
-      return node.isComment;
-    });
   }
 
   /**

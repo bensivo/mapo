@@ -158,15 +158,28 @@ export class FabricUtils {
     const width = boundingRect.width + padding * 2;
     const height = boundingRect.height + padding * 2;
 
+    let fill = '#FFFFFF';
+    if (textnode.color) {
+      fill = textnode.color;
+    }
+    if (textnode.isComment) {
+      fill = '';
+    }
+
+    let stroke = 'black';
+    if (textnode.isComment) {
+      stroke = '';
+    }
+
     const rect = new fabric.Rect({
       top: rectTop,
       left: rectLeft,
       width,
       height,
-      fill: textnode.color ?? '#FFFFFF',
+      fill: fill,
       rx: 10,
       ry: 10,
-      stroke: textnode.isComment ? '#FFFFFF' : 'black',
+      stroke: stroke,
       strokeWidth: 1,
       hasControls: false,
     });
@@ -177,6 +190,7 @@ export class FabricUtils {
       data: {
         id: textnode.id,
         type: 'text-node',
+        isComment: textnode.isComment,
       },
     });
 
