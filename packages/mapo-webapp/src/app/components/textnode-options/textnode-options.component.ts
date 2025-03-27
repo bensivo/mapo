@@ -30,7 +30,7 @@ export class TextNodeOptionsComponent {
       // Return true (make the options visible) only if there is at least 1
       // text node in the selection
       const hasTextNode = selection?.some((object) => {
-        return object.data?.type === 'text-node' && object.data?.isComment == false;
+        return object.data?.type === 'text-node' && object.data?.isComment !== true;
       })
 
       if (hasTextNode) {
