@@ -1,0 +1,23 @@
+<div class="bottom-toolbar-container">
+  <div
+    class="button color-button"
+    [ngClass]="{ enabled: ColorEnabled }"
+    (click)="toggleColor()"
+  >
+    <i class="ri-palette-line"></i>
+  </div>
+  <div
+    class="button delete-button"
+    [ngClass]="{ enabled: DeleteEnabled }"
+    (click)="toggleDelete()"
+  >
+    <i class="ri-delete-bin-line"></i>
+  </div>
+  <div
+    class="button copy-button"
+    [ngClass]="{ enabled: CopyEnabled }"
+    (click)="toggleCopy()"
+  >
+    <i class="ri-file-copy-line"></i>
+  </div>
+</div>

@@ -6,6 +6,7 @@ import { TitleComponent } from '../../components/title/title.component';
 import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { SearchComponent } from '../../components/search/search.component';
 import { TextNodeOptionsComponent } from '../../components/textnode-options/textnode-options.component';
+import { BottomToolbarComponent } from '../../components/bottom-toolbar/bottom-toolbar.component';
 
 @Component({
   selector: 'app-canvaspage',
@@ -13,6 +14,7 @@ import { TextNodeOptionsComponent } from '../../components/textnode-options/text
   imports: [
     CanvasComponent,
     ToolbarComponent,
+    BottomToolbarComponent,
     HelpComponent,
     TitleComponent,
     IconbarComponent,
