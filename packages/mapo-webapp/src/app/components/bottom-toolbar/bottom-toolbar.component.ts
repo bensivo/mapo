@@ -60,7 +60,7 @@ export class BottomToolbarComponent {
   CopyEnabled: boolean = false;
 
   toggleColor() {
-    this.ColorEnabled = !this.ColorEnabled;
+    this.ColorEnabled = true;
     this.DeleteEnabled = false;
     this.CopyEnabled = false;
     console.log('COLOR BUTTON CLICKED');
@@ -73,10 +73,11 @@ export class BottomToolbarComponent {
       });
       console.log('COLOR, node:', hasTextNode);
     });
+    this.ColorEnabled = false;
   }
 
   toggleDelete() {
-    this.DeleteEnabled = !this.DeleteEnabled;
+    this.DeleteEnabled = true;
     this.ColorEnabled = false;
     this.CopyEnabled = false;
 
@@ -88,11 +89,12 @@ export class BottomToolbarComponent {
       if (object.data?.type === 'edge') {
         this.edgeStore.remove(object.data.id);
       }
+      this.DeleteEnabled = false;
     })
   }
 
   toggleCopy() {
-    this.CopyEnabled = !this.CopyEnabled;
+    this.CopyEnabled = true;
     this.ColorEnabled = false;
     this.DeleteEnabled = false;
 
@@ -100,5 +102,6 @@ export class BottomToolbarComponent {
     // call copy / paste
     this.clipboardController.onCopy();
     this.clipboardController.onPaste();
+    this.CopyEnabled = false;
   }
 }

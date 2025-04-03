@@ -48,7 +48,7 @@ export class ClipboardController {
     if(isTouchScreen()) {
       // use memory 
       this.touchClipboardData = data;
-      const message = `${data.nodes.length} ${data.nodes.length == 1 ? 'node' : 'nodes'} copied to memory`;
+      const message = `${data.nodes.length} ${data.nodes.length == 1 ? 'node' : 'nodes'} copied to clipboard`;
       this.toastService.showToastV2({
         title: '',
         message: message,
