@@ -36,7 +36,6 @@ export class BottomToolbarComponent {
     }),
   );
 
-
   constructor(
     private canvasService: CanvasService,
     private selectionService: SelectionService,
@@ -51,25 +50,55 @@ export class BottomToolbarComponent {
   }
 
   ColorEnabled: boolean = false;
+  DeleteEnabled: boolean = false;
+  CopyEnabled: boolean = false;
 
   toggleColor() {
     this.ColorEnabled = !this.ColorEnabled;
     this.DeleteEnabled = false;
     this.CopyEnabled = false;
-  }
+    console.log('COLOR BUTTON CLICKED');
 
-  DeleteEnabled: boolean = false;
+    this.selectionService.selection$.subscribe((selection) => {
+      const hasTextNode = selection?.find((object) => {
+        return (
+          object.data?.type === 'text-node' && object.data?.isComment !== true
+        );
+      });
+      console.log('COLOR, node:', hasTextNode);
+    });
+  }
 
   toggleDelete() {
     this.DeleteEnabled = !this.DeleteEnabled;
     this.ColorEnabled = false;
     this.CopyEnabled = false;
+    console.log('DELETE BUTTON CLICKED');
+
+    this.selectionService.selection$.subscribe((selection) => {
+      const hasTextNode = selection?.find((object) => {
+        return (
+          object.data?.type === 'text-node' && object.data?.isComment !== true
+        );
+      });
+      console.log('DELETE, node:', hasTextNode);
+    });
   }
-  CopyEnabled: boolean = false;
 
   toggleCopy() {
     this.CopyEnabled = !this.CopyEnabled;
     this.ColorEnabled = false;
     this.DeleteEnabled = false;
+
+    console.log('COPY BUTTON CLICKED');
+
+    this.selectionService.selection$.subscribe((selection) => {
+      const hasTextNode = selection?.find((object) => {
+        return (
+          object.data?.type === 'text-node' && object.data?.isComment !== true
+        );
+      });
+      console.log('COPY, node:', hasTextNode);
+    });
   }
 }
