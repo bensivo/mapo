@@ -5,6 +5,9 @@ import { isTouchScreen } from '../../utils/browser-utils';
 import { CanvasService } from '../../services/canvas/canvas.service';
 import { SelectionService } from '../../services/selection/selection.service';
 import { ToolbarStore } from '../../store/toolbar.store';
+import { ClipboardController } from '../../services/clipboard/clipboard.controller';
+import { TextNodeStore } from '../../store/text-node.store';
+import { EdgeStore } from '../../store/edge.store';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -40,6 +43,9 @@ export class BottomToolbarComponent {
     private canvasService: CanvasService,
     private selectionService: SelectionService,
     private toolbarStore: ToolbarStore,
+    private clipboardController: ClipboardController,
+    private textNodeStore: TextNodeStore,
+    private edgeStore: EdgeStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -73,16 +79,16 @@ export class BottomToolbarComponent {
     this.DeleteEnabled = !this.DeleteEnabled;
     this.ColorEnabled = false;
     this.CopyEnabled = false;
-    console.log('DELETE BUTTON CLICKED');
 
-    this.selectionService.selection$.subscribe((selection) => {
-      const hasTextNode = selection?.find((object) => {
-        return (
-          object.data?.type === 'text-node' && object.data?.isComment !== true
-        );
-      });
-      console.log('DELETE, node:', hasTextNode);
-    });
+    //TODO: ERROR HANDLING!!
+    this.canvas?.getActiveObjects().forEach((object) => {
+      if(object.data?.type === 'text-node') {
+        this.textNodeStore.remove(object.data.id);
+      }
+      if (object.data?.type === 'edge') {
+        this.edgeStore.remove(object.data.id);
+      }
+    })
   }
 
   toggleCopy() {
@@ -90,15 +96,9 @@ export class BottomToolbarComponent {
     this.ColorEnabled = false;
     this.DeleteEnabled = false;
 
-    console.log('COPY BUTTON CLICKED');
-
-    this.selectionService.selection$.subscribe((selection) => {
-      const hasTextNode = selection?.find((object) => {
-        return (
-          object.data?.type === 'text-node' && object.data?.isComment !== true
-        );
-      });
-      console.log('COPY, node:', hasTextNode);
-    });
+    //TODO: ERROR HANDLING!!
+    // call copy / paste
+    this.clipboardController.onCopy();
+    this.clipboardController.onPaste();
   }
 }

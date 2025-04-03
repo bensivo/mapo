@@ -85,9 +85,7 @@ export class ClipboardController {
         });
         return;
       }
-
       this.clipboardService.cloneObjects(this.touchClipboardData, canvas);
-    
     } else {
       // pull data from clipboard api
       const dataTxt = await navigator.clipboard.readText();
