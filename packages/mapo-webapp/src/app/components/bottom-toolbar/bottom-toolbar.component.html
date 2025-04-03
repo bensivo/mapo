@@ -1,4 +1,4 @@
-<div class="bottom-toolbar-container">
+<div class="bottom-toolbar-container" *ngIf="isVisible$ | async">
   <div
     class="button color-button"
     [ngClass]="{ enabled: ColorEnabled }"

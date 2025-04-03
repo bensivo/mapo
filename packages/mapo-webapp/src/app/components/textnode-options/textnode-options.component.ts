@@ -6,6 +6,7 @@ import { TextNodeOptionsStore } from '../../store/textnode-options.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { combineLatest, map } from 'rxjs';
 import { SelectionService } from '../../services/selection/selection.service';
+import { isTouchScreen } from '../../utils/browser-utils';
 
 @Component({
   selector: 'app-textnode-options',
@@ -15,7 +16,6 @@ import { SelectionService } from '../../services/selection/selection.service';
   styleUrl: './textnode-options.component.less',
 })
 export class TextNodeOptionsComponent {
-
   canvas: fabric.Canvas | null = null;
 
   isVisible$ = combineLatest([
@@ -23,22 +23,28 @@ export class TextNodeOptionsComponent {
     this.selectionService.selection$,
   ]).pipe(
     map(([tool, selection]) => {
-      if (tool === Tool.EDIT_TEXT_NODE) {
-        return false
-      };
+      if (isTouchScreen()) {
+        return false;
+      } else {
+        if (tool === Tool.EDIT_TEXT_NODE) {
+          return false;
+        }
 
-      // Return true (make the options visible) only if there is at least 1
-      // text node in the selection
-      const hasTextNode = selection?.some((object) => {
-        return object.data?.type === 'text-node' && object.data?.isComment !== true;
-      })
+        // Return true (make the options visible) only if there is at least 1
+        // text node in the selection
+        const hasTextNode = selection?.some((object) => {
+          return (
+            object.data?.type === 'text-node' && object.data?.isComment !== true
+          );
+        });
 
-      if (hasTextNode) {
-        return true;
+        if (hasTextNode) {
+          return true;
+        }
+
+        return false;
       }
-
-      return false;
-    })
+    }),
   );
 
   color$ = this.textNodeOptionsStore.color$;
@@ -69,11 +75,10 @@ export class TextNodeOptionsComponent {
   ];
 
   onClickColor(color: string) {
-    if(!this.canvas) {
+    if (!this.canvas) {
       return;
     }
 
     this.textNodeOptionsStore.setColor(color);
   }
 }
-
