@@ -7,7 +7,6 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { combineLatest, map } from 'rxjs';
 import { SelectionService } from '../../services/selection/selection.service';
 import { isTouchScreen } from '../../utils/browser-utils';
-import { GoTrueClient } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-textnode-options',
@@ -17,6 +16,7 @@ import { GoTrueClient } from '@supabase/supabase-js';
   styleUrl: './textnode-options.component.less',
 })
 export class TextNodeOptionsComponent {
+  isTouch: boolean = isTouchScreen();
   canvas: fabric.Canvas | null = null;
 
   isVisible$ = combineLatest([

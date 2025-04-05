@@ -1,4 +1,8 @@
-<div *ngIf="isVisible$ | async" class="textnode-options">
+<div
+  *ngIf="isVisible$ | async"
+  class="textnode-options"
+  [ngClass]="{touchscreen: isTouch}"
+>
   <!--
   <span class="label">Font Size</span>
   <div class="font-size-button-container">
@@ -12,7 +16,7 @@
   <div *ngIf="color$ | async as selectedColor" class="color-button-container">
     <button
       *ngFor="let color of colors"
-      [ngClass]="{ 'enabled': color === selectedColor }"
+      [ngClass]="{ enabled: color === selectedColor }"
       class="color-button"
       [style.background-color]="color"
       (click)="onClickColor(color)"
