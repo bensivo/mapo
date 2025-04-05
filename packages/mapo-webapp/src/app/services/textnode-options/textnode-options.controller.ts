@@ -4,6 +4,7 @@ import { TextNodeOptionsStore } from "../../store/textnode-options.store";
 import { CanvasService } from "../canvas/canvas.service";
 import { TextNodeStore } from "../../store/text-node.store";
 import { SelectionService } from "../selection/selection.service";
+import { ToolbarStore } from "../../store/toolbar.store";
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class TextNodeOptionsController {
     private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
     private selectionService: SelectionService,
+    private toolbarStore: ToolbarStore,
   ) {
     this.onBootstrap();
   }
@@ -49,16 +51,26 @@ export class TextNodeOptionsController {
     if (!objects) {
       return;
     }
-    const textNodes = objects.filter((object) => object instanceof fabric.Group && object?.data?.type === 'text-node',);
+
+    // close the color pallet after you select a new color
+    const showPalletValue = this.toolbarStore.getShowPallet();
+    if (showPalletValue) {
+      this.toolbarStore.setShowPallet(!showPalletValue);
+    }
+
+    const textNodes = objects.filter(
+      (object) =>
+        object instanceof fabric.Group && object?.data?.type === 'text-node',
+    );
     const colors = textNodes.map((textNode) => {
       return (textNode as fabric.Group).item(0).fill;
-    })
+    });
 
     // Only set the color if all the selected objects are the same, otherwise,
     // setting a new color would switch all objects to that color.
     const colorsUnique = [...new Set(colors)];
     if (colorsUnique.length === 1) {
-        this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
+      this.textNodeOptionsStore.setColor(colorsUnique[0] as string);
     }
   }
 

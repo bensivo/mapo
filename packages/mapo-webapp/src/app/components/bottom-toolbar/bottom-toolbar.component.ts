@@ -27,7 +27,6 @@ export class BottomToolbarComponent {
       // Return true (make the options visible) only if there is at least 1
       // text node in the selection
       const hasTextNode = selection?.some((object) => {
-        console.log('selected a node');
         return (
           object.data?.type === 'text-node' && object.data?.isComment !== true
         );
