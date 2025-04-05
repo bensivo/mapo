@@ -16,8 +16,18 @@ export enum Tool {
 export class ToolbarStore {
   tool = new BehaviorSubject<Tool>(Tool.POINTER);
   tool$ = this.tool.asObservable();
-
+  showTextNodeOptionSubject = new BehaviorSubject<boolean>(false);
+  showTextNodeOption$ = this.showTextNodeOptionSubject.asObservable();
+  
   setTool(tool: Tool) {
     this.tool.next(tool);
+  }
+
+  getShowTextNodeOption(): boolean {
+    return this.showTextNodeOptionSubject.getValue();
+  }
+
+  setShowTextNodeOption(show: boolean) {
+    this.showTextNodeOptionSubject.next(show);
   }
 }

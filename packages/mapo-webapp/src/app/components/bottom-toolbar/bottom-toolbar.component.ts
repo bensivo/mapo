@@ -21,11 +21,13 @@ export class BottomToolbarComponent {
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
+    this.toolbarStore.showTextNodeOption$,
   ]).pipe(
     map(([tool, selection]) => {
       // Return true (make the options visible) only if there is at least 1
       // text node in the selection
       const hasTextNode = selection?.some((object) => {
+        console.log('selected a node');
         return (
           object.data?.type === 'text-node' && object.data?.isComment !== true
         );
@@ -60,20 +62,9 @@ export class BottomToolbarComponent {
   CopyEnabled: boolean = false;
 
   toggleColor() {
-    this.ColorEnabled = true;
-    this.DeleteEnabled = false;
-    this.CopyEnabled = false;
-    console.log('COLOR BUTTON CLICKED');
-
-    this.selectionService.selection$.subscribe((selection) => {
-      const hasTextNode = selection?.find((object) => {
-        return (
-          object.data?.type === 'text-node' && object.data?.isComment !== true
-        );
-      });
-      console.log('COLOR, node:', hasTextNode);
-    });
-    this.ColorEnabled = false;
+    this.ColorEnabled = !this.ColorEnabled;
+    const currentValue = this.toolbarStore.getShowTextNodeOption();
+    this.toolbarStore.setShowTextNodeOption(!currentValue);
   }
 
   toggleDelete() {
@@ -83,14 +74,14 @@ export class BottomToolbarComponent {
 
     //TODO: ERROR HANDLING!!
     this.canvas?.getActiveObjects().forEach((object) => {
-      if(object.data?.type === 'text-node') {
+      if (object.data?.type === 'text-node') {
         this.textNodeStore.remove(object.data.id);
       }
       if (object.data?.type === 'edge') {
         this.edgeStore.remove(object.data.id);
       }
       this.DeleteEnabled = false;
-    })
+    });
   }
 
   toggleCopy() {
