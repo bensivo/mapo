@@ -22,7 +22,7 @@ export class TextNodeOptionsComponent {
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
-    this.toolbarStore.showTextNodeOption$,
+    this.toolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection, showTextNodeOption]) => {
       if (isTouchScreen() && selection) {

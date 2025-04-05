@@ -21,7 +21,7 @@ export class BottomToolbarComponent {
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
-    this.toolbarStore.showTextNodeOption$,
+    this.toolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection]) => {
       // Return true (make the options visible) only if there is at least 1
@@ -63,8 +63,8 @@ export class BottomToolbarComponent {
 
   toggleColor() {
     this.ColorEnabled = !this.ColorEnabled;
-    const currentValue = this.toolbarStore.getShowTextNodeOption();
-    this.toolbarStore.setShowTextNodeOption(!currentValue);
+    const currentValue = this.toolbarStore.getShowPallet();
+    this.toolbarStore.setShowPallet(!currentValue);
   }
 
   toggleDelete() {
