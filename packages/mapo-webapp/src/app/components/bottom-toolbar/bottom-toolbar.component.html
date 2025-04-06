@@ -1,8 +1,8 @@
 <div class="bottom-toolbar-container" *ngIf="isVisible$ | async">
   <div
     class="button color-button"
-    [ngClass]="{ enabled: ColorEnabled }"
-    (click)="toggleColor()"
+    [ngClass]="{ enabled: ColorEnabled, disabled: isComment }"
+    (click)="!isComment && toggleColor()"
   >
     <i class="ri-palette-line"></i>
   </div>

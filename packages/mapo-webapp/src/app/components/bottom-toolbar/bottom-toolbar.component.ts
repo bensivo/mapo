@@ -24,11 +24,14 @@ export class BottomToolbarComponent {
     this.toolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection]) => {
+      // Set the isComment flag based on selection
+      this.isComment = selection?.some((object) => object.data?.isComment === true) || false;
+      
       // Return true (make the options visible) only if there is at least 1
       // text node in the selection
       const hasTextNode = selection?.some((object) => {
         return (
-          object.data?.type === 'text-node' && object.data?.isComment !== true
+          object.data?.type === 'text-node'
         );
       });
 
@@ -59,12 +62,15 @@ export class BottomToolbarComponent {
   ColorEnabled: boolean = false;
   DeleteEnabled: boolean = false;
   CopyEnabled: boolean = false;
+  isComment: boolean = false;
 
   toggleColor() {
-    this.ColorEnabled = !this.ColorEnabled;
-    const currentValue = this.toolbarStore.getShowPallet();
-    this.toolbarStore.setShowPallet(!currentValue);
-    this.ColorEnabled = false;
+    if (!this.isComment) {
+      this.ColorEnabled = !this.ColorEnabled;
+      const currentValue = this.toolbarStore.getShowPallet();
+      this.toolbarStore.setShowPallet(!currentValue);
+      this.ColorEnabled = false;
+    }
   }
 
   toggleDelete() {
