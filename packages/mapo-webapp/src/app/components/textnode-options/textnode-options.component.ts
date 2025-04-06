@@ -78,7 +78,7 @@ export class TextNodeOptionsComponent {
   ];
 
   onClickColor(color: string) {
-    if (!this.canvas) {
+    if(!this.canvas) {
       return;
     }
 

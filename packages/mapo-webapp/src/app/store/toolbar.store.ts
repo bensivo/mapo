@@ -16,7 +16,7 @@ export enum Tool {
 export class ToolbarStore {
   tool = new BehaviorSubject<Tool>(Tool.POINTER);
   tool$ = this.tool.asObservable();
-  
+
   setTool(tool: Tool) {
     this.tool.next(tool);
   }
