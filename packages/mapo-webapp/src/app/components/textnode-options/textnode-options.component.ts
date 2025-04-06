@@ -7,7 +7,7 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { combineLatest, map } from 'rxjs';
 import { SelectionService } from '../../services/selection/selection.service';
 import { isTouchScreen } from '../../utils/browser-utils';
-
+import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 @Component({
   selector: 'app-textnode-options',
   standalone: true,
@@ -22,7 +22,7 @@ export class TextNodeOptionsComponent {
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
-    this.toolbarStore.showPallet$,
+    this.bottomToolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection, showTextNodeOption]) => {
       if (isTouchScreen() && selection) {
@@ -55,6 +55,7 @@ export class TextNodeOptionsComponent {
     private canvasService: CanvasService,
     private textNodeOptionsStore: TextNodeOptionsStore,
     private toolbarStore: ToolbarStore,
+    private bottomToolbarStore: BottomToolbarStore,
     private selectionService: SelectionService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {

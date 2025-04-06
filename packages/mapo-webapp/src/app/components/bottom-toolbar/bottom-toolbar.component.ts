@@ -5,6 +5,7 @@ import { isTouchScreen } from '../../utils/browser-utils';
 import { CanvasService } from '../../services/canvas/canvas.service';
 import { SelectionService } from '../../services/selection/selection.service';
 import { ToolbarStore } from '../../store/toolbar.store';
+import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 import { ClipboardController } from '../../services/clipboard/clipboard.controller';
 import { TextNodeStore } from '../../store/text-node.store';
 import { EdgeStore } from '../../store/edge.store';
@@ -21,7 +22,6 @@ export class BottomToolbarComponent {
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
-    this.toolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection]) => {
       // Set the isComment flag based on selection
@@ -47,6 +47,7 @@ export class BottomToolbarComponent {
     private canvasService: CanvasService,
     private selectionService: SelectionService,
     private toolbarStore: ToolbarStore,
+    private bottomToolbarStore: BottomToolbarStore,
     private clipboardController: ClipboardController,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
@@ -67,18 +68,15 @@ export class BottomToolbarComponent {
   toggleColor() {
     if (!this.isComment) {
       this.ColorEnabled = !this.ColorEnabled;
-      const currentValue = this.toolbarStore.getShowPallet();
-      this.toolbarStore.setShowPallet(!currentValue);
+      const currentValue = this.bottomToolbarStore.getShowPallet();
+      this.bottomToolbarStore.setShowPallet(!currentValue);
       this.ColorEnabled = false;
     }
   }
 
   toggleDelete() {
-    this.DeleteEnabled = true;
-    this.ColorEnabled = false;
-    this.CopyEnabled = false;
+    this.DeleteEnabled = !this.DeleteEnabled;
 
-    //TODO: ERROR HANDLING!!
     this.canvas?.getActiveObjects().forEach((object) => {
       if (object.data?.type === 'text-node') {
         this.textNodeStore.remove(object.data.id);
@@ -91,12 +89,7 @@ export class BottomToolbarComponent {
   }
 
   toggleCopy() {
-    this.CopyEnabled = true;
-    this.ColorEnabled = false;
-    this.DeleteEnabled = false;
-
-    //TODO: ERROR HANDLING!!
-    // call copy / paste
+    this.CopyEnabled = !this.CopyEnabled;
     this.clipboardController.onCopy();
     this.clipboardController.onPaste();
     this.CopyEnabled = false;

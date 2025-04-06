@@ -5,6 +5,7 @@ import { CanvasService } from "../canvas/canvas.service";
 import { TextNodeStore } from "../../store/text-node.store";
 import { SelectionService } from "../selection/selection.service";
 import { ToolbarStore } from "../../store/toolbar.store";
+import { BottomToolbarStore } from "../../store/bottom-toolbar.store";
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class TextNodeOptionsController {
     private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
     private selectionService: SelectionService,
-    private toolbarStore: ToolbarStore,
+    private bottomToolbarStore: BottomToolbarStore,
   ) {
     this.onBootstrap();
   }
@@ -53,9 +54,9 @@ export class TextNodeOptionsController {
     }
 
     // close the color pallet after you select a new color
-    const showPalletValue = this.toolbarStore.getShowPallet();
+    const showPalletValue = this.bottomToolbarStore.getShowPallet();
     if (showPalletValue) {
-      this.toolbarStore.setShowPallet(!showPalletValue);
+      this.bottomToolbarStore.setShowPallet(!showPalletValue);
     }
 
     const textNodes = objects.filter(
