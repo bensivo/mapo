@@ -64,6 +64,7 @@ export class BottomToolbarComponent {
     this.ColorEnabled = !this.ColorEnabled;
     const currentValue = this.toolbarStore.getShowPallet();
     this.toolbarStore.setShowPallet(!currentValue);
+    this.ColorEnabled = false;
   }
 
   toggleDelete() {
