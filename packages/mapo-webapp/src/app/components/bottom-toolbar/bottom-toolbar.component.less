@@ -1,47 +1,4 @@
 .bottom-toolbar-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-  
-    .button {
-      height: 3rem;
-      width: 3rem;
-      margin: 1rem;
-      display: block;
-      text-align: center;
-      border: solid 2px black;
-      border-radius: 1rem;
-      position: relative;
-      background-color: white;
-  
-      &:hover {
-        cursor: pointer;
-        background-color: #e9e6e6;
-      }
-    }
-  
-    i {
-      font-size: 1.5rem;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  
-    .enabled {
-      background-color: #e9e6e6;
-    }
-
-    .disabled {
-      pointer-events: none;
-      opacity: 0.5;
-    
-      &:hover {
-        cursor: not-allowed;
-      }
-    }
-  }.bottom-toolbar-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -77,11 +34,6 @@
   }
 
   .disabled {
-    pointer-events: none;
-    opacity: 0.5;
-
-    &:hover {
-      cursor: not-allowed;
-    }
+    display: none;
   }
 }
