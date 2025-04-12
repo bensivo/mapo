@@ -1,4 +1,8 @@
-<div *ngIf="isVisible$ | async" class="textnode-options">
+<div
+  *ngIf="isVisible$ | async"
+  class="textnode-options"
+  [ngClass]="{touchscreen: isTouch}"
+>
   <!--
   <span class="label">Font Size</span>
   <div class="font-size-button-container">

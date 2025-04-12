@@ -19,6 +19,7 @@ import { AutoSaveController } from './services/autosave/autosave.controller';
 import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
 import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
 import { ClipboardController } from './services/clipboard/clipboard.controller';
+import { BottomToolbarComponent } from './components/bottom-toolbar/bottom-toolbar.component';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ import { ClipboardController } from './services/clipboard/clipboard.controller';
     ToolbarComponent,
     HelpComponent,
     ToastComponent,
+    BottomToolbarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less',

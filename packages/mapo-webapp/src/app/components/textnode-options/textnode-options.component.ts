@@ -6,7 +6,8 @@ import { TextNodeOptionsStore } from '../../store/textnode-options.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { combineLatest, map } from 'rxjs';
 import { SelectionService } from '../../services/selection/selection.service';
-
+import { isTouchScreen } from '../../utils/browser-utils';
+import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 @Component({
   selector: 'app-textnode-options',
   standalone: true,
@@ -15,30 +16,37 @@ import { SelectionService } from '../../services/selection/selection.service';
   styleUrl: './textnode-options.component.less',
 })
 export class TextNodeOptionsComponent {
-
+  isTouch: boolean = isTouchScreen();
   canvas: fabric.Canvas | null = null;
 
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
+    this.bottomToolbarStore.showPallet$,
   ]).pipe(
-    map(([tool, selection]) => {
-      if (tool === Tool.EDIT_TEXT_NODE) {
-        return false
-      };
+    map(([tool, selection, showTextNodeOption]) => {
+      if (isTouchScreen() && selection) {
+        return showTextNodeOption;
+      } 
+      else {
+        if (tool === Tool.EDIT_TEXT_NODE) {
+          return false;
+        }
+        // Return true (make the options visible) only if there is at least 1
+        // text node in the selection
+        const hasTextNode = selection?.some((object) => {
+          return (
+            object.data?.type === 'text-node' && object.data?.isComment !== true
+          );
+        });
 
-      // Return true (make the options visible) only if there is at least 1
-      // text node in the selection
-      const hasTextNode = selection?.some((object) => {
-        return object.data?.type === 'text-node' && object.data?.isComment !== true;
-      })
+        if (hasTextNode) {
+          return true;
+        }
 
-      if (hasTextNode) {
-        return true;
+        return false;
       }
-
-      return false;
-    })
+    }),
   );
 
   color$ = this.textNodeOptionsStore.color$;
@@ -47,6 +55,7 @@ export class TextNodeOptionsComponent {
     private canvasService: CanvasService,
     private textNodeOptionsStore: TextNodeOptionsStore,
     private toolbarStore: ToolbarStore,
+    private bottomToolbarStore: BottomToolbarStore,
     private selectionService: SelectionService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
@@ -76,4 +85,3 @@ export class TextNodeOptionsComponent {
     this.textNodeOptionsStore.setColor(color);
   }
 }
-

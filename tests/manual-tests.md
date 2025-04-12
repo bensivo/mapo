@@ -475,18 +475,6 @@ Create a file with a name:
     W: I click "New mindmap" and enter a name
     T: A new file is added to the page with the name I entered
 
-## Touch Screen
-Pan: 
-    G: Im on the canvas page, using a ipad or phone
-    W: Touch and drag on the empty space
-    T: The canvas pans
-    T: The blue group selection box does not show up
-
-Move Object:
-    G: Im on the canvas page, using a ipad or phone
-    W: Touch and drag on an object
-    T: The object moves but the canvas does not
-
 ## Copy Paste
 Copy Paste Node:
     G: I'm on the canvas page, using a laptop
@@ -511,3 +499,35 @@ Paste almost-mapo content
     G: I have mapo JSON data on my clipboard, but it's manipulated to be missing some fields
     When: I paste on the canvas
     T: The app keeps working. I see an error popup
+
+## Touch Screen
+Pan: 
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on the empty space
+    T: The canvas pans
+    T: The blue group selection box does not show up
+
+Move Object:
+    G: Im on the canvas page, using a ipad or phone
+    W: Touch and drag on an object
+    T: The object moves but the canvas does not
+
+Change Color of Text Node: 
+    G: Im on the canvas page, using a ipad or phone
+    W: I touch a text node, and click the color button
+    T: The background color modal shows itself
+
+Change Color of Comment Node:
+    G: Im on the canvas page, using a ipad or phone
+    W: I select the node and press the color button
+    T: The color icon is disabled
+
+Delete node - connected edges:
+    G: Im on the canvas page, using a ipad or phone
+    W: I select the node and press the delete button
+    T: the node is deleted, and the edges connected to it are also deleted
+
+Copy/Paste Object: 
+    G: Im on the canvas page, using a ipad or phone
+    W: I select the node and press copy/paste button
+    T: The selected node is clones, just below and right of where the original was

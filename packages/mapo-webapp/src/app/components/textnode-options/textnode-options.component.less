@@ -9,6 +9,11 @@
   background-color: white;
 }
 
+&.touchscreen {
+  left: calc(50% - 170px);
+  margin-bottom: 90px;
+}
+
 .label {
   display: block;
 
@@ -62,6 +67,13 @@
   border-radius: 4px;
 
   background-color: #fff;
+
+  & {
+      color: black;
+      display: flex;
+      justify-content: center;
+      padding-top: .15rem;
+  }
 
   &.enabled::before {
     content: 'X';
