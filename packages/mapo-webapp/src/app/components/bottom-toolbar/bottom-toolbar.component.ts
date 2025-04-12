@@ -19,12 +19,17 @@ import { EdgeStore } from '../../store/edge.store';
 export class BottomToolbarComponent {
   canvas: fabric.Canvas | null = null;
 
+  colorEnabled: boolean = false;
+  deleteEnabled: boolean = false;
+  copyEnabled: boolean = false;
+  isComment: boolean = false;
+
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
     this.selectionService.selection$,
   ]).pipe(
     map(([tool, selection]) => {
-      // Set the isComment flag based on selection
+      // If the currently-selected node is a comment, we disable the color button
       this.isComment = selection?.some((object) => object.data?.isComment === true) || false;
       
       // Return true (make the options visible) only if there is at least 1
@@ -60,22 +65,18 @@ export class BottomToolbarComponent {
     });
   }
 
-  ColorEnabled: boolean = false;
-  DeleteEnabled: boolean = false;
-  CopyEnabled: boolean = false;
-  isComment: boolean = false;
 
-  toggleColor() {
+  onClickColor() {
     if (!this.isComment) {
-      this.ColorEnabled = !this.ColorEnabled;
+      this.colorEnabled = !this.colorEnabled;
       const currentValue = this.bottomToolbarStore.getShowPallet();
       this.bottomToolbarStore.setShowPallet(!currentValue);
-      this.ColorEnabled = false;
+      this.colorEnabled = false;
     }
   }
 
-  toggleDelete() {
-    this.DeleteEnabled = !this.DeleteEnabled;
+  onClickDelete() {
+    this.deleteEnabled = !this.deleteEnabled;
 
     this.canvas?.getActiveObjects().forEach((object) => {
       if (object.data?.type === 'text-node') {
@@ -84,14 +85,14 @@ export class BottomToolbarComponent {
       if (object.data?.type === 'edge') {
         this.edgeStore.remove(object.data.id);
       }
-      this.DeleteEnabled = false;
+      this.deleteEnabled = false;
     });
   }
 
-  toggleCopy() {
-    this.CopyEnabled = !this.CopyEnabled;
+  onClickCopy() {
+    this.copyEnabled = !this.copyEnabled;
     this.clipboardController.onCopy();
     this.clipboardController.onPaste();
-    this.CopyEnabled = false;
+    this.copyEnabled = false;
   }
 }

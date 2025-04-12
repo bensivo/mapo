@@ -1,22 +1,22 @@
 <div class="bottom-toolbar-container" *ngIf="isVisible$ | async">
   <div
     class="button color-button"
-    [ngClass]="{ enabled: ColorEnabled, disabled: isComment }"
-    (click)="!isComment && toggleColor()"
+    [ngClass]="{ enabled: colorEnabled, disabled: isComment }"
+    (click)="onClickColor()"
   >
     <i class="ri-palette-line"></i>
   </div>
   <div
     class="button delete-button"
-    [ngClass]="{ enabled: DeleteEnabled }"
-    (click)="toggleDelete()"
+    [ngClass]="{ enabled: deleteEnabled }"
+    (click)="onClickDelete()"
   >
     <i class="ri-delete-bin-line"></i>
   </div>
   <div
     class="button copy-button"
-    [ngClass]="{ enabled: CopyEnabled }"
-    (click)="toggleCopy()"
+    [ngClass]="{ enabled: copyEnabled }"
+    (click)="onClickCopy()"
   >
     <i class="ri-file-copy-line"></i>
   </div>
