@@ -3,7 +3,6 @@ import { CanvasService } from '../canvas/canvas.service';
 import { PanCanvasService } from './pan-canvas.service';
 import { isTouchScreen } from '../../utils/browser-utils';
 import { ZoomCanvasController } from '../zoom-canvas/zoom-canvas.controller';
-import { ToolbarStore } from '../../store/toolbar.store';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 @Injectable({
   providedIn: 'root',
