@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, map } from 'rxjs';
-import { isTouchScreen } from '../../utils/browser-utils';
 import { CanvasService } from '../../services/canvas/canvas.service';
 import { SelectionService } from '../../services/selection/selection.service';
 import { ToolbarStore } from '../../store/toolbar.store';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
-import { ClipboardController } from '../../services/clipboard/clipboard.controller';
 import { TextNodeStore } from '../../store/text-node.store';
 import { EdgeStore } from '../../store/edge.store';
+import { ClipboardService } from '../../services/clipboard/clipboard.service';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -21,7 +20,6 @@ export class BottomToolbarComponent {
 
   colorEnabled: boolean = false;
   deleteEnabled: boolean = false;
-  copyEnabled: boolean = false;
   isComment: boolean = false;
 
   isVisible$ = combineLatest([
@@ -40,11 +38,7 @@ export class BottomToolbarComponent {
         );
       });
 
-      if (isTouchScreen() && hasTextNode) {
-        return true;
-      }
-
-      return false;
+      return hasTextNode;
     }),
   );
 
@@ -53,7 +47,7 @@ export class BottomToolbarComponent {
     private selectionService: SelectionService,
     private toolbarStore: ToolbarStore,
     private bottomToolbarStore: BottomToolbarStore,
-    private clipboardController: ClipboardController,
+    private clipboardService: ClipboardService,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
   ) {
@@ -90,9 +84,11 @@ export class BottomToolbarComponent {
   }
 
   onClickCopy() {
-    this.copyEnabled = !this.copyEnabled;
-    this.clipboardController.onCopy();
-    this.clipboardController.onPaste();
-    this.copyEnabled = false;
+    if(!this.canvas) {
+      return;
+    }
+
+    const objects = this.clipboardService.serializeActiveObjects(this.canvas);
+    this.clipboardService.cloneObjects(objects, this.canvas);
   }
 }
