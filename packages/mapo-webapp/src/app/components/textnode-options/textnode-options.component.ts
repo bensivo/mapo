@@ -25,27 +25,7 @@ export class TextNodeOptionsComponent {
     this.bottomToolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection, showTextNodeOption]) => {
-      if (isTouchScreen() && selection) {
-        return showTextNodeOption;
-      } 
-      else {
-        if (tool === Tool.EDIT_TEXT_NODE) {
-          return false;
-        }
-        // Return true (make the options visible) only if there is at least 1
-        // text node in the selection
-        const hasTextNode = selection?.some((object) => {
-          return (
-            object.data?.type === 'text-node' && object.data?.isComment !== true
-          );
-        });
-
-        if (hasTextNode) {
-          return true;
-        }
-
-        return false;
-      }
+      return selection && showTextNodeOption
     }),
   );
 
