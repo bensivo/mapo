@@ -109,9 +109,6 @@ export class TextNodeService {
    * @param group
    */
   editTextNode(group: fabric.Group) {
-
-    console.log('EDIT TEXT NODE')
-
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
