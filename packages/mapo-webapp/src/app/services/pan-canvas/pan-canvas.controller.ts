@@ -57,7 +57,7 @@ export class PanCanvasController {
     // close the color pallet if it's open when clicking on an empty area of the canvas
     const showPalletValue = this.bottomToolbarStore.getShowPallet();
     if(showPalletValue) {
-      this.bottomToolbarStore.setShowPallet(!showPalletValue);
+      this.bottomToolbarStore.setShowPallet(false);
     }
     
     this.panCnavsService.startPan(event.e.layerX, event.e.layerY);
