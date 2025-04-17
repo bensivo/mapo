@@ -29,6 +29,7 @@ export class TextNodeController {
         this.canvas = canvas;
         canvas.on('mouse:down', this.onMouseDown);
         canvas.on('object:modified', this.onObjectModified);
+
         const canvasContainer = document.getElementById('canvas-container');
         if (canvasContainer) {
           var hammertime = new Hammer(canvasContainer, {});
@@ -64,30 +65,6 @@ export class TextNodeController {
       this.textNodeService.renderTextNodes(textNodes);
     });
   }
-
-  // When double-tapping on the canvas with touch device
-  onDoubleTap = (e: HammerInput, canvas: fabric.Canvas) => {
-    if (!this.canvas) {
-      console.warn('DoubleClick ignored. No canvas');
-      return;
-    }
-
-   // HammerJS doesn't provide a Fabric.js event, so we manually construct one
-    const target = canvas.findTarget(
-      {
-        clientX: e.center.x,
-        clientY: e.center.y,
-      } as unknown as MouseEvent,
-      true,
-    );
-
-    if (target && target.data?.type === 'text-node') {
-      console.log('is target and data type is text node');
-      this.textNodeService.editTextNode(target as fabric.Group);
-    } else {
-      return;
-    }
-  };
 
   // When double-clicking on the canvas, add a new text node
   onDoubleClick = (e: fabric.IEvent) => {
@@ -196,5 +173,29 @@ export class TextNodeController {
     }
 
     this.textNodeService.finalizeTextNode(itext);
+  };
+
+  // When double-tapping on the canvas with touch device
+  onDoubleTap = (e: HammerInput, canvas: fabric.Canvas) => {
+    if (!this.canvas) {
+      console.warn('DoubleClick ignored. No canvas');
+      return;
+    }
+
+    // HammerJS doesn't see the fabric.js event, so we use the 'findTarget' function
+    const target = canvas.findTarget(
+      {
+        clientX: e.center.x,
+        clientY: e.center.y,
+      } as unknown as MouseEvent,
+      true,
+    );
+
+    if (target && target.data?.type === 'text-node') {
+      console.log('is target and data type is text node');
+      this.textNodeService.editTextNode(target as fabric.Group);
+    } else {
+      return;
+    }
   };
 }
