@@ -1,0 +1,19 @@
+meta {
+  name: create file
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/files
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name":"test",
+    "contentBase64":"e30=",
+    "folderId":0
+  }
+}
