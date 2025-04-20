@@ -149,12 +149,6 @@ export class TextNodeController {
       return;
     }
 
-    // TODO: this logic should be in the service
-    if (itext.text === '') {
-      this.canvas.remove(itext);
-      return;
-    }
-
     this.textNodeService.finalizeTextNode(itext);
   };
 }

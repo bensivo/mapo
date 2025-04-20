@@ -78,14 +78,17 @@ export class TextNodeService {
 
     const x = itext.left;
     const y = itext.top;
-    const text = itext.text;
-
-    if (x == undefined || y == undefined || !text) {
+    if (x == undefined || y == undefined) {
       console.warn('Cannot create text node. Invalid data for itext: ', itext);
       return;
     }
 
-    const isComment = itext.data?.isComment || false;
+    const text = itext.text;
+    if (!text) {
+      this.canvas.remove(itext);
+      this.toolbarStore.setTool(Tool.POINTER);
+      return;
+    }
 
     this.canvas.remove(itext);
     this.textNodeStore.insert({
@@ -94,9 +97,8 @@ export class TextNodeService {
       x: x,
       y: y,
       color: '#FFFFFF',
-      isComment: isComment,
+      isComment: itext.data?.isComment ?? false,
     });
-
     this.toolbarStore.setTool(Tool.POINTER);
   }
 

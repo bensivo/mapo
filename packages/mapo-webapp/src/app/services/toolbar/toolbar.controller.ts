@@ -50,7 +50,7 @@ export class ToolbarController {
       return;
     }
 
-    if (e.key === 'c') {
+    if (e.key === 'c' && !e.metaKey) { // metaKey is cmd/ctrl. We don't want this to trigger during copy-paste
       this.toolbarService.selectOrCancel(Tool.CREATE_COMMENT_NODE);
       return;
     }
