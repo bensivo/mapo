@@ -67,12 +67,6 @@ export class FilesPageComponent {
 
   onClickNewMindMap() {
     this.isNewFileModalVisible = true;
-    // this.edgeStore.set([]);
-    // this.textNodeStore.set([]);
-    // this.titleStore.set('Untitled');
-    // this.filesStore.setCurrentFileId(null);
-
-    // this.router.navigate(['canvas']);
   }
 
   onClickDeleteFile(file: File) {
@@ -151,12 +145,8 @@ export class FilesPageComponent {
       contentBase64: contentBase64,
     }
     this.filesService.createFile(dto)
-      .then(() => {
-        this.toastService.showToastV2({
-          title: 'File Created',
-          message: `File "${data.name}" created successfully`
-        });
-        this.filesService.fetch();
+      .then((file: File) => {
+        this.onClickOpenFile(file);
       })
       .catch((error) => {
         console.error(error);
