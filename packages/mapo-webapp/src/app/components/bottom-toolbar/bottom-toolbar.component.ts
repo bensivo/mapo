@@ -18,34 +18,28 @@ import { ClipboardService } from '../../services/clipboard/clipboard.service';
 export class BottomToolbarComponent {
   canvas: fabric.Canvas | null = null;
 
-  colorEnabled: boolean = false;
-  deleteEnabled: boolean = false;
-  isComment: boolean = false;
-
-  isVisible$ = combineLatest([
-    this.toolbarStore.tool$,
-    this.selectionService.selection$,
-  ]).pipe(
-    map(([tool, selection]) => {
-      // If the currently-selected node is a comment, we disable the color button
-      this.isComment = selection?.some((object) => object.data?.isComment === true) || false;
-      
-      // Return true (make the options visible) only if there is at least 1
-      // text node in the selection
-      const hasTextNode = selection?.some((object) => {
-        return (
-          object.data?.type === 'text-node'
-        );
-      });
-
-      return hasTextNode;
+  isVisible$ = this.selectionService.selection$.pipe(
+    map((selection) => {
+      return (selection && selection.length > 0)
     }),
   );
+
+  colorEnabled$ = this.selectionService.selection$.pipe(
+    map((selection) => {
+      // Return true only if there is at least 1 text node in the selection
+      const hasTextNode = selection?.some((object) => {
+        return (
+          object.data?.type === 'text-node' && object.data?.isComment !== true
+        );
+      });
+      return hasTextNode;
+    })
+  )
+
 
   constructor(
     private canvasService: CanvasService,
     private selectionService: SelectionService,
-    private toolbarStore: ToolbarStore,
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
     private textNodeStore: TextNodeStore,
@@ -61,16 +55,11 @@ export class BottomToolbarComponent {
 
 
   onClickColor() {
-    if (!this.isComment) {
-      this.colorEnabled = !this.colorEnabled;
-      const currentValue = this.bottomToolbarStore.getShowPallet();
-      this.bottomToolbarStore.setShowPallet(!currentValue);
-      this.colorEnabled = false;
-    }
+    const currentValue = this.bottomToolbarStore.getShowPallet();
+    this.bottomToolbarStore.setShowPallet(!currentValue);
   }
 
   onClickDelete() {
-    this.deleteEnabled = !this.deleteEnabled;
 
     this.canvas?.getActiveObjects().forEach((object) => {
       if (object.data?.type === 'text-node') {
@@ -79,7 +68,6 @@ export class BottomToolbarComponent {
       if (object.data?.type === 'edge') {
         this.edgeStore.remove(object.data.id);
       }
-      this.deleteEnabled = false;
     });
   }
 

@@ -1,14 +1,13 @@
 <div class="bottom-toolbar-container" *ngIf="isVisible$ | async">
   <div
+    *ngIf="colorEnabled$ | async"
     class="button color-button"
-    [ngClass]="{ enabled: colorEnabled, disabled: isComment }"
     (click)="onClickColor()"
   >
     <i class="ri-palette-line"></i>
   </div>
   <div
     class="button delete-button"
-    [ngClass]="{ enabled: deleteEnabled }"
     (click)="onClickDelete()"
   >
     <i class="ri-delete-bin-line"></i>
