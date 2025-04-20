@@ -69,6 +69,14 @@ func RunMigrations(db *sql.DB) error {
 				ALTER TABLE files ADD COLUMN folder_id INTEGER REFERENCES folders(id);
 			`,
 		},
+		{
+			Name: "add_created_at_and_last_modified_at_to_files",
+			SQL: `
+				ALTER TABLE files
+				ADD COLUMN created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				ADD COLUMN last_modified_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+			`,
+		},
 	}
 
 	for _, migration := range migrations {

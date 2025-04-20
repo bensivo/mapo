@@ -56,7 +56,6 @@ ssh -i $SSH_KEY_FILEPATH root@$INSTANCE_IP "
         --name mapo-api \
         -p 3000:3000 \
         -v /mapo:/mapo \
-        -e MAPO_API_SQLITE3_FILEPATH=/mapo/mapo.db \
         -e JWT_AUDIENCE=$JWT_AUDIENCE \
         -e JWT_ISSUER=$JWT_ISSUER \
         -e JWT_SECRET=$JWT_SECRET \
