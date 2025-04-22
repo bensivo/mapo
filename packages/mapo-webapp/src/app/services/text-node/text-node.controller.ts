@@ -7,6 +7,7 @@ import { ToolbarStore } from '../../store/toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { combineLatest } from 'rxjs';
 import { debounceTime, throttleTime, sampleTime } from 'rxjs/operators';
+import { isTouchScreen } from '../../utils/browser-utils';
 
 /**
  * Listens to different canvas and keyboard events, and invokes the TextNodeService where appropriate.
@@ -24,10 +25,26 @@ export class TextNodeController {
     private toolbarStore: ToolbarStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
-      this.canvas = canvas;
-      canvas.on('mouse:dblclick', this.onDoubleClick);
-      canvas.on('mouse:down', this.onMouseDown);
-      canvas.on('object:modified', this.onObjectModified);
+      if (isTouchScreen()) {
+        this.canvas = canvas;
+        canvas.on('mouse:down', this.onMouseDown);
+        canvas.on('object:modified', this.onObjectModified);
+
+        const canvasContainer = document.getElementById('canvas-container');
+        if (canvasContainer) {
+          var hammertime = new Hammer(canvasContainer, {});
+
+          hammertime.get('tap').set({ taps: 2 });
+          hammertime.on('tap', (e) => {
+            this.onDoubleTap(e, canvas);
+          });
+        }
+      } else {
+        this.canvas = canvas;
+        canvas.on('mouse:dblclick', this.onDoubleClick);
+        canvas.on('mouse:down', this.onMouseDown);
+        canvas.on('object:modified', this.onObjectModified);
+      }
     });
 
     this.canvasService.canvasDestroyed$.subscribe((canvas) => {
@@ -150,5 +167,29 @@ export class TextNodeController {
     }
 
     this.textNodeService.finalizeTextNode(itext);
+  };
+
+  // When double-tapping on the canvas with touch device
+  onDoubleTap = (e: HammerInput, canvas: fabric.Canvas) => {
+    if (!this.canvas) {
+      console.warn('DoubleClick ignored. No canvas');
+      return;
+    }
+
+    // HammerJS doesn't see the fabric.js event, so we use the 'findTarget' function
+    const target = canvas.findTarget(
+      {
+        clientX: e.center.x,
+        clientY: e.center.y,
+      } as unknown as MouseEvent,
+      true,
+    );
+
+    if (target && target.data?.type === 'text-node') {
+      console.log('is target and data type is text node');
+      this.textNodeService.editTextNode(target as fabric.Group);
+    } else {
+      return;
+    }
   };
 }

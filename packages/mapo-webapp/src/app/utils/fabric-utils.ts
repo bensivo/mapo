@@ -116,7 +116,7 @@ export class FabricUtils {
 
         // Custom keymap for tab key
         9: 'onTabKeyDown',
-      }
+      },
     });
 
     const boundingRect = itext.getBoundingRect();
@@ -238,8 +238,8 @@ export class FabricUtils {
     // Iteratively push the start-point of the arrow towards the end, until it is no longer inside the src node
     // Then do 1 more push just for aesthetics
     while (
-      src.containsPoint(new fabric.Point(srcX, srcY), null, true) 
-      && FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
+      src.containsPoint(new fabric.Point(srcX, srcY), null, true) &&
+      FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
     ) {
       const point = this.translateTowards(srcX, srcY, destX, destY, 5);
       srcX = point.x;
@@ -252,8 +252,8 @@ export class FabricUtils {
     // Iteratively push the end-point of the arrow towards the start, until it is no longer inside the dest node
     // Then do 1 more push just for aesthetics
     while (
-      dest.containsPoint(new fabric.Point(destX, destY), null, true)
-      && FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
+      dest.containsPoint(new fabric.Point(destX, destY), null, true) &&
+      FabricUtils.dist(srcX, srcY, destX, destY) > 10 // Prevents infinite loop if the arrow start and endpoints are very close
     ) {
       const point = this.translateTowards(destX, destY, srcX, srcY, 5);
       destX = point.x;
@@ -320,8 +320,8 @@ export class FabricUtils {
   }
 
   public static dist(srcX: number, srcY: number, destX: number, destY: number) {
-    const distX = (srcX - destX)*1.0;
-    const distY = (srcY - destY)*1.0;
+    const distX = (srcX - destX) * 1.0;
+    const distY = (srcY - destY) * 1.0;
     const dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
     return dist;
   }
@@ -445,8 +445,14 @@ export class FabricUtils {
   }
 
   static panToObject(canvas: fabric.Canvas, object: fabric.Object) {
-
-    if (!canvas.width || !canvas.height || !object.left || !object.top || !object.width || !object.height) {
+    if (
+      !canvas.width ||
+      !canvas.height ||
+      !object.left ||
+      !object.top ||
+      !object.width ||
+      !object.height
+    ) {
       return;
     }
 
@@ -454,17 +460,24 @@ export class FabricUtils {
 
     const objLeft = object.left + object.width / 2;
     const objTop = object.top + object.height / 2;
-    const left = (-objLeft * zoom) + (canvas.width  / 2);
-    const top = (-objTop * zoom) + (canvas.height / 2);
+    const left = -objLeft * zoom + canvas.width / 2;
+    const top = -objTop * zoom + canvas.height / 2;
 
     canvas.setViewportTransform([zoom, 0, 0, zoom, left, top]);
   }
 
-
-  static createSelection(canvas: fabric.Canvas, nodeIds: string[], edgeIds: string[]) {
+  static createSelection(
+    canvas: fabric.Canvas,
+    nodeIds: string[],
+    edgeIds: string[],
+  ) {
     const allObjects = canvas.getObjects();
-    const newObjects = allObjects.filter(obj => {
-      if (obj instanceof fabric.Group && obj.data?.type === 'text-node' && nodeIds.includes(obj.data.id)) {
+    const newObjects = allObjects.filter((obj) => {
+      if (
+        obj instanceof fabric.Group &&
+        obj.data?.type === 'text-node' &&
+        nodeIds.includes(obj.data.id)
+      ) {
         return true;
       }
 
@@ -475,9 +488,87 @@ export class FabricUtils {
     });
 
     if (newObjects.length > 0) {
-      const selection = new fabric.ActiveSelection(newObjects, { canvas: canvas });
+      const selection = new fabric.ActiveSelection(newObjects, {
+        canvas: canvas,
+      });
       canvas.setActiveObject(selection);
       canvas.requestRenderAll();
     }
+  }
+
+  static createSelectionBox(
+    canvas: fabric.Canvas,
+    startX: number,
+    startY: number,
+  ): fabric.Rect {
+    const rect = new fabric.Rect({
+      left: startX,
+      top: startY,
+      width: 1,
+      height: 1,
+      fill: 'transparent',
+      stroke: '#B8D0FF',
+      selectable: false,
+      evented: false,
+    });
+    canvas.add(rect);
+    return rect;
+  }
+
+  static removeSelectionBox(canvas: fabric.Canvas, rect: fabric.Rect) {
+    canvas.remove(rect);
+    canvas.renderAll();
+  }
+
+  static updateSelectionBox(
+    canvas: fabric.Canvas,
+    rect: fabric.Rect,
+    top: number,
+    left: number,
+    height: number,
+    width: number,
+  ) {
+    rect.set({
+      top: top,
+      left: left,
+      width: width,
+      height: height,
+    });
+    canvas.renderAll();
+  }
+
+  static getObjectsInsideSelectionBox(
+    canvas: fabric.Canvas,
+    rect: fabric.Rect,
+  ) {
+    const selectionLeft = rect.left ?? 0;
+    const selectionTop = rect.top ?? 0;
+    const selectionWidth = rect.width ?? 0;
+    const selectionHeight = rect.height ?? 0;
+    const objectsInsideBox: fabric.Object[] = [];
+    const allObjects = canvas.getObjects();
+    
+    allObjects.forEach((object) => {
+      if (object !== rect) {
+        if (
+          object.left !== undefined &&
+          object.top !== undefined &&
+          object.width !== undefined &&
+          object.height !== undefined
+        ) {
+          // check if the object is within the selection box bounds
+          if (
+            object.left + object.width > selectionLeft &&
+            object.left < selectionLeft + selectionWidth &&
+            object.top + object.height > selectionTop &&
+            object.top < selectionTop + selectionHeight
+          ) {
+            objectsInsideBox.push(object);
+          }
+        }
+      }
+    });
+
+    return objectsInsideBox;
   }
 }
