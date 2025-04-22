@@ -34,8 +34,7 @@ export class TouchSelectionController {
               clientY: e.center.y,
             } as MouseEvent;
 
-            const pointer = this.canvas.getPointer(fakeMouseEvent);
-            const absolutePointer = pointer;
+            const absolutePointer = this.canvas.getPointer(fakeMouseEvent);
 
             const fabricEvent = {
               e: fakeMouseEvent,

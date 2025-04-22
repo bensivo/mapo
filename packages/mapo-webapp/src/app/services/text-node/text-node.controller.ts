@@ -169,24 +169,19 @@ export class TextNodeController {
     this.textNodeService.finalizeTextNode(itext);
   };
 
-  // When double-tapping on the canvas with touch device
   onDoubleTap = (e: HammerInput, canvas: fabric.Canvas) => {
-    if (!this.canvas) {
-      console.warn('DoubleClick ignored. No canvas');
-      return;
-    }
+    if (!this.canvas) return;
 
-    // HammerJS doesn't see the fabric.js event, so we use the 'findTarget' function
+    // hammerJS doesn't see the fabric.js event, so we use the 'findTarget' function
     const target = canvas.findTarget(
       {
         clientX: e.center.x,
         clientY: e.center.y,
-      } as unknown as MouseEvent,
+      } as MouseEvent,
       true,
     );
 
     if (target && target.data?.type === 'text-node') {
-      console.log('is target and data type is text node');
       this.textNodeService.editTextNode(target as fabric.Group);
     } else {
       return;
