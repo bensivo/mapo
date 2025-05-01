@@ -10,7 +10,9 @@ export const FileSchema = z.object({
   userId: z.string(),
   name: z.string(),
   contentBase64: z.string(),
-  folderId: z.number().describe('ID of the parent folder, where 0 is the root folder.')
+  folderId: z.number().describe('ID of the parent folder, where 0 is the root folder.'),
+  createdAt: z.string(),
+  lastModifiedAt: z.string(),
 });
 
 export type File = z.infer<typeof FileSchema>;

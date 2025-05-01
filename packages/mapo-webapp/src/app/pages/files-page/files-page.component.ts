@@ -10,7 +10,7 @@ import { EdgeStore } from '../../store/edge.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TitleStore } from '../../store/title.store';
 import { ToastService } from '../../services/toast/toast.service';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 import { Folder } from '../../models/folder.model';
 import { FilesSelectors } from '../../selectors/file.selectors';
@@ -30,9 +30,6 @@ export class FilesPageComponent {
     private filesSelectors: FilesSelectors,
     private filesStore: FilesStore,
     private persistenceService: PersistenceService,
-    private edgeStore: EdgeStore,
-    private textNodeStore: TextNodeStore,
-    private titleStore: TitleStore,
     private toastService: ToastService,
   ) {
     this.filesService.fetch();
@@ -44,11 +41,31 @@ export class FilesPageComponent {
   searchText = new BehaviorSubject<string>('');
   searchText$ = this.searchText.asObservable();
 
-  files$ = this.filesSelectors.files$
+  files$ = this.filesSelectors.files$.pipe(
+    map(files => {
+      return files.map((file) => {
+        const lastModifiedAtPretty = new Date(file.lastModifiedAt).toLocaleDateString() + " " + new Date(file.lastModifiedAt).toLocaleTimeString()
+        return {
+          ...file,
+          lastModifiedAtPretty: lastModifiedAtPretty,
+        }
+      })
+    })
+  );
 
   breadcrumbs$ = this.filesSelectors.breadcrumbs$;
   visibleFolders$ = this.filesSelectors.visibleFolders$;
-  visibleFiles$ = this.filesSelectors.visibleFiles$;
+  visibleFiles$ = this.filesSelectors.visibleFiles$.pipe(
+    map(files => {
+      return files.map((file) => {
+        const lastModifiedAtPretty = new Date(file.lastModifiedAt).toLocaleDateString() + " " + new Date(file.lastModifiedAt).toLocaleTimeString()
+        return {
+          ...file,
+          lastModifiedAtPretty: lastModifiedAtPretty,
+        }
+      })
+    })
+  )
   isEmpty$ = this.filesSelectors.isEmpty$;
 
 
