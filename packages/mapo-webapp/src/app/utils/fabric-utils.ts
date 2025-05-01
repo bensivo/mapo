@@ -502,7 +502,7 @@ export class FabricUtils {
     startY: number,
   ): fabric.Rect {
     const rect = new fabric.Rect({
-      left: startX,
+      left: startX, // NOTE: this isn't necessarilly always the left top
       top: startY,
       width: 1,
       height: 1,

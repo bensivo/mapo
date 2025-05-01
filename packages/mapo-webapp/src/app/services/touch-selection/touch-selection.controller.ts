@@ -9,7 +9,6 @@ import { TouchSelectionService } from './touch-selection.service';
 export class TouchSelectionController {
   canvas: fabric.Canvas | null = null;
   public pressingStateChange: EventEmitter<boolean> = new EventEmitter();
-  public rectObject: EventEmitter<fabric.Rect> = new EventEmitter();
   private isPressing = false;
 
   constructor(
@@ -24,6 +23,7 @@ export class TouchSelectionController {
         if (canvasContainer) {
           var hammertime = new Hammer(canvasContainer, {});
 
+          // 'press' gets triggered after you tap and hold for 2 seconds
           hammertime.get('press');
           hammertime.on('press', (e) => {
             if (!this.canvas) return;
@@ -41,14 +41,13 @@ export class TouchSelectionController {
               absolutePointer,
             };
 
-            const rect = this.touchSelectionService.createSelectionBox(
+            this.touchSelectionService.createSelectionBox(
               canvas,
               fabricEvent.absolutePointer?.x,
               fabricEvent.absolutePointer?.y,
             );
             this.isPressing = true;
             this.pressingStateChange.emit(this.isPressing);
-            this.rectObject.emit(rect);
           });
         }
       }

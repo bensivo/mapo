@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanvasService } from '../canvas/canvas.service';
-import { FabricUtils } from '../../utils/fabric-utils';
 import { fabric } from 'fabric';
-import { TextNodeOptionsController } from '../textnode-options/textnode-options.controller';
+import { CanvasService } from '../canvas/canvas.service';
 
 @Injectable({
   providedIn: 'root',
@@ -77,45 +75,4 @@ export class PanCanvasService {
     this._isPanning = false;
   }
 
-  removeSelectionBox(canvas: fabric.Canvas, rect: fabric.Rect) {
-    FabricUtils.removeSelectionBox(canvas, rect);
-  }
-
-  updateSelectionBox(
-    canvas: fabric.Canvas,
-    rect: fabric.Rect,
-    currentX: number,
-    currentY: number,
-  ) : fabric.Object[] {
-    let startX = rect.left ?? 0;
-    let startY = rect.top ?? 0;
-    let height = 1;
-    let width = 1;
-    let top = startY;
-    let left = startX;
-    let direction = 'none';
-
-    // TODO: add multidirectional boxes
-    if (currentX > startX) {
-      if (currentY > startY) {
-        direction = 'br';
-        top = startY;
-        left = startX;
-        height = currentY - startY;
-        width = currentX - startX;
-      } else if (currentY < startY) {
-        direction = 'tr';
-      }
-    } else if (currentX < startX) {
-      if (currentY > startY) {
-        direction = 'bl';
-      } else if (currentY < startY) {
-        direction = 'tl';
-      }
-    }
-
-    FabricUtils.updateSelectionBox(canvas, rect, top, left, height, width);
-    const objects = FabricUtils.getObjectsInsideSelectionBox(canvas, rect);
-    return objects;
-  }
 }

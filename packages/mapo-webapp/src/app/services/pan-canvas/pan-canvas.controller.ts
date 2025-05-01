@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { CanvasService } from '../canvas/canvas.service';
-import { PanCanvasService } from './pan-canvas.service';
-import { isTouchScreen } from '../../utils/browser-utils';
-import { ZoomCanvasController } from '../zoom-canvas/zoom-canvas.controller';
-import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
-import { TouchSelectionController } from '../touch-selection/touch-selection.controller';
 import { fabric } from 'fabric';
+import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
+import { isTouchScreen } from '../../utils/browser-utils';
+import { CanvasService } from '../canvas/canvas.service';
+import { TouchSelectionController } from '../touch-selection/touch-selection.controller';
+import { TouchSelectionService } from '../touch-selection/touch-selection.service';
+import { ZoomCanvasController } from '../zoom-canvas/zoom-canvas.controller';
+import { PanCanvasService } from './pan-canvas.service';
 @Injectable({
   providedIn: 'root',
 })
 export class PanCanvasController {
   canvas: fabric.Canvas | null = null;
-  private rect: fabric.Rect | null = null;
   private selectedObjects: fabric.Object[] | null = null;
   private isPressing = false;
   private isPinching = false;
@@ -23,6 +23,7 @@ export class PanCanvasController {
     private mouseWheelController: ZoomCanvasController,
     private bottomToolbarStore: BottomToolbarStore,
     private touchSelectionController: TouchSelectionController,
+    private touchSelectionService: TouchSelectionService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       if (isTouchScreen()) {
@@ -60,9 +61,6 @@ export class PanCanvasController {
         this.isPressing = isPressing;
       },
     );
-    this.touchSelectionController.rectObject.subscribe((rect) => {
-      this.rect = rect;
-    });
   }
 
   onMouseDownTouch = (event: fabric.IEvent<MouseEvent>): void => {
@@ -85,10 +83,9 @@ export class PanCanvasController {
 
     // if the user is pressing (creating a selection box),
     // based on the current pointer position it updates the selection box
-    if (this.isPressing && this.rect) {
-      const selectedObjects = this.panCanvasService.updateSelectionBox(
+    if (this.isPressing) {
+      const selectedObjects = this.touchSelectionService.updateSelectionBox(
         this.canvas,
-        this.rect,
         event.absolutePointer?.x,
         event.absolutePointer?.y,
       );
@@ -111,14 +108,14 @@ export class PanCanvasController {
     // if the user created a selection box (isPressing),
     // creates a group with the selected objects
     // removes the selection box from the canvas, resets the isPressing flag
-    if (this.isPressing && this.rect) {
+    if (this.isPressing) {
       if (this.selectedObjects && this.selectedObjects?.length > 0) {
         const selection = new fabric.ActiveSelection(this.selectedObjects, {
           canvas: this.canvas,
         });
         this.canvas.setActiveObject(selection);
       }
-      this.panCanvasService.removeSelectionBox(this.canvas, this.rect);
+      this.touchSelectionService.removeSelectionBox(this.canvas);
       this.isPressing = false;
     }
     this.panCanvasService.endPan();
