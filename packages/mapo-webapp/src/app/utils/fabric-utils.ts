@@ -506,8 +506,9 @@ export class FabricUtils {
       top: startY,
       width: 1,
       height: 1,
-      fill: 'transparent',
+      fill: '#B8D0FF88',
       stroke: '#B8D0FF',
+      strokeWidth: 1,
       selectable: false,
       evented: false,
     });

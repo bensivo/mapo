@@ -7,7 +7,6 @@ import { FabricUtils } from '../../utils/fabric-utils';
 })
 export class TouchSelectionService {
   canvas: fabric.Canvas | null = null;
-
   startX: number | null = null;
   startY: number | null = null;
   rect: fabric.Rect | null = null;
@@ -43,34 +42,16 @@ export class TouchSelectionService {
       return [];
     }
 
-    let startX = this.rect.left ?? 0;
-    let startY = this.rect.top ?? 0;
-    let height = 1;
-    let width = 1;
-    let top = startY;
-    let left = startX;
-    let direction = 'none';
-
-    // TODO: add multidirectional boxes
-    if (currentX > startX) {
-      if (currentY > startY) {
-        direction = 'br';
-        top = startY;
-        left = startX;
-        height = currentY - startY;
-        width = currentX - startX;
-      } else if (currentY < startY) {
-        direction = 'tr';
-      }
-    } else if (currentX < startX) {
-      if (currentY > startY) {
-        direction = 'bl';
-      } else if (currentY < startY) {
-        direction = 'tl';
-      }
+    if(this.startX == null || this.startY == null) {
+      return [];
     }
 
-    FabricUtils.updateSelectionBox(canvas, this.rect, top, left, height, width);
+    const minX = Math.min(this.startX, currentX);
+    const minY = Math.min(this.startY, currentY);
+    const diffX = Math.abs(this.startX - currentX);
+    const diffY = Math.abs(this.startY - currentY);
+
+    FabricUtils.updateSelectionBox(canvas, this.rect, minY, minX, diffY, diffX);
     const objects = FabricUtils.getObjectsInsideSelectionBox(canvas, this.rect);
     return objects;
   }
