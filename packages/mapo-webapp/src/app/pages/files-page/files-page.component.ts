@@ -1,20 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FilesService, SaveFileDto } from '../../services/files/files.service';
-import { FilesStore } from '../../store/files.store';
-import { File } from '../../models/file.model';
 import base64 from 'base-64';
-import { PersistenceService } from '../../services/persistence/persistence.service';
-import { EdgeStore } from '../../store/edge.store';
-import { TextNodeStore } from '../../store/text-node.store';
-import { TitleStore } from '../../store/title.store';
-import { ToastService } from '../../services/toast/toast.service';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
+import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-file-modal/new-file-modal.component';
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
+import { File } from '../../models/file.model';
 import { Folder } from '../../models/folder.model';
 import { FilesSelectors } from '../../selectors/file.selectors';
-import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-file-modal/new-file-modal.component';
+import { FilesService, SaveFileDto } from '../../services/files/files.service';
+import { PersistenceService } from '../../services/persistence/persistence.service';
+import { ToastService } from '../../services/toast/toast.service';
+import { FilesStore } from '../../store/files.store';
 
 @Component({
   selector: 'app-files-page',
