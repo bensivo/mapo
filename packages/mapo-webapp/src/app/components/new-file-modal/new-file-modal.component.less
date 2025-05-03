@@ -15,7 +15,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     height: fit-content;
-    width: fit-content;
+
+    min-width: 300px;
+    width: 30%;
+    max-width: 700px;
 
     background-color: white;
     border: solid 2px black;
@@ -33,11 +36,17 @@ h3 {
     display: block;
 }
 
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 input {
     margin-left: 1rem;
 
     .text-input();
-    min-width: 50ch;
+    flex-grow: 1;
 }
 
 .button-row {

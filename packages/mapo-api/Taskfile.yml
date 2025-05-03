@@ -8,12 +8,16 @@ tasks:
         export JWT_AUDIENCE=`infisical secrets get JWT_AUDIENCE --plain --silent --env=dev`
         export JWT_ISSUER=`infisical secrets get JWT_ISSUER --plain --silent --env=dev`
         export JWT_SECRET=`infisical secrets get JWT_SECRET --plain --silent --env=dev`
-        export POSTGRES_CONNECTION_STRING=`infisical secrets get POSTGRES_CONNECTION_STRING --plain --silent --env=dev`
+        export POSTGRES_CONNECTION_STRING='host=localhost port=5432 user=username password=password dbname=mapo sslmode=disable'
         go run main.go
 
   e2e:
     cmds:
       - ./e2e/e2e.sh
+
+  compose-up:
+    cmds:
+      - docker compose up -d
 
   docker-build:
     sources:
@@ -32,6 +36,5 @@ tasks:
         docker run \
           -p 3000:3000 \
           -v $PWD/data:/mapo-api/data \
-          -e MAPO_API_SQLITE3_FILEPATH=/mapo-api/data/mapo-api.db \
           -e MAPO_API_PORT=3000 \
           mapo-api

@@ -7,6 +7,9 @@ import { MAPO_API_BASE_URL } from './config';
 
 const chance = new Chance();
 
+// ISO8601 regex
+const REGEX_TIMESTAMP = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z/;
+
 describe('Files API', () => {
     let client: Axios;
     let token;
@@ -40,7 +43,9 @@ describe('Files API', () => {
             userId: jwtSubject,
             name: body.name,
             contentBase64: body.contentBase64,
-            folderId: body.folderId
+            folderId: body.folderId,
+            createdAt: expect.stringMatching(REGEX_TIMESTAMP),
+            lastModifiedAt: expect.stringMatching(REGEX_TIMESTAMP),
         })
     });
 
@@ -76,7 +81,9 @@ describe('Files API', () => {
             userId: jwtSubject,
             name: body.name,
             contentBase64: body.contentBase64,
-            folderId: body.folderId
+            folderId: body.folderId,
+            createdAt: expect.stringMatching(REGEX_TIMESTAMP),
+            lastModifiedAt: expect.stringMatching(REGEX_TIMESTAMP),
         })
     });
 
@@ -247,6 +254,44 @@ describe('Files API', () => {
         // Then other fields should be unaffected
         expect(res.data.name).toBe(file.name);
     });
+
+    it('update file - should update lastModifiedAt', async () => {
+        const file = {
+            name: chance.word(),
+            contentBase64: Buffer.from(JSON.stringify({})).toString('base64'),
+            folderId: 0,
+        };
+
+        // Given I have inserted a file
+        let res = await client.request({
+            method: 'POST',
+            url: '/files',
+            data: file
+        });
+        const fileId = res.data.id;
+        const lastModifiedAt = res.data.lastModifiedAt;
+
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // When I call PATCH and give a new name
+        res = await client.request({
+            method: 'PATCH',
+            url: `/files/${fileId}`,
+            data: {
+                name: 'new last modified'
+            }
+        });
+
+        // Then the lastModifiedAt should also be updated
+        res = await client.request({
+            method: 'GET',
+            url: `/files/${fileId}`,
+        });
+        const newLastModifiedAt = res.data.lastModifiedAt
+
+        expect(lastModifiedAt).not.toEqual(newLastModifiedAt)
+    })
 
     it.todo('update file folder_id (to root)')
 

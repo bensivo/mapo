@@ -3,8 +3,10 @@
 <div class="modal">
     <h3>New File</h3>
 
-    <label for="input">Name</label>
-    <input type="text" id="input" placeholder="File Name" [(ngModel)]="name"/>
+    <div class="row">
+        <label for="input">Name</label>
+        <input type="text" id="input" placeholder="File Name" [(ngModel)]="name"/>
+    </div>
 
     <div class="button-row">
         <button (click)="onClickCancel()">Cancel</button>

@@ -1,0 +1,21 @@
+meta {
+  name: delete file
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:3000/files/:file_id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  file_id: 94
+}
+
+body:json {
+  {
+    "name":"updated file name"
+  }
+}

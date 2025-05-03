@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  mapo-db:
+    image: postgres
+    hostname: mapo-db
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mapo
+    ports:
+      - 5432:5432

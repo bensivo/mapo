@@ -30,35 +30,39 @@ func (s *FileService) InsertFile(userID string, name string, contentBase64 strin
 	row := s.db.QueryRow(`
 		INSERT INTO files (user_id, name, content_base64, folder_id) 
 		VALUES ($1, $2, $3, NULLIF($4, 0)) 
-		RETURNING id, user_id, name, content_base64, folder_id;
+		RETURNING id, user_id, name, content_base64, folder_id, created_at, last_modified_at;
 	`, userID, name, contentBase64, folder_id)
 
 	var data struct {
-		ID            int
-		UserID        string
-		Name          string
-		ContentBase64 string
-		FolderId      sql.NullInt64
+		ID             int
+		UserID         string
+		Name           string
+		ContentBase64  string
+		FolderId       sql.NullInt64
+		CreatedAt      string
+		LastModifiedAt string
 	}
 
-	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId)
+	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId, &data.CreatedAt, &data.LastModifiedAt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to scan insert response: %w", err)
 	}
 
 	return &File{
-		ID:            data.ID,
-		UserID:        data.UserID,
-		Name:          data.Name,
-		ContentBase64: data.ContentBase64,
-		FolderID:      db.WithDefaultInt64(data.FolderId, 0),
+		ID:             data.ID,
+		UserID:         data.UserID,
+		Name:           data.Name,
+		ContentBase64:  data.ContentBase64,
+		FolderID:       db.WithDefaultInt64(data.FolderId, 0),
+		CreatedAt:      data.CreatedAt,
+		LastModifiedAt: data.LastModifiedAt,
 	}, nil
 }
 
 // Get all files from the database
 func (s *FileService) GetFiles(userID string) ([]File, error) {
 	rows, err := s.db.Query(`
-		SELECT id, user_id, name, content_base64, folder_id FROM files where user_id = $1;
+		SELECT id, user_id, name, content_base64, folder_id, created_at, last_modified_at FROM files where user_id = $1;
 	`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get files: %w", err)
@@ -68,23 +72,27 @@ func (s *FileService) GetFiles(userID string) ([]File, error) {
 	files := []File{}
 	for rows.Next() {
 		var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
-			ID            int
-			UserID        string
-			Name          string
-			ContentBase64 string
-			FolderId      sql.NullInt64
+			ID             int
+			UserID         string
+			Name           string
+			ContentBase64  string
+			FolderId       sql.NullInt64
+			CreatedAt      string
+			LastModifiedAt string
 		}
-		err := rows.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId)
+		err := rows.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId, &data.CreatedAt, &data.LastModifiedAt)
 		if err != nil {
 			return nil, err
 		}
 
 		files = append(files, File{
-			ID:            data.ID,
-			UserID:        data.UserID,
-			Name:          data.Name,
-			ContentBase64: data.ContentBase64,
-			FolderID:      db.WithDefaultInt64(data.FolderId, 0),
+			ID:             data.ID,
+			UserID:         data.UserID,
+			Name:           data.Name,
+			ContentBase64:  data.ContentBase64,
+			FolderID:       db.WithDefaultInt64(data.FolderId, 0),
+			CreatedAt:      data.CreatedAt,
+			LastModifiedAt: data.LastModifiedAt,
 		})
 	}
 
@@ -95,17 +103,19 @@ func (s *FileService) GetFiles(userID string) ([]File, error) {
 // returns a nil pointer if the file does not exist
 func (s *FileService) GetFile(userID string, fileID int) (*File, error) {
 	row := s.db.QueryRow(`
-		SELECT id, user_id, name, content_base64, folder_id FROM files WHERE user_id = $1 and id = $2;
+		SELECT id, user_id, name, content_base64, folder_id, created_at, last_modified_at FROM files WHERE user_id = $1 and id = $2;
 	`, userID, fileID)
 
 	var data struct { // Although right now this type matches File, it's a good idea to keep them separate, in case the db schema changes
-		ID            int
-		UserID        string
-		Name          string
-		ContentBase64 string
-		FolderId      sql.NullInt64
+		ID             int
+		UserID         string
+		Name           string
+		ContentBase64  string
+		FolderId       sql.NullInt64
+		CreatedAt      string
+		LastModifiedAt string
 	}
-	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId)
+	err := row.Scan(&data.ID, &data.UserID, &data.Name, &data.ContentBase64, &data.FolderId, &data.CreatedAt, &data.LastModifiedAt)
 
 	if err == sql.ErrNoRows {
 		return nil, ErrFileNotFound
@@ -116,11 +126,13 @@ func (s *FileService) GetFile(userID string, fileID int) (*File, error) {
 	}
 
 	return &File{
-		ID:            data.ID,
-		UserID:        data.UserID,
-		Name:          data.Name,
-		ContentBase64: data.ContentBase64,
-		FolderID:      db.WithDefaultInt64(data.FolderId, 0),
+		ID:             data.ID,
+		UserID:         data.UserID,
+		Name:           data.Name,
+		ContentBase64:  data.ContentBase64,
+		FolderID:       db.WithDefaultInt64(data.FolderId, 0),
+		CreatedAt:      data.CreatedAt,
+		LastModifiedAt: data.LastModifiedAt,
 	}, nil
 }
 
@@ -154,7 +166,7 @@ func (s *FileService) UpdateFile(fileID int, userID string, name string, content
 
 	// Write our new value to the database
 	_, err = s.db.Exec(`
-		UPDATE files SET user_id = $1, name = $2, content_base64 = $3, folder_id = NULLIF($4, 0) WHERE id = $5;
+		UPDATE files SET user_id = $1, name = $2, content_base64 = $3, folder_id = NULLIF($4, 0), last_modified_at = CURRENT_TIMESTAMP WHERE id = $5;
 	`, updated.UserID, updated.Name, updated.ContentBase64, folderId, fileID)
 	if err != nil {
 		return fmt.Errorf("failed to update file: %w", err)
