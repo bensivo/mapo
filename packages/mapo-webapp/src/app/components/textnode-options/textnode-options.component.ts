@@ -5,7 +5,7 @@ import { CanvasService } from '../../services/canvas/canvas.service';
 import { TextNodeOptionsStore } from '../../store/textnode-options.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { combineLatest, map } from 'rxjs';
-import { SelectionService } from '../../services/selection/selection.service';
+import { SelectionController } from '../../controllers/selection.controller';
 import { isTouchScreen } from '../../utils/browser-utils';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 @Component({
@@ -36,7 +36,7 @@ export class TextNodeOptionsComponent {
     private textNodeOptionsStore: TextNodeOptionsStore,
     private toolbarStore: ToolbarStore,
     private bottomToolbarStore: BottomToolbarStore,
-    private selectionService: SelectionService,
+    private selectionService: SelectionController,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { first, sampleTime } from 'rxjs/operators';
-import { CanvasService } from '../canvas/canvas.service';
-import { EdgeService } from './edge.service';
-import { EdgeStore } from '../../store/edge.store';
-import { TextNodeStore } from '../../store/text-node.store';
+import { CanvasService } from '../services/canvas/canvas.service';
+import { EdgeService } from '../services/edge/edge.service';
+import { EdgeStore } from '../store/edge.store';
+import { TextNodeStore } from '../store/text-node.store';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { TextNodeSchema } from '../../models/textnode.model';
-import { EdgeSchema } from '../../models/edge.model';
+import { TextNodeSchema } from './textnode.model';
+import { EdgeSchema } from './edge.model';
 
 export const ClipboardDataSchema = z.object({
   nodes: z.array(TextNodeSchema),

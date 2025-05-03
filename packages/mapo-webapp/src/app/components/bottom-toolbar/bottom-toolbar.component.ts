@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, map } from 'rxjs';
 import { CanvasService } from '../../services/canvas/canvas.service';
-import { SelectionService } from '../../services/selection/selection.service';
+import { SelectionController } from '../../controllers/selection.controller';
 import { ToolbarStore } from '../../store/toolbar.store';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';
@@ -39,7 +39,7 @@ export class BottomToolbarComponent {
 
   constructor(
     private canvasService: CanvasService,
-    private selectionService: SelectionService,
+    private selectionService: SelectionController,
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
     private textNodeStore: TextNodeStore,

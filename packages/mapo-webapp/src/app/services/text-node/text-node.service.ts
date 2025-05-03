@@ -6,6 +6,7 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import * as uuid from 'uuid';
 import { TextNodeOptionsStore } from '../../store/textnode-options.store';
+import { isContext } from 'vm';
 
 /**
  * Renders Text Nodes on the canvas, and manages their creation and editing
@@ -47,15 +48,23 @@ export class TextNodeService {
     this.canvas.requestRenderAll();
   }
 
+  addPendingComment(
+    top: number,
+    left: number,
+  ): fabric.IText {
+    return this.addPendingTextNode(top, left, true)
+  }
+
   addPendingTextNode(
     top: number,
     left: number,
-    isComment: boolean,
+    isComment: boolean = false,
   ): fabric.IText {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
 
+    console.log('Adding text node at', top, left, isComment)
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
     if (isComment) {
@@ -67,6 +76,10 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
+
+    itext.on('editing:exited', () => {
+      this.finalizeTextNode(itext);
+    });
     this.canvas.requestRenderAll();
     return itext;
   }

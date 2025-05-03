@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanvasService } from './canvas.service';
+import { CanvasService } from '../services/canvas/canvas.service';
 
 /**
  * Listens to window resize events, and resizes the canvas accordingly.
@@ -7,7 +7,7 @@ import { CanvasService } from './canvas.service';
 @Injectable({
   providedIn: 'root',
 })
-export class CanvasResizeController {
+export class WindowResizeController {
   canvas: fabric.Canvas | null = null;
 
   constructor(private canvasService: CanvasService) {

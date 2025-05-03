@@ -1,15 +1,19 @@
 import { Injectable } from "@angular/core";
-import { CanvasService } from "../canvas/canvas.service";
+import { CanvasService } from "../services/canvas/canvas.service";
 import { BehaviorSubject } from "rxjs";
 
 /**
  * A Service that listens to the active selection events on the canvas, and emits
  * an observable for current selection.
+ * 
+ * 
+ * NOTE: unlike other controllers, this one just exposes an observable. We should probably
+ * refactor this so it acts more like other controllers (just sends events down to a service).
  */
 @Injectable({
     providedIn: 'root'
 })
-export class SelectionService {
+export class SelectionController {
 
     private selection = new BehaviorSubject<fabric.Object[] | null>(null);
     selection$ = this.selection.asObservable();

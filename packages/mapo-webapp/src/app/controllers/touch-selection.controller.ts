@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
 import { EventEmitter } from '@angular/core';
-import { CanvasService } from '../canvas/canvas.service';
-import { isTouchScreen } from '../../utils/browser-utils';
-import { TouchSelectionService } from './touch-selection.service';
+import { CanvasService } from '../services/canvas/canvas.service';
+import { isTouchScreen } from '../utils/browser-utils';
+import { TouchSelectionService } from '../services/touch-selection/touch-selection.service';
+
+/**
+ * A controller specificiallty for the hammertime 'press' event, 
+ * which is used for selection boxes in mobile phones.
+ * 
+ * TODO: refactor this controller into the touch-screen controller, and split most of the 
+ * logic into a service.
+ */
 @Injectable({
   providedIn: 'root',
 })

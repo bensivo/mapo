@@ -1,15 +1,21 @@
 import { Injectable } from "@angular/core";
-import { EdgeStore } from "../../store/edge.store";
-import { TextNodeStore } from "../../store/text-node.store";
-import { TitleStore } from "../../store/title.store";
-import { AuthStore } from "../../store/auth.store";
-import { CanvasService } from "../canvas/canvas.service";
+import { EdgeStore } from "../store/edge.store";
+import { TextNodeStore } from "../store/text-node.store";
+import { TitleStore } from "../store/title.store";
+import { AuthStore } from "../store/auth.store";
+import { CanvasService } from "../services/canvas/canvas.service";
 import { Subscription, combineLatest, debounce, filter, interval, tap } from "rxjs";
-import { FilesStore } from "../../store/files.store";
-import { PersistenceService } from "../persistence/persistence.service";
-import { AutoSaveStore } from "./autosave.store";
-import { ToastService } from "../toast/toast.service";
+import { FilesStore } from "../store/files.store";
+import { PersistenceService } from "../services/persistence/persistence.service";
+import { AutoSaveStore } from "../services/autosave/autosave.store";
+import { ToastService } from "../services/toast/toast.service";
 
+/**
+ * The Autosave controller is active when the canvas is active.
+ * 
+ * It listens for changes to the canvas state, and initiates the persistence service 
+ * on all changes (with a debounce of 1 second so we don't get so many changes)
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -50,6 +56,7 @@ export class AutoSaveController {
           return user !== null; // Don't autosave if you're not logged in
         }),
         tap(() => {
+          // TODO: we could move updateing the autoSaveStore to the persistenceService
           this.autoSaveStore.setStatus('Saving...');
         }),
         debounce(() => interval(2000)),

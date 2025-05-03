@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
-import { isTouchScreen } from '../../utils/browser-utils';
-import { CanvasService } from '../canvas/canvas.service';
-import { TouchSelectionController } from '../touch-selection/touch-selection.controller';
-import { TouchSelectionService } from '../touch-selection/touch-selection.service';
-import { ZoomCanvasController } from '../zoom-canvas/zoom-canvas.controller';
-import { PanCanvasService } from './pan-canvas.service';
+import { BottomToolbarStore } from '../store/bottom-toolbar.store';
+import { isTouchScreen } from '../utils/browser-utils';
+import { CanvasService } from '../services/canvas/canvas.service';
+import { TouchSelectionController } from './touch-selection.controller';
+import { TouchSelectionService } from '../services/touch-selection/touch-selection.service';
+import { PinchController } from './pinch.controller';
+import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
+
+/**
+ * Controller listening to various touch events for mobile devices
+ * 
+ */
 @Injectable({
   providedIn: 'root',
 })
-export class PanCanvasController {
+export class TouchScreenController {
   canvas: fabric.Canvas | null = null;
   private selectedObjects: fabric.Object[] | null = null;
   private isPressing = false;
@@ -20,7 +25,7 @@ export class PanCanvasController {
   constructor(
     private canvasService: CanvasService,
     private panCanvasService: PanCanvasService,
-    private mouseWheelController: ZoomCanvasController,
+    private mouseWheelController: PinchController,
     private bottomToolbarStore: BottomToolbarStore,
     private touchSelectionController: TouchSelectionController,
     private touchSelectionService: TouchSelectionService,
@@ -137,4 +142,5 @@ export class PanCanvasController {
   onMouseUp = (event: fabric.IEvent<MouseEvent>): void => {
     this.panCanvasService.endPan();
   };
+
 }

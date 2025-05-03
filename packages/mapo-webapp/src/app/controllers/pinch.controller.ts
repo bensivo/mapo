@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { fabric } from 'fabric';
-import { CanvasService } from '../canvas/canvas.service';
-import { ZoomCanvasService } from './zoom-canvas.service';
+import { CanvasService } from '../services/canvas/canvas.service';
+import { ZoomCanvasService } from '../services/zoom-canvas/zoom-canvas.service';
 import Hammer from 'hammerjs';
 
 /**
@@ -11,7 +11,7 @@ import Hammer from 'hammerjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ZoomCanvasController {
+export class PinchController {
   public pinchStateChange: EventEmitter<boolean> = new EventEmitter();
   private isPinching = false;
   lastScale = 1;

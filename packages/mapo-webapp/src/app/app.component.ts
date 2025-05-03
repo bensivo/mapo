@@ -1,26 +1,25 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BottomToolbarComponent } from './components/bottom-toolbar/bottom-toolbar.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { HelpComponent } from './components/help/help.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { DrawEdgeController } from './services/edge/draw-edge.controller';
-import { EdgeController } from './services/edge/edge.controller';
-import { PanCanvasController } from './services/pan-canvas/pan-canvas.controller';
-import { TextNodeController } from './services/text-node/text-node.controller';
-import { TouchSelectionController } from './services/touch-selection/touch-selection.controller';
-import { AuthService } from './services/auth/auth.service';
-import { FilesService } from './services/files/files.service';
-import { ToolbarController } from './services/toolbar/toolbar.controller';
-import { CanvasResizeController } from './services/canvas/canvas-resize.controller';
-import { PersistenceController } from './services/persistence/persistence.controller';
-import { TrackpadPanController } from './services/pan-canvas/trackpad-pan.controller';
 import { ToastComponent } from './components/toast/toast.component';
-import { DebugController } from './services/debug/debug.controller';
-import { AutoSaveController } from './services/autosave/autosave.controller';
-import { TextNodeOptionsController } from './services/textnode-options/textnode-options.controller';
-import { ZoomCanvasController } from './services/zoom-canvas/zoom-canvas.controller';
-import { ClipboardController } from './services/clipboard/clipboard.controller';
-import { BottomToolbarComponent } from './components/bottom-toolbar/bottom-toolbar.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { AutoSaveController } from './controllers/autosave.controller';
+import { ObjectModified } from './controllers/object-modified.controller';
+import { KeyPressController } from './controllers/key-press.controller';
+import { MouseController } from './controllers/mouse.controller';
+import { WindowResizeController } from './controllers/window-resize.controller';
+import { AuthService } from './services/auth/auth.service';
+import { ClipboardController } from './controllers/clipboard.controller';
+import { DebugController } from './controllers/debug.controller';
+import { EdgeController } from './controllers/edge.controller';
+import { FilesService } from './services/files/files.service';
+import { TouchScreenController } from './controllers/touch-screen.controller';
+import { TrackpadPanController } from './controllers/trackpad-pan.controller';
+import { TextNodeOptionsController } from './controllers/textnode-options.controller';
+import { TouchSelectionController } from './controllers/touch-selection.controller';
+import { PinchController } from './controllers/pinch.controller';
 
 @Component({
   selector: 'app-root',
@@ -42,21 +41,20 @@ export class AppComponent {
   // These controllers injected here just so that they initialize themselves
   constructor(
     private authService: AuthService,
-    private canvasController: CanvasResizeController,
-    private drawEdgeController: DrawEdgeController,
+    private autosaveController: AutoSaveController,
+    private canvasEventController: ObjectModified,
+    private clipboardController: ClipboardController,
+    private debugController: DebugController,
     private edgeController: EdgeController,
     private fileService: FilesService,
-    private panCanvasController: PanCanvasController,
-    private zoomCanvasController: ZoomCanvasController,
-    private trackpadPanController: TrackpadPanController,
-    private persistenceController: PersistenceController,
-    private textNodeController: TextNodeController,
-    private touchSelectionController: TouchSelectionController,
-    private toolbarController: ToolbarController,
-    private debugController: DebugController,
-    private autosaveController: AutoSaveController,
+    private keyPressController: KeyPressController,
+    private mouseClickController: MouseController,
+    private panCanvasController: TouchScreenController,
     private textNodeOptionsController: TextNodeOptionsController,
-    private clipboardController: ClipboardController,
+    private touchSelectionController: TouchSelectionController,
+    private trackpadPanController: TrackpadPanController,
+    private windowResizeController: WindowResizeController,
+    private zoomCanvasController: PinchController,
   ) {
   }
 }
