@@ -7,6 +7,7 @@ import { DrawEdgeController } from './services/edge/draw-edge.controller';
 import { EdgeController } from './services/edge/edge.controller';
 import { PanCanvasController } from './services/pan-canvas/pan-canvas.controller';
 import { TextNodeController } from './services/text-node/text-node.controller';
+import { TouchSelectionController } from './services/touch-selection/touch-selection.controller';
 import { AuthService } from './services/auth/auth.service';
 import { FilesService } from './services/files/files.service';
 import { ToolbarController } from './services/toolbar/toolbar.controller';
@@ -50,6 +51,7 @@ export class AppComponent {
     private trackpadPanController: TrackpadPanController,
     private persistenceController: PersistenceController,
     private textNodeController: TextNodeController,
+    private touchSelectionController: TouchSelectionController,
     private toolbarController: ToolbarController,
     private debugController: DebugController,
     private autosaveController: AutoSaveController,

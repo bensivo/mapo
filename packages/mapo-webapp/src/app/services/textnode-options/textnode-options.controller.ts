@@ -52,7 +52,6 @@ export class TextNodeOptionsController {
     if (!objects) {
       return;
     }
-
     // close the color pallet after you select a new color
     const showPalletValue = this.bottomToolbarStore.getShowPallet();
     if (showPalletValue) {

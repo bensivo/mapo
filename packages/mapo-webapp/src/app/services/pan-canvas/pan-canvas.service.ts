@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { fabric } from 'fabric';
 import { CanvasService } from '../canvas/canvas.service';
 
 @Injectable({
@@ -11,7 +12,9 @@ export class PanCanvasService {
   lastPosX = 0;
   lastPosY = 0;
 
-  constructor(private canvasService: CanvasService) {
+  constructor(
+    private canvasService: CanvasService,
+  ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
     });
@@ -71,4 +74,5 @@ export class PanCanvasService {
     this.canvas.setViewportTransform(vpt);
     this._isPanning = false;
   }
+
 }
