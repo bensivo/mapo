@@ -8,18 +8,20 @@
       My Files
     </h1>
 
-    <div class="file-search-container">
-      <i class="ri-search-line"></i>
-      <input placeholder="Search" (keyup)="onSearchKeyUp($event)">
+
+    <div class="button-container">
+      <div class="file-search-container">
+        <i class="ri-search-line"></i>
+        <input placeholder="Search" (keyup)="onSearchKeyUp($event)">
+      </div>
+      <button class="create-mindmap-button" (click)="onClickNewMindMap()">
+        New Mind Map
+      </button>
+
+      <button class="create-folder-button" (click)="onClickNewFolder()">
+        New Folder
+      </button>
     </div>
-
-    <button class="create-mindmap-button" (click)="onClickNewMindMap()">
-      New Mind Map
-    </button>
-
-    <button class="create-folder-button" (click)="onClickNewFolder()">
-      New Folder
-    </button>
   </div>
 
   <div class="breadcrumbs" *ngIf="breadcrumbs$ | async as breadcrumbs">

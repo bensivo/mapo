@@ -9,8 +9,10 @@
 .header {
   display: flex;
   flex-direction: row;
+  flex-flow: wrap;
   align-items: center;
   margin: 24px 32px;
+
 
   .back-icon {
     border-radius: 10rem;
@@ -27,32 +29,39 @@
     font-weight: 300;
     display: block;
     text-align: right;
+    white-space: nowrap;
   }
 
   i {
     font-weight: 300;
   }
+}
+
+.button-container {
+  margin-left: auto;
 
   button {
     .text-button();
   }
-}
 
-.create-folder-button {
-  margin-left: 1rem;
+  .create-folder-button {
+    margin-left: 1rem;
+  }
 }
 
 .file-search-container {
   .text-input();
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   margin-left: auto;
-  margin-right: 1rem;
 
   display: flex;
 
   i {
     margin: auto .5rem;
-
   }
+
   input {
     flex-grow: 1;
     border: none;
@@ -64,7 +73,6 @@
 .no-files {
   margin: 32px;
 }
-
 
 .row-container {
   height: 100%;
@@ -99,7 +107,8 @@
   }
 }
 
-.folder-name, .file-name {
+.folder-name,
+.file-name {
   font-size: 16px;
 
   &:hover {
@@ -120,7 +129,7 @@
 .breadcrumbs {
   margin-left: 32px;
   margin-right: 32px;
-  display: flex;  
+  display: flex;
   flex-direction: row;
 }
 
