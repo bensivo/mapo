@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { CanvasService } from '../services/canvas/canvas.service';
 import { isTouchScreen } from '../utils/browser-utils';
-import { TouchSelectionService } from '../services/touch-selection/touch-selection.service';
+import { TouchselectionStore } from '../services/touch-selection/touch-selection.service';
 
 /**
  * A controller specificiallty for the hammertime 'press' event, 
@@ -21,7 +21,7 @@ export class TouchSelectionController {
 
   constructor(
     private canvasService: CanvasService,
-    private touchSelectionService: TouchSelectionService,
+    private touchselectionStore: TouchselectionStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       if (isTouchScreen()) {
@@ -49,7 +49,7 @@ export class TouchSelectionController {
               absolutePointer,
             };
 
-            this.touchSelectionService.createSelectionBox(
+            this.touchselectionStore.createSelectionBox(
               canvas,
               fabricEvent.absolutePointer?.x,
               fabricEvent.absolutePointer?.y,

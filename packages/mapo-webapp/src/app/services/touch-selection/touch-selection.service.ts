@@ -5,7 +5,7 @@ import { FabricUtils } from '../../utils/fabric-utils';
 @Injectable({
   providedIn: 'root',
 })
-export class TouchSelectionService {
+export class TouchselectionStore {
   canvas: fabric.Canvas | null = null;
   startX: number | null = null;
   startY: number | null = null;

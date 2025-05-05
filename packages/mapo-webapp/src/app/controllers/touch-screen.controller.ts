@@ -4,7 +4,7 @@ import { BottomToolbarStore } from '../store/bottom-toolbar.store';
 import { isTouchScreen } from '../utils/browser-utils';
 import { CanvasService } from '../services/canvas/canvas.service';
 import { TouchSelectionController } from './touch-selection.controller';
-import { TouchSelectionService } from '../services/touch-selection/touch-selection.service';
+import { TouchselectionStore } from '../services/touch-selection/touch-selection.service';
 import { PinchController } from './pinch.controller';
 import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
 
@@ -28,7 +28,7 @@ export class TouchScreenController {
     private mouseWheelController: PinchController,
     private bottomToolbarStore: BottomToolbarStore,
     private touchSelectionController: TouchSelectionController,
-    private touchSelectionService: TouchSelectionService,
+    private touchselectionStore: TouchselectionStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       if (isTouchScreen()) {
@@ -89,7 +89,7 @@ export class TouchScreenController {
     // if the user is pressing (creating a selection box),
     // based on the current pointer position it updates the selection box
     if (this.isPressing) {
-      const selectedObjects = this.touchSelectionService.updateSelectionBox(
+      const selectedObjects = this.touchselectionStore.updateSelectionBox(
         this.canvas,
         event.absolutePointer?.x,
         event.absolutePointer?.y,
@@ -120,7 +120,7 @@ export class TouchScreenController {
         });
         this.canvas.setActiveObject(selection);
       }
-      this.touchSelectionService.removeSelectionBox(this.canvas);
+      this.touchselectionStore.removeSelectionBox(this.canvas);
       this.isPressing = false;
     }
     this.panCanvasService.endPan();

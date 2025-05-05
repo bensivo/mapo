@@ -1,13 +1,12 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { combineLatest, map } from 'rxjs';
+import { Component } from '@angular/core';
+import { map } from 'rxjs';
 import { CanvasService } from '../../services/canvas/canvas.service';
-import { SelectionController } from '../../controllers/selection.controller';
-import { ToolbarStore } from '../../store/toolbar.store';
-import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
-import { TextNodeStore } from '../../store/text-node.store';
-import { EdgeStore } from '../../store/edge.store';
 import { ClipboardService } from '../../services/clipboard/clipboard.service';
+import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
+import { EdgeStore } from '../../store/edge.store';
+import { SelectionStore } from '../../store/selection.store';
+import { TextNodeStore } from '../../store/text-node.store';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -18,13 +17,13 @@ import { ClipboardService } from '../../services/clipboard/clipboard.service';
 export class BottomToolbarComponent {
   canvas: fabric.Canvas | null = null;
 
-  isVisible$ = this.selectionService.selection$.pipe(
+  isVisible$ = this.selectionStore.selection$.pipe(
     map((selection) => {
       return (selection && selection.length > 0)
     }),
   );
 
-  colorEnabled$ = this.selectionService.selection$.pipe(
+  colorEnabled$ = this.selectionStore.selection$.pipe(
     map((selection) => {
       // Return true only if there is at least 1 text node in the selection
       const hasTextNode = selection?.some((object) => {
@@ -39,7 +38,7 @@ export class BottomToolbarComponent {
 
   constructor(
     private canvasService: CanvasService,
-    private selectionService: SelectionController,
+    private selectionStore: SelectionStore,
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
     private textNodeStore: TextNodeStore,

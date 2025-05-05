@@ -8,6 +8,7 @@ import { TextNodeStore } from '../store/text-node.store';
 import { Tool, ToolbarStore } from '../store/toolbar.store';
 import { isTouchScreen } from '../utils/browser-utils';
 import { DrawEdgeService } from '../services/edge/draw-edge.service';
+import { EdgeService } from '../services/edge/edge.service';
 
 /**
  * Listens to mouse events on the fabric canvas.
@@ -24,6 +25,7 @@ export class MouseController {
         private canvasService: CanvasService,
         private toolbarStore: ToolbarStore,
         private drawEdgeService: DrawEdgeService,
+        private edgeService: EdgeService,
     ) {
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
             this.canvas = canvas;
@@ -89,6 +91,12 @@ export class MouseController {
         // Double-click on a text node
         if (e.target && e.target.data?.type === 'text-node') {
             this.textNodeService.editTextNode(e.target as fabric.Group);
+        }
+
+        // Double-click on an edge, or edge-text
+        if (e.target && (e.target.data?.type === 'edge' || e.target.data?.type === 'edge-text')) {
+            const edgeId = e.target.data.id;
+            this.edgeService.editText(edgeId);
         }
     };
 

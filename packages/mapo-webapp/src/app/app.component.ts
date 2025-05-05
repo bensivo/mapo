@@ -6,14 +6,13 @@ import { HelpComponent } from './components/help/help.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { AutoSaveController } from './controllers/autosave.controller';
-import { ObjectModified } from './controllers/object-modified.controller';
+import { ObjectEventController } from './controllers/object-event.controller';
 import { KeyPressController } from './controllers/key-press.controller';
 import { MouseController } from './controllers/mouse.controller';
 import { WindowResizeController } from './controllers/window-resize.controller';
 import { AuthService } from './services/auth/auth.service';
 import { ClipboardController } from './controllers/clipboard.controller';
 import { DebugController } from './controllers/debug.controller';
-import { EdgeController } from './controllers/edge.controller';
 import { FilesService } from './services/files/files.service';
 import { TouchScreenController } from './controllers/touch-screen.controller';
 import { TrackpadPanController } from './controllers/trackpad-pan.controller';
@@ -42,13 +41,12 @@ export class AppComponent {
   constructor(
     private authService: AuthService,
     private autosaveController: AutoSaveController,
-    private canvasEventController: ObjectModified,
     private clipboardController: ClipboardController,
     private debugController: DebugController,
-    private edgeController: EdgeController,
     private fileService: FilesService,
     private keyPressController: KeyPressController,
     private mouseClickController: MouseController,
+    private objectModifiedController: ObjectEventController,
     private panCanvasController: TouchScreenController,
     private textNodeOptionsController: TextNodeOptionsController,
     private touchSelectionController: TouchSelectionController,
