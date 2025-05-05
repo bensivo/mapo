@@ -35,8 +35,13 @@ export class HammertimePinchService {
     }
 
     endPinch() {
-        // TODO; do we need a setTimeout of 100ms here? What was it for again?
-        this.isPinching = false;
+        // This 100ms delay in endPinch slightly extends the time that panning is disabled.
+        //
+        // In reality, users often remove one finger slightly before the other, which means 1 finger is dragging across the screen
+        // for a split second, which triggers 1-finger pan, and can be jarring for the end user. By adding this 100ms delay for endPinch, we avoid
+        // 90% of these cases, without causing significant degregation in ux. 
+        setTimeout(() => {
+            this.isPinching = false;
+        }, 100);
     }
-
 }

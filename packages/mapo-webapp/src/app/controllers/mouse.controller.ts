@@ -9,6 +9,9 @@ import { Tool, ToolbarStore } from '../store/toolbar.store';
 import { isTouchScreen } from '../utils/browser-utils';
 import { DrawEdgeService } from '../services/edge/draw-edge.service';
 import { EdgeService } from '../services/edge/edge.service';
+import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
+import { HammertimePinchService } from '../services/hammertime/hammertime-pinch.service';
+import { HammertimePressService } from '../services/hammertime/hammertime-press.service';
 
 /**
  * Listens to mouse events on the fabric canvas.
@@ -26,35 +29,23 @@ export class MouseController {
         private toolbarStore: ToolbarStore,
         private drawEdgeService: DrawEdgeService,
         private edgeService: EdgeService,
+        private panCanvasService: PanCanvasService,
+        private hammertimePinchService: HammertimePinchService,
+        private hammertimePressService: HammertimePressService,
     ) {
+
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
             this.canvas = canvas;
             canvas.on('mouse:down', this.onMouseDown);
             canvas.on('mouse:move', this.onMouseMove);
-
-            // For double-click, we listen for either mouse:dblclick (desktops), 
-            // or use the Hammertime library to listen for doubletaps
-            if (isTouchScreen()) {
-                const canvasContainer = document.getElementById('canvas-container');
-                if (!canvasContainer) {
-                    return;
-                }
-
-                // TODO: This might result in duplicate hammer events if we leave the canvas page, then come back to it
-                const hammer = new Hammer(canvasContainer, {});
-                hammer.get('tap').set({ taps: 2 });
-                hammer.on('tap', (e) => {
-                    this.onDoubleTap(e, canvas);
-                });
-            } else {
-                canvas.on('mouse:dblclick', this.onDoubleClick);
-            }
+            canvas.on('mouse:up', this.onMouseUp);
+            canvas.on('mouse:dblclick', this.onDoubleClick);
         });
 
         this.canvasService.canvasDestroyed$.subscribe((canvas) => {
             this.canvas = null;
-            canvas.off('mouse:down', this.onMouseDown);
-            canvas.off('mouse:move', this.onMouseMove);
+            canvas.off('mouse:down', this.onMouseDown as any);
+            canvas.off('mouse:move', this.onMouseMove as any);
             canvas.off('mouse:dblclick', this.onDoubleClick);
         });
 
@@ -100,10 +91,21 @@ export class MouseController {
         }
     };
 
-    onMouseDown = (e: fabric.IEvent) => {
+    onMouseDown = (e: fabric.IEvent<MouseEvent>) => {
         if (!this.canvas) {
             console.warn('MouseDown ignored. No canvas');
             return;
+        }
+
+        // Right click
+        if (e.e.button == 2) {
+            this.panCanvasService.startPan(e.e.clientX, e.e.clientY);
+        }
+
+        if (isTouchScreen() && !e.target) {
+            // When using a touchscreen, clientX and clientY are not availabel for some reason.
+            // but layerX and layerY are.
+            this.panCanvasService.startPan(e.e.layerX, e.e.layerY); 
         }
 
         // Ignore clicks inside an active IText element,
@@ -134,7 +136,7 @@ export class MouseController {
 
         // If the user was in create-edge, and clicked on an actual node, start or finish an edge
         if (tool === Tool.CREATE_EDGE && e.target) {
-            
+
             // Double check that the object clicked on was actally a text-node
             if (e.target?.data?.type !== 'text-node') {
                 this.drawEdgeService.removePendingEdge();
@@ -160,32 +162,47 @@ export class MouseController {
         }
     };
 
-    onMouseMove = (e: fabric.IEvent) => {
+    onMouseMove = (e: fabric.IEvent<MouseEvent>) => {
         if (!e.absolutePointer) {
-          return;
-        }
-    
-        if (this.drawEdgeService.isDrawingEdge()) {
-          this.drawEdgeService.updateEdge(e.absolutePointer);
-        }
-      };
-
-    onDoubleTap = (e: HammerInput, canvas: fabric.Canvas) => {
-        if (!this.canvas) return;
-
-        // hammerJS doesn't see the fabric.js event, so we use the 'findTarget' function
-        const target = canvas.findTarget(
-            {
-                clientX: e.center.x,
-                clientY: e.center.y,
-            } as MouseEvent,
-            true,
-        );
-
-        if (target && target.data?.type === 'text-node') {
-            this.textNodeService.editTextNode(target as fabric.Group);
-        } else {
             return;
         }
+
+        // Often, pinch events also trigger mouse-move-touch events. This causes
+        // both zoom an pan logic to fire. To prevent this, we stop the 
+        // pan logic if the "isPiching" flag is active.
+        if (this.hammertimePinchService.isPinching) {
+            return;
+        }
+
+        // If the user is pressing (creating a selection box),
+        // based on the current pointer position it updates the selection box
+        if (this.hammertimePressService.isPressing) {
+            this.hammertimePressService.updatePress(
+                e.absolutePointer.x,
+                e.absolutePointer.y,
+            );
+            return;
+        }
+
+        if (this.drawEdgeService.isDrawingEdge()) {
+            this.drawEdgeService.updateEdge(e.absolutePointer);
+        }
+
+        if (this.panCanvasService.isPanning()) {
+
+            if (isTouchScreen()) {
+                this.panCanvasService.updatePan(e.e.layerX, e.e.layerY);
+            } else {
+                this.panCanvasService.updatePan(e.e.clientX, e.e.clientY);
+            }
+        }
+    };
+
+    onMouseUp = (event: fabric.IEvent<MouseEvent>): void => {
+        if (this.hammertimePressService.isPressing) {
+            this.hammertimePressService.endPress();
+        }
+
+        this.panCanvasService.endPan();
     };
 }
