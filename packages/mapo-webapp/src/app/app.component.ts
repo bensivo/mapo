@@ -14,7 +14,6 @@ import { AuthService } from './services/auth/auth.service';
 import { ClipboardController } from './controllers/clipboard.controller';
 import { DebugController } from './controllers/debug.controller';
 import { FilesService } from './services/files/files.service';
-import { TrackpadPanController } from './controllers/trackpad-pan.controller';
 import { TextNodeOptionsController } from './controllers/textnode-options.controller';
 import { HammertimeController } from './controllers/hammertime.controller';
 import { SelectionController } from './controllers/selection.controller';
@@ -47,7 +46,6 @@ export class AppComponent {
     private mouseClickController: MouseController,
     private objectModifiedController: ObjectEventController,
     private textNodeOptionsController: TextNodeOptionsController,
-    private trackpadPanController: TrackpadPanController,
     private windowResizeController: WindowResizeController,
     private hammertimeController: HammertimeController,
     private selectionController: SelectionController,

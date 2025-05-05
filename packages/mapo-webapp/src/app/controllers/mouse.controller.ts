@@ -12,6 +12,7 @@ import { EdgeService } from '../services/edge/edge.service';
 import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
 import { HammertimePinchService } from '../services/hammertime/hammertime-pinch.service';
 import { HammertimePressService } from '../services/hammertime/hammertime-press.service';
+import { ZoomCanvasService } from '../services/zoom-canvas/zoom-canvas.service';
 
 /**
  * Listens to mouse events on the fabric canvas.
@@ -32,6 +33,7 @@ export class MouseController {
         private panCanvasService: PanCanvasService,
         private hammertimePinchService: HammertimePinchService,
         private hammertimePressService: HammertimePressService,
+        private zoomCanvasService: ZoomCanvasService,
     ) {
 
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
@@ -40,6 +42,19 @@ export class MouseController {
             canvas.on('mouse:move', this.onMouseMove);
             canvas.on('mouse:up', this.onMouseUp);
             canvas.on('mouse:dblclick', this.onDoubleClick);
+            canvas.on('mouse:wheel', this.onMouseWheel);
+
+
+            // Prevent mouse wheel events on teh canvas-container, which would cause the screen to zoom
+            // when pinching on trackpads.
+            const container = document.getElementById('canvas-container');
+            if (container != null) {
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                }, {
+                    passive: false,
+                });
+            }
         });
 
         this.canvasService.canvasDestroyed$.subscribe((canvas) => {
@@ -47,6 +62,7 @@ export class MouseController {
             canvas.off('mouse:down', this.onMouseDown as any);
             canvas.off('mouse:move', this.onMouseMove as any);
             canvas.off('mouse:dblclick', this.onDoubleClick);
+            canvas.off('mouse:wheel', this.onMouseWheel as any);
         });
 
         // Rerender edges on any new canvas or text-node
@@ -205,4 +221,17 @@ export class MouseController {
 
         this.panCanvasService.endPan();
     };
+
+    onMouseWheel = (event: fabric.IEvent<WheelEvent>): void => {
+        const e = event.e; // the underlying window.WheelEvent object
+
+        if (e.ctrlKey || e.metaKey) { // When the user is holding control, alt, or command. Also triggers on a trackpad, when pinching to zoom.
+            const delta = e.deltaY *6;
+            this.zoomCanvasService.zoomCanvas(delta, event.e.offsetX, event.e.offsetY);
+        } else { // Triggers when scrolling normally, or when panning with two fingers on a trackpad.
+            this.panCanvasService.startPan(0, 0);
+            this.panCanvasService.updatePan(-e.deltaX, -e.deltaY);
+            this.panCanvasService.endPan();
+        }
+    }
 }
