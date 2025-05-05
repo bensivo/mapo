@@ -18,7 +18,8 @@ import { TouchScreenController } from './controllers/touch-screen.controller';
 import { TrackpadPanController } from './controllers/trackpad-pan.controller';
 import { TextNodeOptionsController } from './controllers/textnode-options.controller';
 import { TouchSelectionController } from './controllers/touch-selection.controller';
-import { PinchController } from './controllers/pinch.controller';
+import { HammertimeController } from './controllers/hammertime.controller';
+import { SelectionController } from './controllers/selection.controller';
 
 @Component({
   selector: 'app-root',
@@ -52,7 +53,8 @@ export class AppComponent {
     private touchSelectionController: TouchSelectionController,
     private trackpadPanController: TrackpadPanController,
     private windowResizeController: WindowResizeController,
-    private zoomCanvasController: PinchController,
+    private hammertimeController: HammertimeController,
+    private selectionController: SelectionController,
   ) {
   }
 }

@@ -1,3 +1,4 @@
+import Hammer from 'hammerjs';
 import { Injectable } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { CanvasService } from '../services/canvas/canvas.service';

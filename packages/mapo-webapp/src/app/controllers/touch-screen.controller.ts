@@ -5,8 +5,8 @@ import { isTouchScreen } from '../utils/browser-utils';
 import { CanvasService } from '../services/canvas/canvas.service';
 import { TouchSelectionController } from './touch-selection.controller';
 import { TouchselectionStore } from '../services/touch-selection/touch-selection.service';
-import { PinchController } from './pinch.controller';
 import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
+import { HammertimePinchService } from '../services/hammertime/hammertime-pinch.service';
 
 /**
  * Controller listening to various touch events for mobile devices
@@ -24,8 +24,8 @@ export class TouchScreenController {
 
   constructor(
     private canvasService: CanvasService,
+    private hammertimePinchService: HammertimePinchService,
     private panCanvasService: PanCanvasService,
-    private mouseWheelController: PinchController,
     private bottomToolbarStore: BottomToolbarStore,
     private touchSelectionController: TouchSelectionController,
     private touchselectionStore: TouchselectionStore,
@@ -58,9 +58,9 @@ export class TouchScreenController {
         canvas.on('mouse:up', this.onMouseUp);
       }
     });
-    this.mouseWheelController.pinchStateChange.subscribe((isPinching) => {
-      this.isPinching = isPinching;
-    });
+    // this.mouseWheelController.pinchStateChange.subscribe((isPinching) => {
+    //   this.isPinching = isPinching;
+    // });
     this.touchSelectionController.pressingStateChange.subscribe(
       (isPressing) => {
         this.isPressing = isPressing;
@@ -97,9 +97,15 @@ export class TouchScreenController {
       this.selectedObjects = selectedObjects;
     }
 
+    if (this.hammertimePinchService.isPinching) {
+      // Often, pinch events also trigger mouse-move-touch events. This causes
+      // both zoom an pan logic to fire. To prevent this, we stop the 
+      // pan logic if the "isPiching" flag is active.
+      return;
+    }
+
     if (
       this.panCanvasService.isPanning() &&
-      !this.isPinching &&
       !this.isTwoFingerPanning &&
       !this.isPressing
     ) {
