@@ -5,6 +5,7 @@ import { TextNodeStore } from '../store/text-node.store';
 import { Tool, ToolbarStore } from '../store/toolbar.store';
 import { CanvasService } from '../services/canvas/canvas.service';
 import { ToolbarService } from '../services/toolbar/toolbar.service';
+import { DrawEdgeService } from '../services/edge/draw-edge.service';
 
 /**
  * When the canvas is active, listens for keyboard events, and controls the toolbar based on the actions pressed
@@ -21,6 +22,7 @@ export class KeyPressController {
     private edgeStore: EdgeStore,
     private canvasService: CanvasService,
     private toolbarService: ToolbarService,
+    private drawEdgeService: DrawEdgeService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -39,6 +41,10 @@ export class KeyPressController {
 
     if (e.key === 'Escape') {
       this.toolbarService.select(Tool.POINTER);
+
+      if (this.drawEdgeService.isDrawingEdge()) {
+        this.drawEdgeService.removePendingEdge();
+      }
     }
 
     if (this.toolbarStore.tool.value === Tool.EDIT_TEXT_NODE) {
