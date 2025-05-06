@@ -27,13 +27,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     # We need to set up infisical secrets
-    - name: setup infisical secrets
-      uses: infisical/secrets-action@v1
-      with:
-        token: ${{ secrets.INFISICAL_TOKEN }}
-        projectId: secrets.PROJECT_ID
-        environment: Development
-        path: /
+    # need to use the OIDC method
         
     # Make scripts executable
     - name: make scripts executable
