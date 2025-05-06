@@ -26,12 +26,15 @@ jobs:
     - name: setup docker buildX
       uses: docker/setup-buildx-action@v3
 
-    # Install Infisical to get secrets
-    - name: Install Infisical CLI
-      run: |
-        curl -s https://infisical.com/install.sh | sh
-        infisical login --token ${{ secrets.INFISICAL_TOKEN }}
-
+    # We need to set up infisical secrets
+    - name: setup infisical secrets
+      uses: infisical/secrets-action@v1
+      with:
+        token: ${{ secrets.INFISICAL_TOKEN }}
+        projectId: secrets.PROJECT_ID
+        environment: Development
+        path: /
+        
     # Make scripts executable
     - name: make scripts executable
       run: chmod +x ./publish.sh ./deploy.sh
