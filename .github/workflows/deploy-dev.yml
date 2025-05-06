@@ -38,8 +38,10 @@ jobs:
 
     # Build and publish docker image
     - name: build and publish the docker image
+      if: github.ref_type == 'tag'
       run: ./publish.sh ${{ github.ref_name }}
       
     # Deploy to dev
     - name: deploy to dev VM
+      if: github.ref_type == 'tag'
       run: ./deploy.sh dev ${{ github.ref_name }}
