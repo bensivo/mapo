@@ -20,11 +20,11 @@ jobs:
     steps:
     # We need to checkout repo/code first
     - name: checkout code
-    - uses: actions/checkout@v2  
+      uses: actions/checkout@v2  
 
     # We need to set up docker buildX
     - name: setup docker buildX
-    - uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v3
 
     # Install Infisical to get secrets
     - name: Install Infisical CLI
