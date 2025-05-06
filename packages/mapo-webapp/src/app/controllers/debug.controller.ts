@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
-import { TextNodeService } from "../text-node/text-node.service";
-import { TextNodeStore } from "../../store/text-node.store";
-import { CanvasService } from "../canvas/canvas.service";
+import { CanvasService } from "../services/canvas/canvas.service";
+import { TextNodeService } from "../services/text-node/text-node.service";
 
+/**
+ * Exposes core canvas controls as javascript functions on the window object
+ * 
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -13,7 +16,6 @@ export class DebugController {
   constructor(
     private canvasService: CanvasService,
     private textNodeService: TextNodeService,
-    private textNodeStore: TextNodeStore,
   ) {
 
     this.canvasService.canvasInitialized$.subscribe((canvas) => {

@@ -7,7 +7,7 @@ import { NewFileModalComponent, NewFileModalSubmit } from '../../components/new-
 import { NewFolderModalComponent, NewFolderModalSubmit } from '../../components/new-folder-modal/new-folder-modal.component';
 import { File } from '../../models/file.model';
 import { Folder } from '../../models/folder.model';
-import { FilesSelectors } from '../../selectors/file.selectors';
+import { FilesSelectors } from '../../store/file.selectors';
 import { FilesService, SaveFileDto } from '../../services/files/files.service';
 import { PersistenceService } from '../../services/persistence/persistence.service';
 import { ToastService } from '../../services/toast/toast.service';

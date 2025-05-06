@@ -1,17 +1,12 @@
 import { Injectable } from "@angular/core";
-import { CanvasService } from "../canvas/canvas.service";
-import { ClipboardService } from "./clipboard.service";
-import { ClipboardData, ClipboardDataSchema } from "./clipboard-data.model";
-import { ToastService } from "../toast/toast.service";
+import { CanvasService } from "../services/canvas/canvas.service";
+import { ClipboardService } from "../services/clipboard/clipboard.service";
+import { ClipboardData, ClipboardDataSchema } from "../models/clipboard-data.model";
+import { ToastService } from "../services/toast/toast.service";
 
 /**
- * TODO
- * 
- * Add buttons in the popup toolbar for copy-paste
- * a FUCK ton of testing. I don't trust myself with this code.
- * Find a better way to wait for the nodes to be rendered.
+ * Listens for copy/paste events from the keyboard, and controls the clipboard service.
  */
-
 @Injectable({
   providedIn: 'root',
 })
@@ -42,7 +37,6 @@ export class ClipboardController {
       return;
     }
 
-    // use clipboard api
     const dataTxt = JSON.stringify(data);
     navigator.clipboard.writeText(dataTxt);
     

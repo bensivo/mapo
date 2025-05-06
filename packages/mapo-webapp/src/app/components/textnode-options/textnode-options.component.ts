@@ -1,13 +1,13 @@
-import { fabric } from 'fabric';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { CanvasService } from '../../services/canvas/canvas.service';
-import { TextNodeOptionsStore } from '../../store/textnode-options.store';
-import { Tool, ToolbarStore } from '../../store/toolbar.store';
+import { fabric } from 'fabric';
 import { combineLatest, map } from 'rxjs';
-import { SelectionService } from '../../services/selection/selection.service';
-import { isTouchScreen } from '../../utils/browser-utils';
+import { CanvasService } from '../../services/canvas/canvas.service';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
+import { SelectionStore } from '../../store/selection.store';
+import { TextNodeOptionsStore } from '../../store/textnode-options.store';
+import { ToolbarStore } from '../../store/toolbar.store';
+import { isTouchScreen } from '../../utils/browser-utils';
 @Component({
   selector: 'app-textnode-options',
   standalone: true,
@@ -21,7 +21,7 @@ export class TextNodeOptionsComponent {
 
   isVisible$ = combineLatest([
     this.toolbarStore.tool$,
-    this.selectionService.selection$,
+    this.selectionStore.selection$,
     this.bottomToolbarStore.showPallet$,
   ]).pipe(
     map(([tool, selection, showTextNodeOption]) => {
@@ -36,7 +36,7 @@ export class TextNodeOptionsComponent {
     private textNodeOptionsStore: TextNodeOptionsStore,
     private toolbarStore: ToolbarStore,
     private bottomToolbarStore: BottomToolbarStore,
-    private selectionService: SelectionService,
+    private selectionStore: SelectionStore,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;

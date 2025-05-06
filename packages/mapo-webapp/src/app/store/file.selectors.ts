@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FilesStore } from '../store/files.store';
+import { FilesStore } from './files.store';
 import { combineLatest, map } from 'rxjs';
 import { Folder } from '../models/folder.model';
 

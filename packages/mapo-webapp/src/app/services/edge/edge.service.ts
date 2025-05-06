@@ -5,6 +5,9 @@ import { EdgeStore } from '../../store/edge.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';
 import { CanvasService } from '../canvas/canvas.service';
+import { combineLatest, sampleTime } from 'rxjs';
+import { TextNodeService } from '../text-node/text-node.service';
+import { TextNodeStore } from '../../store/text-node.store';
 
 /**
  * Service used for rendering edges on the canvas
@@ -19,6 +22,8 @@ export class EdgeService {
     private edgeStore: EdgeStore,
     private toolbarStore: ToolbarStore,
     private canvasService: CanvasService,
+    private textNodeStore: TextNodeStore,
+    private textNodeService: TextNodeService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -26,6 +31,30 @@ export class EdgeService {
     this.canvasService.canvasDestroyed$.subscribe((canvas) => {
       this.canvas = null;
     });
+
+    // Call 'render' if the edge or textnode stores change
+    combineLatest([
+      this.canvasService.canvasInitialized$,
+      this.edgeStore.edges$.pipe(sampleTime(20)),
+      this.textNodeStore.textNodes$.pipe(sampleTime(20)),
+    ]).subscribe(([canvas, edges, textnodes]) => {
+      this.render(edges);
+    });
+
+    // On initial render, sometimes edges are loaded before the text-nodes have been rendered.
+    // This causes the edges to not render correctly.
+    // 
+    // Adding this setTimeout on every canvas initialization is a hacky workaround, we need to replace
+    // this with a true fix.
+    combineLatest([
+      this.canvasService.canvasInitialized$,
+      this.edgeStore.edges$,
+    ])
+      .subscribe(([canvas, edges]) => {
+        setTimeout(() => {
+          this.render(edges);
+        }, 200);
+      });
   }
 
   render(edges: Edge[]) {

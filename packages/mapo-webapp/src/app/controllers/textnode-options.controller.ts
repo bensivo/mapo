@@ -1,12 +1,16 @@
-import { fabric } from "fabric";
 import { Injectable } from "@angular/core";
-import { TextNodeOptionsStore } from "../../store/textnode-options.store";
-import { CanvasService } from "../canvas/canvas.service";
-import { TextNodeStore } from "../../store/text-node.store";
-import { SelectionService } from "../selection/selection.service";
-import { ToolbarStore } from "../../store/toolbar.store";
-import { BottomToolbarStore } from "../../store/bottom-toolbar.store";
+import { fabric } from "fabric";
+import { CanvasService } from "../services/canvas/canvas.service";
+import { BottomToolbarStore } from "../store/bottom-toolbar.store";
+import { SelectionStore } from "../store/selection.store";
+import { TextNodeStore } from "../store/text-node.store";
+import { TextNodeOptionsStore } from "../store/textnode-options.store";
 
+/**
+ * A controller listening to color changes and selection changes,
+ * for updating nodes when new colors are selected, and updating the colorbox
+ * when new nodes are selected.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -18,7 +22,7 @@ export class TextNodeOptionsController {
     private textNodeOptionsStore: TextNodeOptionsStore,
     private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
-    private selectionService: SelectionService,
+    private selectionStore: SelectionStore,
     private bottomToolbarStore: BottomToolbarStore,
   ) {
     this.onBootstrap();
@@ -36,7 +40,7 @@ export class TextNodeOptionsController {
       this.onColorChanged(color);
     });
 
-    this.selectionService.selection$.subscribe((objects) => {
+    this.selectionStore.selection$.subscribe((objects) => {
       this.onSelection(objects);
     });
   }

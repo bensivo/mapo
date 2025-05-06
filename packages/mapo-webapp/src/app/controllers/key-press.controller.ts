@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { EdgeStore } from '../../store/edge.store';
-import { TextNodeStore } from '../../store/text-node.store';
-import { Tool, ToolbarStore } from '../../store/toolbar.store';
-import { CanvasService } from '../canvas/canvas.service';
-import { ToolbarService } from './toolbar.service';
+import { EdgeStore } from '../store/edge.store';
+import { TextNodeStore } from '../store/text-node.store';
+import { Tool, ToolbarStore } from '../store/toolbar.store';
+import { CanvasService } from '../services/canvas/canvas.service';
+import { ToolbarService } from '../services/toolbar/toolbar.service';
+import { DrawEdgeService } from '../services/edge/draw-edge.service';
 
 /**
  * When the canvas is active, listens for keyboard events, and controls the toolbar based on the actions pressed
@@ -12,7 +13,7 @@ import { ToolbarService } from './toolbar.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ToolbarController {
+export class KeyPressController {
   canvas: fabric.Canvas | null = null;
 
   constructor(
@@ -21,6 +22,7 @@ export class ToolbarController {
     private edgeStore: EdgeStore,
     private canvasService: CanvasService,
     private toolbarService: ToolbarService,
+    private drawEdgeService: DrawEdgeService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -39,6 +41,10 @@ export class ToolbarController {
 
     if (e.key === 'Escape') {
       this.toolbarService.select(Tool.POINTER);
+
+      if (this.drawEdgeService.isDrawingEdge()) {
+        this.drawEdgeService.removePendingEdge();
+      }
     }
 
     if (this.toolbarStore.tool.value === Tool.EDIT_TEXT_NODE) {
@@ -57,6 +63,11 @@ export class ToolbarController {
 
     if (e.key === 'e') {
       this.toolbarService.selectOrCancel(Tool.CREATE_EDGE);
+      return;
+    }
+
+    if (e.key === 'b') {
+      this.toolbarService.selectOrCancel(Tool.CREATE_CONTAINER);
       return;
     }
 
