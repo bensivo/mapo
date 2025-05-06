@@ -1,0 +1,64 @@
+# This workflow will publish and deploy to dev any changes pushed to main
+# When doing a push to main or a PR we need to include a tag in the commit message
+# ex: 
+# git commit -m "Message version 0.0.1"
+
+name: mapo-webapp deploy to dev
+
+# Event that triggers the workflow
+on: 
+  push:
+    branches: ['main']
+    
+# This is required for requesting the JWT
+permissions:
+    id-token: write
+
+# Executable part
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # We need to checkout repo/code first
+    - name: checkout code
+      uses: actions/checkout@v2  
+
+    # We need to set up docker buildX
+    - name: setup docker buildX
+      uses: docker/setup-buildx-action@v3
+
+    # We need to set up infisical secrets
+    - name: get infisical secrets
+      uses: Infisical/secrets-action@v1.0.7
+      with:
+          method: "oidc"
+          env-slug: "dev"
+          project-slug: "${{ secrets.INFISICAL_PROJECT_SLUG }}"
+          identity-id: "${{ secrets.INFISICAL_IDENTITY_ID }}"
+
+    # Make scripts executable
+    - name: make scripts executable
+      run: chmod +x ./packages/mapo-webapp-deploy/publish-actions.sh ./packages/mapo-webapp-deploy/deploy-actions.sh
+
+    # Extract the tag in commit message
+    - name: extract the version in commit message
+      id: extracted_version
+      run: |
+        VERSION=$(git log -1 --pretty=%B | grep -oP 'version (\S+)' | awk '{print $2}')
+
+        if [ -z "$VERSION" ]; then
+          echo "ERROR, no version found"
+          exit 1
+        fi
+        
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "Version set to $VERSION"
+
+    # Build and publish docker image
+    - name: build and publish the docker image
+      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.VERSION }}
+      
+    # Deploy to dev
+    - name: deploy to dev VM
+      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.VERSION }}
