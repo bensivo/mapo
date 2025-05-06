@@ -1,0 +1,45 @@
+# This workflow will publish and deploy to dev any changes pushed to main
+# When doing a push to main or a PR we need to include a tag that is the new version of the project
+# ex: 
+# git tag 0.0.1
+# git push origin 0.0.1
+
+name: mapo-webapp deploy to dev
+
+# Event that triggers the workflow
+on: 
+  push: 
+    branches: [main]
+    tags: ['*'] 
+
+# Executable part
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # We need to checkout repo/code first
+    - name: checkout code
+    - uses: actions/checkout@v2  
+
+    # We need to set up docker buildX
+    - name: setup docker buildX
+    - uses: docker/setup-buildx-action@v3
+
+    # Install Infisical to get secrets
+    - name: Install Infisical CLI
+      run: |
+        curl -s https://infisical.com/install.sh | sh
+        infisical login --token ${{ secrets.INFISICAL_TOKEN }}
+
+    # Make scripts executable
+    - name: make scripts executable
+      run: chmod +x ./publish.sh ./deploy.sh
+
+    # Build and publish docker image
+    - name: build and publish the docker image
+      run: ./publish.sh ${{ github.ref_name }}
+      
+    # Deploy to dev
+    - name: deploy to dev VM
+      run: ./deploy.sh dev ${{ github.ref_name }}
