@@ -1,12 +1,10 @@
-import { FabricUtils } from '../../utils/fabric-utils';
 import { Injectable } from '@angular/core';
-import { TextNode } from '../../models/textnode.model';
-import { CanvasService } from '../canvas/canvas.service';
-import { Tool, ToolbarStore } from '../../store/toolbar.store';
-import { TextNodeStore } from '../../store/text-node.store';
 import * as uuid from 'uuid';
-import { TextNodeOptionsStore } from '../../store/textnode-options.store';
-import { isContext } from 'vm';
+import { TextNode } from '../../models/textnode.model';
+import { TextNodeStore } from '../../store/text-node.store';
+import { Tool, ToolbarStore } from '../../store/toolbar.store';
+import { FabricUtils } from '../../utils/fabric-utils';
+import { CanvasService } from '../canvas/canvas.service';
 
 /**
  * Renders Text Nodes on the canvas, and manages their creation and editing

@@ -5,11 +5,10 @@ import { TouchselectionStore } from "../touch-selection/touch-selection.service"
 
 /**
  * A service to handle the logic related to hammertime press-and-drag,
- * which draws a selectionbox in the area, then selects all objects in that box when
- * the finger is released.
+ * which is used for group selections in touchscreen devices.
  * 
  * NOTE: we only had to implmement this manually for touch-screens. On desktops, 
- * click-and-drag to select was just a built-in feature of fabric.js
+ * click-and-drag was just a built-in feature of fabric.js
  */
 @Injectable({
     providedIn: 'root'
