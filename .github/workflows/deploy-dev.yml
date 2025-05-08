@@ -41,14 +41,14 @@ jobs:
 
     # Make scripts executable
     - name: make scripts executable
-      run: chmod +x ../../packages/mapo-webapp-deploy/publish.sh ../../packages/mapo-webapp-deploy/deploy.sh
+      run: chmod +x ./packages/mapo-webapp-deploy/publish.sh ./packages/mapo-webapp-deploy/deploy.sh
 
     # Build and publish docker image
     - name: build and publish the docker image
       if: github.ref_type == 'tag'
-      run: ../../packages/mapo-webapp-deploy/publish.sh ${{ github.ref_name }}
+      run: ./packages/mapo-webapp-deploy/publish.sh ${{ github.ref_name }}
       
     # Deploy to dev
     - name: deploy to dev VM
       if: github.ref_type == 'tag'
-      run: ../../packages/mapo-webapp-deploy/deploy.sh dev ${{ github.ref_name }}
+      run: ./packages/mapo-webapp-deploy/deploy.sh dev ${{ github.ref_name }}
