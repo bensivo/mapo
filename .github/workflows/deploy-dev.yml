@@ -9,7 +9,6 @@ name: mapo-webapp deploy to dev
 # Event that triggers the workflow
 on: 
   push: 
-    branches: [main]
     tags: ['*'] 
     
 # This is required for requesting the JWT
