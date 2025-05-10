@@ -1,5 +1,5 @@
-# This workflow will publish and deploy to dev any changes pushed to main
-# When doing a push to main or a PR we need to include a tag in the commit message
+# This workflow will publish and deploy (DEV) any changes pushed to main
+# with 'version x.x.x' in the commit message
 # ex: 
 # git commit -m "Message version 0.0.1"
 
@@ -24,11 +24,11 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v2  
 
-    # We need to set up docker buildX
+    # We set up docker buildX using actions
     - name: setup docker buildX
       uses: docker/setup-buildx-action@v3
 
-    # We need to set up infisical secrets
+    # We set up infisical secrets using actions
     - name: get infisical secrets
       uses: Infisical/secrets-action@v1.0.7
       with:
