@@ -5,6 +5,7 @@ import { TextNodeStore } from '../../store/text-node.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';
 import { CanvasService } from '../canvas/canvas.service';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Renders Text Nodes on the canvas, and manages their creation and editing
@@ -14,7 +15,8 @@ import { CanvasService } from '../canvas/canvas.service';
 })
 export class TextNodeService {
   canvas: fabric.Canvas | null = null;
-
+  isEditing = new BehaviorSubject<boolean>(false);
+  isEditing$ = this.isEditing.asObservable();
   constructor(
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
@@ -125,13 +127,11 @@ export class TextNodeService {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
-
     const textNodeId = group.data?.id;
     if (!textNodeId) {
       console.warn('Error editing text node. No data.id', group);
       return;
     }
-
     const objects = group.getObjects();
     const text = objects[1] as fabric.Text;
     const rect = objects[0] as fabric.Rect;
@@ -163,6 +163,8 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
+    this.isEditing.next(true);
+
     itext.on('editing:exited', (e) => {
       if (!this.canvas) {
         return;
@@ -178,6 +180,8 @@ export class TextNodeService {
           text: itext.text,
         });
       }
+
+      this.isEditing.next(false);
     });
   }
 
