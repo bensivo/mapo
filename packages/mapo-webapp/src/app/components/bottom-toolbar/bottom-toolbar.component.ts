@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { map } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
 import { CanvasService } from '../../services/canvas/canvas.service';
 import { ClipboardService } from '../../services/clipboard/clipboard.service';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
 import { EdgeStore } from '../../store/edge.store';
 import { SelectionStore } from '../../store/selection.store';
 import { TextNodeStore } from '../../store/text-node.store';
+import { TextNodeService } from '../../services/text-node/text-node.service';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -16,6 +17,7 @@ import { TextNodeStore } from '../../store/text-node.store';
 })
 export class BottomToolbarComponent {
   canvas: fabric.Canvas | null = null;
+  isEditing: boolean = false;
 
   isVisible$ = this.selectionStore.selection$.pipe(
     map((selection) => {
@@ -35,12 +37,12 @@ export class BottomToolbarComponent {
     })
   )
 
-
   constructor(
     private canvasService: CanvasService,
     private selectionStore: SelectionStore,
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
+    private textNodeService: TextNodeService,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
   ) {
@@ -50,8 +52,10 @@ export class BottomToolbarComponent {
     this.canvasService.canvasDestroyed$.subscribe((canvas) => {
       this.canvas = null;
     });
+    this.textNodeService.isEditing$.subscribe((editing) => {
+      this.isEditing = editing;
+    })
   }
-
 
   onClickColor() {
     const currentValue = this.bottomToolbarStore.getShowPallet();
@@ -59,7 +63,6 @@ export class BottomToolbarComponent {
   }
 
   onClickDelete() {
-
     this.canvas?.getActiveObjects().forEach((object) => {
       if (object.data?.type === 'text-node') {
         this.textNodeStore.remove(object.data.id);
