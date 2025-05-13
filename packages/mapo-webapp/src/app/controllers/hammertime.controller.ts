@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 import Hammer from 'hammerjs';
 import { CanvasService } from "../services/canvas/canvas.service";
 import { HammertimePinchService } from "../services/hammertime/hammertime-pinch.service";
@@ -11,6 +12,8 @@ import { isTouchScreen } from "../utils/browser-utils";
 })
 export class HammertimeController {
     canvas: fabric.Canvas | null = null;
+    isTwoFingerPanning = new BehaviorSubject<boolean>(false);
+    isTwoFingerPanning$ = this.isTwoFingerPanning.asObservable();
 
     constructor(
         private canvasService: CanvasService,
@@ -30,10 +33,13 @@ export class HammertimeController {
             }
 
             const hammertime = new Hammer(canvasContainer, {});
+            hammertime.get('pan').set({pointers: 2});
             hammertime.get('pinch').set({ enable: true });
             hammertime.get('tap').set({ taps: 2 });
             hammertime.get('press');
 
+            hammertime.on('pan', this.onTwoFingerPan)
+            hammertime.on('panend', this.onTwoFingerPanEnd)
             hammertime.on('pinchstart', this.onPinchStart)
             hammertime.on('pinch', this.onPinch)
             hammertime.on('pinchend', this.onPinchEnd)
@@ -45,6 +51,14 @@ export class HammertimeController {
             this.canvas = null;
         })
         // TODO: do we need to destroy our hammertime object on canvasDestroyed$?
+    }
+
+    onTwoFingerPan = (e: HammerInput) => {
+        this.isTwoFingerPanning.next(true);
+    }
+
+    onTwoFingerPanEnd = (e: HammerInput) => {
+        this.isTwoFingerPanning.next(false);
     }
 
     onPinchStart = (e: HammerInput) => {
