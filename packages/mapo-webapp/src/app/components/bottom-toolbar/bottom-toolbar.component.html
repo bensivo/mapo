@@ -13,6 +13,7 @@
     <i class="ri-delete-bin-line"></i>
   </div>
   <div
+    *ngIf="copyEnabled$ | async"
     class="button copy-button"
     (click)="onClickCopy()"
   >
