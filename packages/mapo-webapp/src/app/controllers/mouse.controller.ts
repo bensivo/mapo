@@ -126,7 +126,7 @@ export class MouseController {
         }
 
         if (isTouchScreen() && !e.target) {
-            // When using a touchscreen, clientX and clientY are not availabel for some reason.
+            // When using a touchscreen, clientX and clientY are not available for some reason.
             // but layerX and layerY are.
             this.panCanvasService.startPan(e.e.layerX, e.e.layerY); 
         }
@@ -160,7 +160,7 @@ export class MouseController {
         // If the user was in create-edge, and clicked on an actual node, start or finish an edge
         if (tool === Tool.CREATE_EDGE && e.target) {
 
-            // Double check that the object clicked on was actally a text-node
+            // Double check that the object clicked on was actually a text-node
             if (e.target?.data?.type !== 'text-node') {
                 this.drawEdgeService.removePendingEdge();
                 this.toolbarStore.setTool(Tool.POINTER);

@@ -8,6 +8,7 @@ import { EdgeStore } from '../../store/edge.store';
 import { SelectionStore } from '../../store/selection.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TextNodeService } from '../../services/text-node/text-node.service';
+import { EdgeService } from '../../services/edge/edge.service';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -43,6 +44,7 @@ export class BottomToolbarComponent {
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
     private textNodeService: TextNodeService,
+    private edgeService: EdgeService,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
   ) {
@@ -53,6 +55,9 @@ export class BottomToolbarComponent {
       this.canvas = null;
     });
     this.textNodeService.isEditing$.subscribe((editing) => {
+      this.isEditing = editing;
+    })
+    this.edgeService.isEditing$.subscribe((editing) => {
       this.isEditing = editing;
     })
   }
