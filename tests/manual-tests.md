@@ -353,6 +353,12 @@ Occluded nodes / edges:
     G: I have 2 nodes, with an edge between them. One is bigger than the other
     W: I make the nodes overlap, so that one completely covers the other
     T: the app doesn't break
+
+Pinch and move nodes (#138):
+    G: I'm on a touchscreen
+    G: There's a node on the canvs
+    W: I pinch to zoom, but one of my fingers lands on the node
+    T: The pinch motion doesn't move the node around the canvas
 ```
 
 

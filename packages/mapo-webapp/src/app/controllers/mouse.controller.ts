@@ -13,6 +13,7 @@ import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
 import { HammertimePinchService } from '../services/hammertime/hammertime-pinch.service';
 import { HammertimePressService } from '../services/hammertime/hammertime-press.service';
 import { ZoomCanvasService } from '../services/zoom-canvas/zoom-canvas.service';
+import { DrawContainerService } from '../services/container/draw-container.service';
 
 /**
  * Listens to mouse events on the fabric canvas.
@@ -34,6 +35,7 @@ export class MouseController {
         private hammertimePinchService: HammertimePinchService,
         private hammertimePressService: HammertimePressService,
         private zoomCanvasService: ZoomCanvasService,
+        private drawContainerService: DrawContainerService,
     ) {
 
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
@@ -168,6 +170,20 @@ export class MouseController {
             }
         }
 
+        if (tool === Tool.CREATE_CONTAINER && !e.target && e.absolutePointer) {
+            if (this.drawContainerService.isDrawingContainer()) {
+                this.drawContainerService.finalizeContainer(
+                    e.absolutePointer.x,
+                    e.absolutePointer.y,
+                )
+            } else {
+                this.drawContainerService.startContainer(
+                    e.absolutePointer.x,
+                    e.absolutePointer.y,
+                )
+            }
+        }
+
         // Clicks on empty space in the canvas, usually used to exit editing text.
         if (!e.target) {
             for (const obj of this.canvas.getActiveObjects()) {
@@ -202,6 +218,13 @@ export class MouseController {
 
         if (this.drawEdgeService.isDrawingEdge()) {
             this.drawEdgeService.updateEdge(e.absolutePointer);
+        }
+
+        if (this.drawContainerService.isDrawingContainer()){
+            this.drawContainerService.updateContainer(
+                e.absolutePointer.x, 
+                e.absolutePointer.y
+            );
         }
 
         if (this.panCanvasService.isPanning()) {

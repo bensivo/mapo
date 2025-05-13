@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { CanvasService } from "../services/canvas/canvas.service";
 import { TextNodeService } from "../services/text-node/text-node.service";
+import { DrawContainerService } from "../services/container/draw-container.service";
 
 /**
  * Exposes core canvas controls as javascript functions on the window object

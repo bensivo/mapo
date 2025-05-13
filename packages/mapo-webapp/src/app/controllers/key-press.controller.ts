@@ -6,6 +6,7 @@ import { Tool, ToolbarStore } from '../store/toolbar.store';
 import { CanvasService } from '../services/canvas/canvas.service';
 import { ToolbarService } from '../services/toolbar/toolbar.service';
 import { DrawEdgeService } from '../services/edge/draw-edge.service';
+import { DrawContainerService } from '../services/container/draw-container.service';
 
 /**
  * When the canvas is active, listens for keyboard events, and controls the toolbar based on the actions pressed
@@ -23,6 +24,7 @@ export class KeyPressController {
     private canvasService: CanvasService,
     private toolbarService: ToolbarService,
     private drawEdgeService: DrawEdgeService,
+    private drawContainerService: DrawContainerService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -44,6 +46,10 @@ export class KeyPressController {
 
       if (this.drawEdgeService.isDrawingEdge()) {
         this.drawEdgeService.removePendingEdge();
+      }
+
+      if (this.drawContainerService.isDrawingContainer()){
+        this.drawContainerService.cancelContainer();
       }
     }
 
