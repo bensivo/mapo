@@ -6,6 +6,7 @@ import { HammertimePinchService } from "../services/hammertime/hammertime-pinch.
 import { HammertimePressService } from "../services/hammertime/hammertime-press.service";
 import { TextNodeService } from "../services/text-node/text-node.service";
 import { isTouchScreen } from "../utils/browser-utils";
+import { EdgeService } from "../services/edge/edge.service";
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +21,7 @@ export class HammertimeController {
         private hammertimePinchService: HammertimePinchService,
         private hammertimePressService: HammertimePressService,
         private textnodeService: TextNodeService,
+        private edgeService: EdgeService,
     ) {
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
             this.canvas = canvas;
@@ -89,12 +91,16 @@ export class HammertimeController {
             true,
         );
 
+        // Double-tap on a text node
         if (target && target.data?.type === 'text-node') {
             this.textnodeService.editTextNode(target as fabric.Group);
         }
 
-
-        // TODO: Edit arrow text by double-tapping
+        // Double-tap on an edge, or edge-text
+        if (target && (target.data?.type === 'edge' || target.data?.type === 'edge-text')) {
+            const edgeId = target.data.id;
+            this.edgeService.editText(edgeId);
+        }
     }
 
     onPress = (e: HammerInput) => {

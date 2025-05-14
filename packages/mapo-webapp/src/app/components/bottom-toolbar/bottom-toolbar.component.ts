@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { combineLatest, map } from 'rxjs';
+import { map } from 'rxjs';
 import { CanvasService } from '../../services/canvas/canvas.service';
 import { ClipboardService } from '../../services/clipboard/clipboard.service';
 import { BottomToolbarStore } from '../../store/bottom-toolbar.store';
@@ -8,6 +8,7 @@ import { EdgeStore } from '../../store/edge.store';
 import { SelectionStore } from '../../store/selection.store';
 import { TextNodeStore } from '../../store/text-node.store';
 import { TextNodeService } from '../../services/text-node/text-node.service';
+import { EdgeService } from '../../services/edge/edge.service';
 @Component({
   selector: 'bottom-toolbar',
   standalone: true,
@@ -34,8 +35,20 @@ export class BottomToolbarComponent {
         );
       });
       return hasTextNode;
-    })
-  )
+    }),
+  );
+
+  copyEnabled$ = this.selectionStore.selection$.pipe(
+    map((selection) => {
+      // Return true only if there is at least 1 text node or comment in the selection
+      const hasTextNode = selection?.some((object) => {
+        return (
+          object.data?.type === 'text-node' && (object.data?.type !== 'edge' || object.data?.type !=='edge-text')
+        );
+      });
+      return hasTextNode;
+    }),
+  );
 
   constructor(
     private canvasService: CanvasService,
@@ -43,6 +56,7 @@ export class BottomToolbarComponent {
     private bottomToolbarStore: BottomToolbarStore,
     private clipboardService: ClipboardService,
     private textNodeService: TextNodeService,
+    private edgeService: EdgeService,
     private textNodeStore: TextNodeStore,
     private edgeStore: EdgeStore,
   ) {
@@ -54,7 +68,10 @@ export class BottomToolbarComponent {
     });
     this.textNodeService.isEditing$.subscribe((editing) => {
       this.isEditing = editing;
-    })
+    });
+    this.edgeService.isEditing$.subscribe((editing) => {
+      this.isEditing = editing;
+    });
   }
 
   onClickColor() {
