@@ -1,9 +1,9 @@
 # This workflow will publish and deploy (DEV) any changes pushed to main
-# with 'version x.x.x' in the commit message
+# with the commit SHA (hash) as the version number
 # ex: 
-# git commit -m "Message version 0.0.1"
+# git commit -m "Message"
 
-name: mapo-webapp deploy to dev
+name: mapo-webapp dev
 
 # Event that triggers the workflow
 on: 
@@ -40,25 +40,22 @@ jobs:
     # Make scripts executable
     - name: make scripts executable
       run: chmod +x ./packages/mapo-webapp-deploy/publish-actions.sh ./packages/mapo-webapp-deploy/deploy-actions.sh
-
-    # Extract the tag in commit message
-    - name: extract the version in commit message
-      id: extracted_version
+    
+    # Get the commit hash
+    - name: shorten the commit hash
+      id: vars
       run: |
-        VERSION=$(git log -1 --pretty=%B | grep -oP 'version (\S+)' | awk '{print $2}')
-
-        if [ -z "$VERSION" ]; then
-          echo "ERROR, no version found"
-          exit 1
-        fi
-        
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "Version set to $VERSION"
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+    
+    # Check to make sure the commit hash is correct
+    - name: confirm the commit hash
+      run: echo ${{ env.COMMIT_SHORT_SHA }}
 
     # Build and publish docker image
     - name: build and publish the docker image
-      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.VERSION }}
+      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.COMMIT_SHORT_SHA }}
       
     # Deploy to dev
     - name: deploy to dev VM
-      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.VERSION }}
+      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.COMMIT_SHORT_SHA }}
