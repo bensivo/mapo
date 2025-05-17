@@ -1,0 +1,56 @@
+# This workflow will publish and deploy (PROD) any releases published. 
+# ex:
+# publish a release with a tag
+name: mapo-webapp prod
+
+# Event that triggers the workflow
+on: 
+  release:
+    types: [published]
+
+# This is required for requesting the JWT
+permissions:
+    id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # We need to checkout repo/code first
+      - name: checkout code
+        uses: actions/checkout@v2  
+      
+      # We set up docker buildX using actions
+      - name: setup docker buildX
+        uses: docker/setup-buildx-action@v3
+  
+      # We set up infisical secrets using actions
+      - name: get infisical secrets
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+            method: "oidc"
+            env-slug: "prod"
+            project-slug: "${{ secrets.INFISICAL_PROJECT_SLUG }}"
+            identity-id: "${{ secrets.INFISICAL_IDENTITY_ID }}"
+  
+      # Make scripts executable
+      - name: make scripts executable
+        run: chmod +x ./packages/mapo-webapp-deploy/publish-actions.sh ./packages/mapo-webapp-deploy/deploy-actions.sh
+      
+      # Get the tag from release 
+      - name: get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      
+      # Check to make sure tag is correct
+      - name: confirm the tag
+        run: echo ${{ env.RELEASE_VERSION }}
+
+      # Build and publish docker image
+      - name: build and publish the docker image
+        run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.RELEASE_VERSION }}
+        
+      # Deploy to dev
+      - name: deploy to prod VM
+        run: ./packages/mapo-webapp-deploy/deploy-actions.sh ${{ env.RELEASE_VERSION }}
+
