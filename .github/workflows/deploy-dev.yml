@@ -13,6 +13,7 @@ on:
 # This is required for requesting the JWT
 permissions:
     id-token: write
+    packages: write
 
 # Executable part
 jobs:
@@ -41,36 +42,25 @@ jobs:
     - name: make scripts executable
       run: chmod +x ./packages/mapo-webapp-deploy/publish-actions.sh ./packages/mapo-webapp-deploy/deploy-actions.sh
     
-    # # Get the commit hash
-    # - name: shorten the commit hash
-    #   id: vars
-    #   run: |
-    #     calculatedSha=$(git rev-parse --short ${{ github.sha }})
-    #     echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
-    
-    # # Check to make sure the commit hash is correct
-    # - name: confirm the commit hash
-    #   run: echo ${{ env.COMMIT_SHORT_SHA }}
-
-    
-    # Extract the tag in commit message
-    - name: extract the version in commit message
-      id: extracted_version
+    # Get the commit hash
+    - name: shorten the commit hash
+      id: vars
       run: |
-        VERSION=$(git log -1 --pretty=%B | grep -oP 'version (\S+)' | awk '{print $2}')
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+    
+    # Check to make sure the commit hash is correct
+    - name: confirm the commit hash
+      run: echo ${{ env.COMMIT_SHORT_SHA }}
 
-        if [ -z "$VERSION" ]; then
-          echo "ERROR, no version found"
-          exit 1
-        fi
-        
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "Version set to $VERSION"
+    # Authenticate to GitHub Container Registry
+    - name: authenticate ghcr.io
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
     # Build and publish docker image
     - name: build and publish the docker image
-      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.VERSION }}
+      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.COMMIT_SHORT_SHA }}
       
     # Deploy to dev
     - name: deploy to dev VM
-      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.VERSION }}
+      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.COMMIT_SHORT_SHA }}
