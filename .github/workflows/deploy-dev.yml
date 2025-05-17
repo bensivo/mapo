@@ -13,7 +13,6 @@ on:
 # This is required for requesting the JWT
 permissions:
     id-token: write
-    packages: write
 
 # Executable part
 jobs:
@@ -52,10 +51,6 @@ jobs:
     # Check to make sure the commit hash is correct
     - name: confirm the commit hash
       run: echo ${{ env.COMMIT_SHORT_SHA }}
-
-    # Authenticate to GitHub Container Registry
-    - name: authenticate ghcr.io
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
     # Build and publish docker image
     - name: build and publish the docker image
