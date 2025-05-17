@@ -16,7 +16,7 @@ ENV=$1
 DOCKER_IMAGE_TAG=$2
 
 # Fetch secrets from infisical [secrets-action]
-if [ -z "$GHCR_USERNAME" ] || [ -z "$GHCR_TOKEN" ] || [ -z "$INSTANCE_IP" ] || [ -z "$INFISICAL_CLIENT_ID" ] || [ -z "$INFISICAL_CLIENT_SECRET" ]; then
+if [ -z "$T_GHCR_USERNAME" ] || [ -z "$T_GHCR_TOKEN" ] || [ -z "$INSTANCE_IP" ] || [ -z "$INFISICAL_CLIENT_ID" ] || [ -z "$INFISICAL_CLIENT_SECRET" ]; then
     echo "GHCR_USERNAME or GHCR_TOKEN or INSTANCE_IP or INFISICAL_CLIENT_ID or INFISICAL_CLIENT_SECRET environment variable not set"
     exit 1
 fi
@@ -28,7 +28,7 @@ chmod 600 $SSH_KEY_FILEPATH
 
 # Login to ghcr.io (on the remote maching)
 ssh -i $SSH_KEY_FILEPATH -o StrictHostKeyChecking=no root@$INSTANCE_IP "
-    echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USERNAME --password-stdin
+    echo $T_GHCR_TOKEN | docker login ghcr.io -u $T_GHCR_USERNAME --password-stdin
 "
 
 # Stop any existing docker image
