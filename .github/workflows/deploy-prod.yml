@@ -1,0 +1,22 @@
+# This workflow will publish and deploy (PROD) any releases published. 
+# ex:
+# publish a release with a tag
+name: mapo-webapp prod
+
+# Event that triggers the workflow
+on: 
+  release:
+    types: [published]
+
+# This is required for requesting the JWT
+permissions:
+    id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # We need to checkout repo/code first
+      - name: checkout code
+        uses: actions/checkout@v2  
