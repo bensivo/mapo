@@ -415,10 +415,11 @@ Next / Prev Item:
 
 
 ## Colors
-Create colored nodes:
+<!-- Not Applicable -->
+<!-- Create colored nodes:
     G: I am on the canvas
     W: I click on a color, then create a node
-    T: That node is created with my selected color
+    T: That node is created with my selected color -->
 
 Update color of a node:
     G: I am on the canvas
