@@ -18,4 +18,3 @@ Screenshots:
 ![Example MindMap](./docs/media/mapo-example-mindmap.png)
 
 ![Example My Files](./docs/media/mapo-example-my-files.png)
-
