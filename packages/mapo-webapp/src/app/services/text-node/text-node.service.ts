@@ -63,7 +63,8 @@ export class TextNodeService {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
-
+    // observable used to disable bottom toolbar 
+    this.isEditing.next(true);
     console.log('Adding text node at', top, left, isComment)
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
@@ -76,9 +77,9 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
-
     itext.on('editing:exited', () => {
       this.finalizeTextNode(itext);
+      this.isEditing.next(false);
     });
     this.canvas.requestRenderAll();
     return itext;
@@ -163,6 +164,7 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
+    // observable used to disable bottom toolbar
     this.isEditing.next(true);
 
     itext.on('editing:exited', (e) => {
