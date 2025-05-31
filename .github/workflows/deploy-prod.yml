@@ -50,7 +50,7 @@ jobs:
       - name: build and publish the docker image
         run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.RELEASE_VERSION }}
         
-      # Deploy to dev
+      # Deploy to prod
       - name: deploy to prod VM
-        run: ./packages/mapo-webapp-deploy/deploy-actions.sh ${{ env.RELEASE_VERSION }}
+        run: ./packages/mapo-webapp-deploy/deploy-actions.sh prod ${{ env.RELEASE_VERSION }}
 
