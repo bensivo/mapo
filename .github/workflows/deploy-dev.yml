@@ -32,10 +32,11 @@ jobs:
     - name: get infisical secrets
       uses: Infisical/secrets-action@v1.0.7
       with:
-          method: "oidc"
-          env-slug: "dev"
-          project-slug: "${{ secrets.INFISICAL_PROJECT_SLUG }}"
-          identity-id: "${{ secrets.INFISICAL_IDENTITY_ID }}"
+        method: "universal"
+        client-id: "${{ secrets.INFISICAL_CLIENT_ID }}"
+        client-secret: "${{ secrets.INFISICAL_CLIENT_SECRET }}"
+        project-slug: "${{ secrets.INFISICAL_PROJECT_SLUG }}"
+        env-slug: "dev"
 
     # Make scripts executable
     - name: make scripts executable
