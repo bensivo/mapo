@@ -4,7 +4,7 @@ Mapo is a browser-based mind mapping tool.
 It's made to be super simple and intuitive, so you can spend your time thinking, not fidgeting with your canvas.
 
 
-Check it out: https://mapo.bensivo.com
+Check it out: https://mapo.ink
 
 
 ## Demos, Screenshots

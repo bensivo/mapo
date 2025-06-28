@@ -12,6 +12,7 @@ import { EdgeService } from '../services/edge/edge.service';
 import { PanCanvasService } from '../services/pan-canvas/pan-canvas.service';
 import { HammertimePinchService } from '../services/hammertime/hammertime-pinch.service';
 import { HammertimePressService } from '../services/hammertime/hammertime-press.service';
+import { HammertimeController } from './hammertime.controller';
 import { ZoomCanvasService } from '../services/zoom-canvas/zoom-canvas.service';
 import { DrawContainerService } from '../services/container/draw-container.service';
 
@@ -23,6 +24,7 @@ import { DrawContainerService } from '../services/container/draw-container.servi
 })
 export class MouseController {
     canvas: fabric.Canvas | null = null;
+    isTwoFingerPanning: boolean = false;
 
     constructor(
         private textNodeService: TextNodeService,
@@ -32,6 +34,7 @@ export class MouseController {
         private drawEdgeService: DrawEdgeService,
         private edgeService: EdgeService,
         private panCanvasService: PanCanvasService,
+        private hammertimeController: HammertimeController,
         private hammertimePinchService: HammertimePinchService,
         private hammertimePressService: HammertimePressService,
         private zoomCanvasService: ZoomCanvasService,
@@ -47,7 +50,7 @@ export class MouseController {
             canvas.on('mouse:wheel', this.onMouseWheel);
 
 
-            // Prevent mouse wheel events on teh canvas-container, which would cause the screen to zoom
+            // Prevent mouse wheel events on the canvas-container, which would cause the screen to zoom
             // when pinching on trackpads.
             const container = document.getElementById('canvas-container');
             if (container != null) {
@@ -66,6 +69,10 @@ export class MouseController {
             canvas.off('mouse:dblclick', this.onDoubleClick);
             canvas.off('mouse:wheel', this.onMouseWheel as any);
         });
+        
+        this.hammertimeController.isTwoFingerPanning$.subscribe((twoFingerPanning) => {
+            this.isTwoFingerPanning = twoFingerPanning;
+        })
 
         // Rerender edges on any new canvas or text-node
         //
@@ -121,7 +128,7 @@ export class MouseController {
         }
 
         if (isTouchScreen() && !e.target) {
-            // When using a touchscreen, clientX and clientY are not availabel for some reason.
+            // When using a touchscreen, clientX and clientY are not available for some reason.
             // but layerX and layerY are.
             this.panCanvasService.startPan(e.e.layerX, e.e.layerY); 
         }
@@ -155,7 +162,7 @@ export class MouseController {
         // If the user was in create-edge, and clicked on an actual node, start or finish an edge
         if (tool === Tool.CREATE_EDGE && e.target) {
 
-            // Double check that the object clicked on was actally a text-node
+            // Double check that the object clicked on was actually a text-node
             if (e.target?.data?.type !== 'text-node') {
                 this.drawEdgeService.removePendingEdge();
                 this.toolbarStore.setTool(Tool.POINTER);
@@ -196,6 +203,13 @@ export class MouseController {
 
     onMouseMove = (e: fabric.IEvent<MouseEvent>) => {
         if (!e.absolutePointer) {
+            return;
+        }
+
+        // Often, two finger panning events trigger the mouse-move-touch events
+        // causing the canvas to 'jump' around the screen. To prevent this, 
+        // we stop panning if 'isTwoFingerPanning' flag is active.
+        if(this.isTwoFingerPanning) {
             return;
         }
 

@@ -6,8 +6,8 @@ import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';
 import { CanvasService } from '../canvas/canvas.service';
 import { combineLatest, sampleTime } from 'rxjs';
-import { TextNodeService } from '../text-node/text-node.service';
 import { TextNodeStore } from '../../store/text-node.store';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Service used for rendering edges on the canvas
@@ -17,13 +17,13 @@ import { TextNodeStore } from '../../store/text-node.store';
 })
 export class EdgeService {
   canvas: fabric.Canvas | null = null;
-
+  isEditing = new BehaviorSubject<boolean>(false);
+  isEditing$ = this.isEditing.asObservable();
   constructor(
     private edgeStore: EdgeStore,
     private toolbarStore: ToolbarStore,
     private canvasService: CanvasService,
     private textNodeStore: TextNodeStore,
-    private textNodeService: TextNodeService,
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -141,6 +141,8 @@ export class EdgeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
+    this.isEditing.next(true);
+
     itext.on('editing:exited', (e) => {
       if (!this.canvas) {
         console.warn('Canvas not initialized');
@@ -152,6 +154,7 @@ export class EdgeService {
       });
       this.canvas.remove(itext);
       this.toolbarStore.setTool(Tool.POINTER);
+      this.isEditing.next(false);
     });
   }
 }

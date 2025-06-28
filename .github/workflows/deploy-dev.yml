@@ -1,0 +1,62 @@
+# This workflow will publish and deploy (DEV) any changes pushed to main
+# with the commit SHA (hash) as the version number
+# ex: 
+# git commit -m "Message"
+
+name: mapo-webapp dev
+
+# Event that triggers the workflow
+on: 
+  push:
+    branches: ['main']
+    
+# This is required for requesting the JWT
+permissions:
+    id-token: write
+
+# Executable part
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # We need to checkout repo/code first
+    - name: checkout code
+      uses: actions/checkout@v2  
+
+    # We set up docker buildX using actions
+    - name: setup docker buildX
+      uses: docker/setup-buildx-action@v3
+
+    # We set up infisical secrets using actions
+    - name: get infisical secrets
+      uses: Infisical/secrets-action@v1.0.7
+      with:
+        method: "universal"
+        client-id: "${{ secrets.INFISICAL_CLIENT_ID }}"
+        client-secret: "${{ secrets.INFISICAL_CLIENT_SECRET }}"
+        project-slug: "${{ secrets.INFISICAL_PROJECT_SLUG }}"
+        env-slug: "dev"
+
+    # Make scripts executable
+    - name: make scripts executable
+      run: chmod +x ./packages/mapo-webapp-deploy/publish-actions.sh ./packages/mapo-webapp-deploy/deploy-actions.sh
+    
+    # Get the commit hash
+    - name: shorten the commit hash
+      id: vars
+      run: |
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+    
+    # Check to make sure the commit hash is correct
+    - name: confirm the commit hash
+      run: echo ${{ env.COMMIT_SHORT_SHA }}
+
+    # Build and publish docker image
+    - name: build and publish the docker image
+      run: ./packages/mapo-webapp-deploy/publish-actions.sh ${{ env.COMMIT_SHORT_SHA }}
+      
+    # Deploy to dev
+    - name: deploy to dev VM
+      run: ./packages/mapo-webapp-deploy/deploy-actions.sh dev ${{ env.COMMIT_SHORT_SHA }}

@@ -5,6 +5,7 @@ import { TextNodeStore } from '../../store/text-node.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
 import { FabricUtils } from '../../utils/fabric-utils';
 import { CanvasService } from '../canvas/canvas.service';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Renders Text Nodes on the canvas, and manages their creation and editing
@@ -14,7 +15,8 @@ import { CanvasService } from '../canvas/canvas.service';
 })
 export class TextNodeService {
   canvas: fabric.Canvas | null = null;
-
+  isEditing = new BehaviorSubject<boolean>(false);
+  isEditing$ = this.isEditing.asObservable();
   constructor(
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
@@ -61,7 +63,8 @@ export class TextNodeService {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
-
+    // observable used to disable bottom toolbar 
+    this.isEditing.next(true);
     console.log('Adding text node at', top, left, isComment)
     const itext = FabricUtils.createIText(this.canvas, '', top, left);
 
@@ -74,9 +77,9 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
-
     itext.on('editing:exited', () => {
       this.finalizeTextNode(itext);
+      this.isEditing.next(false);
     });
     this.canvas.requestRenderAll();
     return itext;
@@ -125,13 +128,11 @@ export class TextNodeService {
     if (!this.canvas) {
       throw new Error('No canvas on TextNodeService');
     }
-
     const textNodeId = group.data?.id;
     if (!textNodeId) {
       console.warn('Error editing text node. No data.id', group);
       return;
     }
-
     const objects = group.getObjects();
     const text = objects[1] as fabric.Text;
     const rect = objects[0] as fabric.Rect;
@@ -163,6 +164,9 @@ export class TextNodeService {
     FabricUtils.selectIText(this.canvas, itext);
     this.toolbarStore.setTool(Tool.EDIT_TEXT_NODE);
 
+    // observable used to disable bottom toolbar
+    this.isEditing.next(true);
+
     itext.on('editing:exited', (e) => {
       if (!this.canvas) {
         return;
@@ -178,6 +182,8 @@ export class TextNodeService {
           text: itext.text,
         });
       }
+
+      this.isEditing.next(false);
     });
   }
 

@@ -1,22 +1,27 @@
 import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 import Hammer from 'hammerjs';
 import { CanvasService } from "../services/canvas/canvas.service";
 import { HammertimePinchService } from "../services/hammertime/hammertime-pinch.service";
 import { HammertimePressService } from "../services/hammertime/hammertime-press.service";
 import { TextNodeService } from "../services/text-node/text-node.service";
 import { isTouchScreen } from "../utils/browser-utils";
+import { EdgeService } from "../services/edge/edge.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class HammertimeController {
     canvas: fabric.Canvas | null = null;
+    isTwoFingerPanning = new BehaviorSubject<boolean>(false);
+    isTwoFingerPanning$ = this.isTwoFingerPanning.asObservable();
 
     constructor(
         private canvasService: CanvasService,
         private hammertimePinchService: HammertimePinchService,
         private hammertimePressService: HammertimePressService,
         private textnodeService: TextNodeService,
+        private edgeService: EdgeService,
     ) {
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
             this.canvas = canvas;
@@ -30,10 +35,13 @@ export class HammertimeController {
             }
 
             const hammertime = new Hammer(canvasContainer, {});
+            hammertime.get('pan').set({pointers: 2});
             hammertime.get('pinch').set({ enable: true });
             hammertime.get('tap').set({ taps: 2 });
             hammertime.get('press');
 
+            hammertime.on('pan', this.onTwoFingerPan)
+            hammertime.on('panend', this.onTwoFingerPanEnd)
             hammertime.on('pinchstart', this.onPinchStart)
             hammertime.on('pinch', this.onPinch)
             hammertime.on('pinchend', this.onPinchEnd)
@@ -45,6 +53,14 @@ export class HammertimeController {
             this.canvas = null;
         })
         // TODO: do we need to destroy our hammertime object on canvasDestroyed$?
+    }
+
+    onTwoFingerPan = (e: HammerInput) => {
+        this.isTwoFingerPanning.next(true);
+    }
+
+    onTwoFingerPanEnd = (e: HammerInput) => {
+        this.isTwoFingerPanning.next(false);
     }
 
     onPinchStart = (e: HammerInput) => {
@@ -75,12 +91,16 @@ export class HammertimeController {
             true,
         );
 
+        // Double-tap on a text node
         if (target && target.data?.type === 'text-node') {
             this.textnodeService.editTextNode(target as fabric.Group);
         }
 
-
-        // TODO: Edit arrow text by double-tapping
+        // Double-tap on an edge, or edge-text
+        if (target && (target.data?.type === 'edge' || target.data?.type === 'edge-text')) {
+            const edgeId = target.data.id;
+            this.edgeService.editText(edgeId);
+        }
     }
 
     onPress = (e: HammerInput) => {
