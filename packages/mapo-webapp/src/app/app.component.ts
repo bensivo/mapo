@@ -17,6 +17,7 @@ import { FilesService } from './services/files/files.service';
 import { TextNodeOptionsController } from './controllers/textnode-options.controller';
 import { HammertimeController } from './controllers/hammertime.controller';
 import { SelectionController } from './controllers/selection.controller';
+import { RenderController } from './controllers/render.controller';
 
 @Component({
   selector: 'app-root',
@@ -49,6 +50,7 @@ export class AppComponent {
     private windowResizeController: WindowResizeController,
     private hammertimeController: HammertimeController,
     private selectionController: SelectionController,
+    private renderController: RenderController,
   ) {
   }
 }

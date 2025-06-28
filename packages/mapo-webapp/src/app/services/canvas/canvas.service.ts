@@ -43,6 +43,7 @@ export class CanvasService {
       stopContextMenu: true,
       targetFindTolerance: 10, // Makes it easier to select objects with "per-pixel-target-find" enabled, adding a padding
       selection: isTouchScreen() ? false : true,
+      uniformScaling: false,
     });
 
     this.canvas = canvas;

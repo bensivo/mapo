@@ -5,6 +5,7 @@ import { CanvasService } from '../services/canvas/canvas.service';
 import { EdgeService } from '../services/edge/edge.service';
 import { TextNodeService } from '../services/text-node/text-node.service';
 import { EdgeStore } from '../store/edge.store';
+import { ContainerService } from '../services/container/container.service';
 
 /**
  * Listens to canvas events with the "object" prefix, like "object:modified" and "object:moving"
@@ -22,6 +23,7 @@ export class ObjectEventController {
         private canvasService: CanvasService,
         private edgeStore: EdgeStore,
         private edgeService: EdgeService,
+        private containerService: ContainerService,
     ) {
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
             this.canvas = canvas;
@@ -40,7 +42,7 @@ export class ObjectEventController {
             this.objectMoving$.pipe(sampleTime(20))
         ])
         .subscribe(([edges, e]) => {
-            this.edgeService.render(edges);
+            this.edgeService.renderEdges(edges);
         });
     }
 
@@ -78,6 +80,12 @@ export class ObjectEventController {
         // A single node was dragged
         if (e.target.data?.type === 'text-node') {
             this.textNodeService.updateTextNode(e.target as fabric.Group);
+        }
+
+        // A single container was dragged or scaled
+        if (e.target.data?.type === 'container') {
+            console.log(e)
+            this.containerService.updateContainer(e.target as fabric.Rect);
         }
     };
 }

@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
 import { TextNode } from '../models/textnode.model';
+import { Container } from '../models/container.model';
 
 
 /**
@@ -9,14 +10,14 @@ import { TextNode } from '../models/textnode.model';
  *
  * See the function comment for itext.keysMap.
  */
-(fabric.IText.prototype as any).onTabKeyDown = function(e: any) {
+(fabric.IText.prototype as any).onTabKeyDown = function (e: any) {
   const selectionStart = this.selectionStart;
   const selectionEnd = this.selectionEnd;
   const lines = this.text.split('\n');
 
   const getLineStartIndex = (lineNum: number) => {
     let index = 0;
-    for(let i=0; i<lineNum; i++) {
+    for (let i = 0; i < lineNum; i++) {
       index += lines[i].length + 1; // plus 1 for the newline
     }
     return index;
@@ -25,7 +26,7 @@ import { TextNode } from '../models/textnode.model';
   // Returns the line number for a given index
   const getLineNumber = (index: number) => {
     let lineNum = 0;
-    for(let i=0; i<index; i++) {
+    for (let i = 0; i < index; i++) {
       if (this.text[i] === '\n') {
         lineNum++;
       }
@@ -37,7 +38,7 @@ import { TextNode } from '../models/textnode.model';
   const lineStart = getLineNumber(selectionStart);
   const lineEnd = getLineNumber(selectionEnd);
 
-  for (let i=lineStart; i<=lineEnd; i++) {
+  for (let i = lineStart; i <= lineEnd; i++) {
     if (e.shiftKey) {
       const numToRemove = lines[i].match(/^ {0,4}/g)?.[0].length || 0;
       lines[i] = lines[i].slice(numToRemove);
@@ -196,6 +197,17 @@ export class FabricUtils {
 
     canvas.add(group);
     return group;
+  }
+
+  static getObjectsOfType(canvas: fabric.Canvas, type: string): fabric.Object[] {
+    const res = [];
+    for (const object of canvas.getObjects()) {
+      if (object.data?.type === type) {
+        res.push(object);
+      }
+    }
+
+    return res;
   }
 
   static getTextNodes(canvas: fabric.Canvas): fabric.Object[] {
@@ -548,7 +560,7 @@ export class FabricUtils {
     const selectionHeight = rect.height ?? 0;
     const objectsInsideBox: fabric.Object[] = [];
     const allObjects = canvas.getObjects();
-    
+
     allObjects.forEach((object) => {
       if (object !== rect) {
         if (
@@ -571,5 +583,34 @@ export class FabricUtils {
     });
 
     return objectsInsideBox;
+  }
+
+
+  static createContainer(canvas: fabric.Canvas, container: Container) {
+    const rect = new fabric.Rect({
+      top: container.y,
+      left: container.x,
+      width: container.w,
+      height: container.h,
+      fill: '#0001',
+      stroke: 'black',
+      strokeDashArray: [5, 5],
+      rx: 10,
+      ry: 10,
+      strokeWidth: 1,
+      selectable: true,
+      evented: true,
+      lockRotation: true,
+      data: {
+        type: 'container',
+        id: container.id,
+      }
+    })
+
+    rect.setControlVisible('mtr', false)
+
+    canvas.add(rect);
+    canvas.sendToBack(rect);
+    return rect
   }
 }

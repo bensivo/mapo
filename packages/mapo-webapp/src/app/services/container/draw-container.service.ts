@@ -1,9 +1,9 @@
-import * as uuid from 'uuid';
-import { fabric } from 'fabric';
 import { Injectable } from '@angular/core';
-import { CanvasService } from '../canvas/canvas.service';
-import { EdgeStore } from '../../store/edge.store';
+import { fabric } from 'fabric';
+import * as uuid from 'uuid';
+import { ContainerStore } from '../../store/container.store';
 import { Tool, ToolbarStore } from '../../store/toolbar.store';
+import { CanvasService } from '../canvas/canvas.service';
 
 /**
  * Service used for the draw-edge tool, rendering pending edges
@@ -22,6 +22,7 @@ export class DrawContainerService {
   constructor(
     private canvasService: CanvasService,
     private toolbarStore: ToolbarStore,
+    private containerStore: ContainerStore
   ) {
     this.canvasService.canvasInitialized$.subscribe((canvas) => {
       this.canvas = canvas;
@@ -70,16 +71,13 @@ export class DrawContainerService {
 
   updateContainer(x: number, y: number) {
     if (!this.canvas) {
-      console.warn('asdflajsldg');
       return;
     }
 
     if (this.rect === null || this.startX === null || this.startY === null) {
-      console.warn('failsdfjas');
       return;
     }
 
-    // this.canvas.remove(this.arrow);
     const minX = Math.min(this.startX, x);
     const minY = Math.min(this.startY, y);
     const diffX = Math.abs(this.startX - x);
@@ -99,11 +97,19 @@ export class DrawContainerService {
         return;
     }
 
-    if (!this.rect) {
+    if (!this.rect || !this.rect.left || !this.rect.top || !this.rect.width || !this.rect.height) {
         return;
     }
 
-    console.log("Finalizing container from", this.startX, this.startY, 'to', x, y)
+    this.containerStore.insert({
+      id: uuid.v4(),
+      x: this.rect.left,
+      y: this.rect.top,
+      w: this.rect.width,
+      h: this.rect.height,
+    })
+
+
     this.canvas.remove(this.rect);
     this.rect = null;
     this.startX = null;

@@ -32,15 +32,6 @@ export class EdgeService {
       this.canvas = null;
     });
 
-    // Call 'render' if the edge or textnode stores change
-    combineLatest([
-      this.canvasService.canvasInitialized$,
-      this.edgeStore.edges$.pipe(sampleTime(20)),
-      this.textNodeStore.textNodes$.pipe(sampleTime(20)),
-    ]).subscribe(([canvas, edges, textnodes]) => {
-      this.render(edges);
-    });
-
     // On initial render, sometimes edges are loaded before the text-nodes have been rendered.
     // This causes the edges to not render correctly.
     // 
@@ -52,12 +43,12 @@ export class EdgeService {
     ])
       .subscribe(([canvas, edges]) => {
         setTimeout(() => {
-          this.render(edges);
+          this.renderEdges(edges);
         }, 200);
       });
   }
 
-  render(edges: Edge[]) {
+  renderEdges(edges: Edge[]) {
     if (!this.canvas) {
       console.warn('Canvas not initialized');
       return;

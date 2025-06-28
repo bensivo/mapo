@@ -15,6 +15,8 @@ import { HammertimePressService } from '../services/hammertime/hammertime-press.
 import { HammertimeController } from './hammertime.controller';
 import { ZoomCanvasService } from '../services/zoom-canvas/zoom-canvas.service';
 import { DrawContainerService } from '../services/container/draw-container.service';
+import { ContainerStore } from '../store/container.store';
+import { ContainerService } from '../services/container/container.service';
 
 /**
  * Listens to mouse events on the fabric canvas.
@@ -29,6 +31,7 @@ export class MouseController {
     constructor(
         private textNodeService: TextNodeService,
         private textNodeStore: TextNodeStore,
+        private containerStore: ContainerStore,
         private canvasService: CanvasService,
         private toolbarStore: ToolbarStore,
         private drawEdgeService: DrawEdgeService,
@@ -39,6 +42,7 @@ export class MouseController {
         private hammertimePressService: HammertimePressService,
         private zoomCanvasService: ZoomCanvasService,
         private drawContainerService: DrawContainerService,
+        private containerService: ContainerService,
     ) {
 
         this.canvasService.canvasInitialized$.subscribe((canvas) => {
@@ -73,17 +77,6 @@ export class MouseController {
         this.hammertimeController.isTwoFingerPanning$.subscribe((twoFingerPanning) => {
             this.isTwoFingerPanning = twoFingerPanning;
         })
-
-        // Rerender edges on any new canvas or text-node
-        //
-        // When the app is first loading, the order of these observables is not guaranteed.
-        // Combining them together makes sure we don't render until all are ready
-        combineLatest([
-            this.canvasService.canvasInitialized$,
-            this.textNodeStore.textNodes$.pipe(sampleTime(20)), // Prevent too many renders at once if many text nodes are updated in quick succession
-        ]).subscribe(([canvas, textNodes]) => {
-            this.textNodeService.renderTextNodes(textNodes);
-        });
     }
 
     // When double-clicking on the canvas, add a new text node
